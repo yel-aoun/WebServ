@@ -15,6 +15,12 @@ int main(int argc, char **argv)
 	if (argc == 2)
 	{
 		str1 = argv[1];
+		size_t extension = str1.rfind(".conf");
+		if (extension == -1 || extension + 5 != str1.length())
+		{
+			std::cout << "Error! Please check the extension" << std::endl;
+			exit(1);
+		}
 		isempty(str1);
 		std::ifstream filein;
 		filein.open(str1);
