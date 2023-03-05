@@ -2,6 +2,7 @@
 
 webserv::webserv(std::string conf_file)
 {
+	int i = 0;
     if (conf_file.empty())
     {
         std::cout << "Error! Empty string you must provide a config file";
@@ -20,6 +21,15 @@ webserv::webserv(std::string conf_file)
 		while (filein.good())
 		{
 			getline(filein, conf_file);
+			if (conf_file == "{")
+				i++;
+			if (conf_file == "}")
+				i--;
+			if (i < 0)
+			{
+				std::cout << "Error! Please close every bracket" << std::endl;
+				exit (1);
+			}
             config.push_back(conf_file);
 		// 		size_t semi_column = conf_file.rfind(";");
 		// 		if ((semi_column == -1 || conf_file.length() - 1 != semi_column) && (conf_file.rfind("{") == -1 && conf_file.rfind("}") == -1) && (conf_file != "location" && conf_file != "server"))
@@ -32,6 +42,11 @@ webserv::webserv(std::string conf_file)
 		// 	// mainstr += conf_file;
 		}
 		filein.close();
+	}
+	if (i != 0)
+	{
+		std::cout << "Error! Please close every bracket" << std::endl;
+		exit (1);
 	}
     for(std::list<std::string>::iterator it = config.begin(); it != config.end(); ++it)
     {
