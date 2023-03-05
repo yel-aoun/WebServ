@@ -28,10 +28,17 @@ int main(int argc, char **argv)
 		{
 			while (filein.good())
 			{
-				getline(filein, str1);
-				str1+='\n';
+					getline(filein, str1);
+					size_t semi_column = str1.rfind(";");
+					if ((semi_column == -1 || str1.length() - 1 != semi_column) && (str1.rfind("{") == -1 && str1.rfind("}") == -1) && (str1 != "location" && str1 != "server"))
+					{
+						std::cout << "Error! please check that every line has a semi-column" << std::endl;
+						exit (1);
+					}
+				//str1+='\n';
+				std::cout << str1 << std::endl;
 				// mainstr += str1;
-				std::cout << str1;
+
 			}
 			filein.close();
 		}
