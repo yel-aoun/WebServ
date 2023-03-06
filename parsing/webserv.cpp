@@ -21,7 +21,7 @@ webserv::webserv(std::string conf_file)
 		while (filein.good())
 		{
 			getline(filein, conf_file);
-			if (conf_file == "{")
+			if (conf_file == "{" || conf_file == "location /test {" || conf_file == "server {")
 				i++;
 			if (conf_file == "}")
 				i--;

@@ -5,10 +5,12 @@
 #include <fstream>
 #include <string>
 #include <list>
+#include <vector>
 
 class location
 {
     private:
+    std::string locations;
     std::string allow_methods;
     std::string redirect;
     std::string root;
@@ -18,6 +20,7 @@ class location
     public:
     location(){}
     ~location(){}
-    location(std::list<std::string> config);
+    location(const std::list<std::string> &config);
+    void FillLocation(std::string prompt);
 };
 # endif
