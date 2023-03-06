@@ -31,15 +31,6 @@ webserv::webserv(std::string conf_file)
 				exit (1);
 			}
             config.push_back(conf_file);
-		// 		size_t semi_column = conf_file.rfind(";");
-		// 		if ((semi_column == -1 || conf_file.length() - 1 != semi_column) && (conf_file.rfind("{") == -1 && conf_file.rfind("}") == -1) && (conf_file != "location" && conf_file != "server"))
-		// 		{
-		// 			std::cout << "Error! please check that every line has a semi-column" << std::endl;
-		// 			exit (1);
-		// 		}
-		// 	//conf_file+='\n';
-		// 	std::cout << conf_file << std::endl;
-		// 	// mainstr += conf_file;
 		}
 		filein.close();
 	}
@@ -48,6 +39,7 @@ webserv::webserv(std::string conf_file)
 		std::cout << "Error! Please close every bracket" << std::endl;
 		exit (1);
 	}
+	location loc(config);
     for(std::list<std::string>::iterator it = config.begin(); it != config.end(); ++it)
     {
         std::cout << *it << std::endl;
