@@ -43,7 +43,7 @@ webserv::webserv(std::string conf_file)
 		exit (1);
 	}
 	server	serv(config, count_serv);
-	// location loc(config);
+	location loc(config);
     // for(std::list<std::string>::iterator it = config.begin(); it != config.end(); ++it)
     // {
     //     std::cout << *it << std::endl;

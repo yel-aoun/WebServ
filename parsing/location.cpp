@@ -12,6 +12,24 @@ std::vector<std::string> splitString(const std::string& str, std::string delimit
     return substrings;
 }
 
+std::string trim_spaces(const std::string& str) {
+    std::string::size_type first = str.find_first_not_of(' ');
+    if (first == std::string::npos) {
+        return "";
+    }
+    std::string::size_type last = str.find_last_not_of(' ');
+    return str.substr(first, last - first + 1);
+}
+
+std::string trim_tabs(const std::string& str) {
+    std::string::size_type first = str.find_first_not_of('\t');
+    if (first == std::string::npos) {
+        return "";
+    }
+    std::string::size_type last = str.find_last_not_of('\t');
+    return str.substr(first, last - first + 1);
+}
+
 void location::FillLocation(std::string prompt)
 {
     std::vector<std::string> substring = splitString(prompt, " ");
@@ -29,7 +47,6 @@ void location::FillAllow_methods(std::string prompt)
     std::vector<std::string> substring = splitString(prompt, " ");
     if (substring.size() < 2 || substring.size() > 4)
     {
-        std::cout << "sixe ====" << substring.size() << std::endl;
         for (std::vector<std::string>::iterator it = substring.begin(); it != substring.end(); ++it)
                 std::cout << "------> " << *it << std::endl;
         std::cout << "Error! the allow_methods param has something wrong in it" << std::endl;
@@ -125,51 +142,53 @@ location::location(const std::list<std::string> &config)
 {
     for ( std::list<std::string>::const_iterator it = config.begin(); it != config.end(); ++it)
     {
-        if (it->find("location") != -1)
+        std::string tab = trim_tabs(*it);
+        std::string prompt = trim_spaces(tab);
+        if (prompt.find("location") != -1)
         {
-            //TRY TO HANDLE IF THE LOCATION ISN'T SPEIFIED
-            std::cout << "Location found" << std::endl;
-            this->FillLocation(*it);
+            //TRY TO HANDLE IF THE LOCATION ISN'T SPECIFIED
+            this->FillLocation(prompt);
             std::cout << this->locations << std::endl;
         }
-        else if (it->find("allow_methods") != -1)
+        else if (prompt.find("allow_methods") != -1)
         {
-            std::cout << "allow_methods found" << std::endl;
-            this->FillAllow_methods(*it);
+            this->FillAllow_methods(prompt);
             for (std::list<std::string>::iterator it = allow_methods.begin(); it != allow_methods.end(); ++it)
                 std::cout << "------> " << *it << std::endl;
         }
-        else if (it->find("redirect") != -1)
+        else if (prompt.find("redirect") != -1)
         {
-            std::cout << "redirect found" << std::endl;
-            this->FillRedirect(*it);
+            this->FillRedirect(prompt);
+            std::cout << "-------->" << redirect << std::endl;
         }
-        else if (it->find("auto_index") != -1)
+        else if (prompt.find("auto_index") != -1)
         {
-            std::cout << "auto_index found" << std::endl;
             this->FillAuto_index(*it);
+            std::cout << "-------->" << auto_index << std::endl;
         }
-        else if (it->find("root") != -1)
+        else if (prompt.find("root") != -1)
         {
-            std::cout << "root found" << std::endl;
-            this->FillRoot(*it);
+            this->FillRoot(prompt);
+            std::cout << "-------->" << root << std::endl;
         }
-        else if (it->find("index") != -1)
+        else if (prompt.find("index") != -1)
         {
-            std::cout << "index found" << std::endl;
-            this->FillIndex(*it);
+            this->FillIndex(prompt);
+            std::cout << "-------->" << index << std::endl;
         }
-        else if (it->find("upload_pass") != -1)
+        else if (prompt.find("upload_pass") != -1)
         {
-            std::cout << "upload_pass found" << std::endl;
-            this->FillUpload_pass(*it);
+            this->FillUpload_pass(prompt);
+            std::cout << "-------->" << upload_pass << std::endl;
         }
-        else if (it->find("cgi_pass") != -1)
+        else if (prompt.find("cgi_pass") != -1)
         {
-            std::cout << "cgi_pass found" << std::endl;
-            this->FillCgi_pass(*it);
+            this->FillCgi_pass(prompt);
+            std::cout << "-------->" << cgi_pass << std::endl;
         }
+        else if (prompt == "}" || prompt == "{")
+            std::cout << "Closing/Opening bracket " << std::endl;
         else
-            std::cout << "Undefined element: " << *it << std::endl;
+            std::cout << "Undefined element" << std::endl;
     }
 }
