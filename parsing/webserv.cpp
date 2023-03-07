@@ -22,11 +22,10 @@ webserv::webserv(std::string conf_file)
 		while (filein.good())
 		{
 			getline(filein, conf_file);
-			if (conf_file == "{" || conf_file == "location /test {" || conf_file == "server {")
+			if (conf_file.find("{") != -1)
 				i++;
-			if (conf_file == "}")
+			if (conf_file.find("}") != -1)
 				i--;
-			std::cout<<i<<std::endl;
 			if (i < 0)
 			{
 				std::cout << "Error! Please close every bracket" << std::endl;
