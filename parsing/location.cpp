@@ -1,5 +1,5 @@
 #include "location.hpp"
-
+//DON'T FORGET TO SET THE DEFAULT VALUES OF SOME PARAMETERS
 std::vector<std::string> splitString(const std::string& str, std::string delimiter) {
     std::vector<std::string> substrings;
     std::size_t pos = 0;

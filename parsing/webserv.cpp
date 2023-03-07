@@ -42,8 +42,10 @@ webserv::webserv(std::string conf_file)
 		std::cout << "Error! Please close every bracket" << std::endl;
 		exit (1);
 	}
+	//while i < count serv // creat new object for server fill and push back to the servers list
 	server	serv(config, count_serv);
-	location loc(config);
+	this->servers.push_back(serv);
+	// location loc(config);
     // for(std::list<std::string>::iterator it = config.begin(); it != config.end(); ++it)
     // {
     //     std::cout << *it << std::endl;
