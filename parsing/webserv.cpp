@@ -2,6 +2,7 @@
 
 webserv::webserv(std::string conf_file)
 {
+	int count_serv = 0;
 	int i = 0;
     if (conf_file.empty())
     {
@@ -25,12 +26,15 @@ webserv::webserv(std::string conf_file)
 				i++;
 			if (conf_file == "}")
 				i--;
+			std::cout<<i<<std::endl;
 			if (i < 0)
 			{
 				std::cout << "Error! Please close every bracket" << std::endl;
 				exit (1);
 			}
             config.push_back(conf_file);
+			if (conf_file.find("server"))
+				count_serv++;
 		}
 		filein.close();
 	}
@@ -39,9 +43,10 @@ webserv::webserv(std::string conf_file)
 		std::cout << "Error! Please close every bracket" << std::endl;
 		exit (1);
 	}
-	location loc(config);
-    for(std::list<std::string>::iterator it = config.begin(); it != config.end(); ++it)
-    {
-        std::cout << *it << std::endl;
-    }
+	server	serv(config, count_serv);
+	// location loc(config);
+    // for(std::list<std::string>::iterator it = config.begin(); it != config.end(); ++it)
+    // {
+    //     std::cout << *it << std::endl;
+    // }
 }

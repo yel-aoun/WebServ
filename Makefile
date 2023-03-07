@@ -2,11 +2,11 @@
 
 NAME = Webserv
 
-SRC = parsing/main.cpp parsing/webserv.cpp parsing/location.cpp
+SRC = parsing/main.cpp parsing/webserv.cpp parsing/location.cpp parsing/server.cpp
 
 CXX = c++
 
-CPPFLAGS = #-Wall -Wextra -Werror -std=c++98
+CPPFLAGS = -std=c++98 #-Wall -Wextra -Werror -std=c++98
 
 OBJ = $(SRC:.cpp=.o)
 
