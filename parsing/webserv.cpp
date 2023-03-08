@@ -32,7 +32,7 @@ webserv::webserv(std::string conf_file)
 				exit (1);
 			}
             config.push_back(conf_file);
-			if (conf_file.find("server"))
+			if (conf_file.find("server") != std::string::npos)
 				count_serv++;
 		}
 		filein.close();
@@ -42,9 +42,19 @@ webserv::webserv(std::string conf_file)
 		std::cout << "Error! Please close every bracket" << std::endl;
 		exit (1);
 	}
-	//while i < count serv // creat new object for server fill and push back to the servers list
-	server	serv(config, count_serv);
-	this->servers.push_back(serv);
+	i = 0;
+	while (i < count_serv)
+	{ // creat new object for server fill and push back to the servers list
+		server	serv(config, i);
+		this->servers.push_back(serv);
+		i++;
+	}
+	std::list<server>::iterator it = this->servers.begin();
+	while (it != this->servers.end())
+	{
+		std::cout << "port is " << (*it).port << std::endl;
+		it++;
+	}
 	// location loc(config);
     // for(std::list<std::string>::iterator it = config.begin(); it != config.end(); ++it)
     // {

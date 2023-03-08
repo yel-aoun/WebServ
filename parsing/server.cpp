@@ -6,7 +6,7 @@
 /*   By: yel-aoun <yel-aoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 10:02:47 by yel-aoun          #+#    #+#             */
-/*   Updated: 2023/03/07 19:15:08 by yel-aoun         ###   ########.fr       */
+/*   Updated: 2023/03/08 10:27:43 by yel-aoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int set_port(std::vector<std::string> &tokens)
     return (num);
 }
 
-std::string set_server_name(std::vector<std::string> &tokens)
+std::string set_host_name(std::vector<std::string> &tokens)
 {
     std::vector<std::string>::iterator it = tokens.begin();
     if (++it == tokens.end())
@@ -72,42 +72,80 @@ std::string set_server_name(std::vector<std::string> &tokens)
     }
 }
 
+int set_max_client_body_size(std::vector<std::string> &tokens)
+{
+    std::vector<std::string>::iterator it = tokens.begin();
+    int num;
+    if (++it == tokens.end())
+        return (1);
+    else
+    {
+        std::string str = *it;
+        for(std::string::const_iterator it = str.begin(); it != str.end(); it++)
+        {
+            if (!isdigit(*it))
+                return (8080);
+        }
+        std::stringstream ss(str);
+        ss >> num;
+    }
+    return (num);
+}
+
+std::vector<std::string> set_error_page(std::vector<std::string> &tokens)
+{
+    std::vector<std::string>::iterator it = tokens.begin();
+    std::vector<std::string> tmp;
+    if (++it == tokens.end())
+    {
+        tmp.push_back("defualt");
+        return (tmp);
+    }
+    else
+    {
+        tmp.push_back(*it);
+        if (++it == tokens.end())
+            return (tmp);
+        else
+            tmp.push_back(*it);
+    }
+    return (tmp);
+}
+
 server::server(const std::list<std::string> &conf, int n_serv)
 {
-    // int i = 0;
-    // while (i < n_serv)
-    // {
-        // i must set the default of my variables each time i work on new server 
-        //so the default will be set first and 
-        //then i read from the conf file to change the default if i must to
-        // this->port
-        // this->server_name
-        // this->max_client_body_size
-        // this->error_page //vector;
-        for(std::list<std::string>::const_iterator it = conf.begin(); it != conf.end(); it++)
-        {
-            std::string input = *it;
-            std::string tabs = trim_tabs(input);
-            std::string str = trim_spaces(tabs);
-            std::vector<std::string> tokens = split(str, ' ');
-            std::vector<std::string>::iterator tt = tokens.begin();
-            // for (std::vector<std::string>::iterator tt = tokens.begin(); tt != tokens.end(); ++tt) {
-            //     std::cout << *tt << std::endl;
-            // }
-            if (*tt == "port")
-                this->port = set_port(tokens);
-            else if (*tt == "server_name")
-                // std::cout<<*tt<<std::endl;
-                this->server_name = set_server_name(tokens);
-            else if (*tt == "max_client_body_size")
-                std::cout<<*tt<<std::endl;
-            else if (*tt == "error_page")
-                std::cout<<*tt<<std::endl;
-            else if (*tt == "locations")
-                std::cout<<*tt<<std::endl;
-        }
-        // std::cout<<server_name<<std::endl;
-        
-    //     i++;
-    // }
+
+    std::list<std::string>::const_iterator it = conf.begin();
+    while (it != conf.end() && n_serv != 0)
+    {
+        if (it->find(';'))
+            n_serv--;
+        it++;
+    }
+    // i must set the default of my variables each time i work on new server 
+    //so the default will be set first and 
+    //then i read from the conf file to change the default if i must to
+    this->port = 8080;
+    this->host_name = "172.0.0.1";
+    this->max_client_body_size = 1;
+    // this->error_page;
+    for(; it != conf.end(); it++)
+    {
+        if (it->rfind(';') != std::string::npos)
+            break;
+        std::string input = *it;
+        std::string tabs = trim_tabs(input);
+        std::string str = trim_spaces(tabs);
+        std::vector<std::string> tokens = split(str, ' ');
+        std::vector<std::string>::iterator tt = tokens.begin();
+        if (*tt == "port")
+            this->port = set_port(tokens);
+        else if (*tt == "host_name")
+            // std::cout<<*tt<<std::endl;
+            this->host_name = set_host_name(tokens);
+        else if (*tt == "max_client_body_size")
+            this->max_client_body_size = set_max_client_body_size(tokens);
+        else if (*tt == "error_page")
+            this->error_page = set_error_page(tokens);
+    }
 }
