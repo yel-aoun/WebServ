@@ -2,7 +2,9 @@
 
 webserv::webserv(std::string conf_file)
 {
+	int count_location = 0;
 	int count_serv = 0;
+	int count_loc = 0;
 	int i = 0;
     if (conf_file.empty())
     {
@@ -43,19 +45,29 @@ webserv::webserv(std::string conf_file)
 		exit (1);
 	}
 	i = 0;
+	int j = 0;
 	while (i < count_serv)
 	{ // creat new object for server fill and push back to the servers list
-		server	serv(config, i);
+		server	serv(config, i, count_loc);
+		while (j < count_loc)
+		{
+			location loc(config, j);
+			serv.locations.push_back(loc);
+			j++;
+		}
+	for (std::list<location>::iterator it = serv.locations.begin();  it != serv.locations.end(); it++)
+	{
+		std::cout << "======> " << (*it).root << std::endl; 
+	}
 		this->servers.push_back(serv);
 		i++;
 	}
-	std::list<server>::iterator it = this->servers.begin();
-	while (it != this->servers.end())
-	{
-		std::cout << "port is " << (*it).port << std::endl;
-		it++;
-	}
-	// location loc(config);
+	//std::list<server>::iterator it = this->servers.begin();
+	//while (it != this->servers.end())
+	//{
+	//	std::cout << "port is " << (*it).max_client_body_size << std::endl;
+	//	it++;
+	//}
     // for(std::list<std::string>::iterator it = config.begin(); it != config.end(); ++it)
     // {
     //     std::cout << *it << std::endl;

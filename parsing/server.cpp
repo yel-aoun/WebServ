@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-aoun <yel-aoun@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zouazahr <zouazahr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 10:02:47 by yel-aoun          #+#    #+#             */
-/*   Updated: 2023/03/08 10:27:43 by yel-aoun         ###   ########.fr       */
+/*   Updated: 2023/03/08 17:43:08 by zouazahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,13 +112,12 @@ std::vector<std::string> set_error_page(std::vector<std::string> &tokens)
     return (tmp);
 }
 
-server::server(const std::list<std::string> &conf, int n_serv)
+server::server(const std::list<std::string> &conf, int n_serv, int &count_loc)
 {
-
     std::list<std::string>::const_iterator it = conf.begin();
     while (it != conf.end() && n_serv != 0)
     {
-        if (it->find(';'))
+        if (it->find("};"))
             n_serv--;
         it++;
     }
@@ -131,7 +130,9 @@ server::server(const std::list<std::string> &conf, int n_serv)
     // this->error_page;
     for(; it != conf.end(); it++)
     {
-        if (it->rfind(';') != std::string::npos)
+        if (it->find("location") != -1 && it->rfind("{") != -1)
+            count_loc++;
+        if (it->rfind("};") != std::string::npos)
             break;
         std::string input = *it;
         std::string tabs = trim_tabs(input);

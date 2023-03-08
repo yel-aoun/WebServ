@@ -13,15 +13,15 @@ class location
     std::string locations;
     std::list<std::string> allow_methods;
     std::string redirect;
-    std::string root;
-    std::string index;
+    std::list<std::string> index;
     std::string cgi_pass;
     std::string upload_pass;
     std::string auto_index;
     public:
+    std::string root;
     location(){}
     ~location(){}
-    location(const std::list<std::string> &config);
+    location(const std::list<std::string> &config, int j);
     void FillLocation(std::string prompt);
     void FillAllow_methods(std::string prompt);
     void FillIndex(std::string prompt);
