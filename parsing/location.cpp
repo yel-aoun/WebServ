@@ -152,11 +152,13 @@ location::location(const std::list<std::string> &config, int j)
     allow_methods.push_back("POST");
     allow_methods.push_back("DELETE");
     redirect.clear();
-    auto_index = "off";
+    auto_index = "404";
     root = "/var/www/html/";
     index.push_back("index.html");
     index.push_back("index.htm");
     index.push_back("index.php");
+    redirect = "404";
+    cgi_pass = "404";
     //DON'T REDIRECT WHEN IT'S EMPTY
     for (; it != config.end(); ++it)
     {
