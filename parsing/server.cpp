@@ -6,7 +6,7 @@
 /*   By: zouazahr <zouazahr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 10:02:47 by yel-aoun          #+#    #+#             */
-/*   Updated: 2023/03/08 17:43:08 by zouazahr         ###   ########.fr       */
+/*   Updated: 2023/03/09 18:47:35 by zouazahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,10 @@ std::vector<std::string> set_error_page(std::vector<std::string> &tokens)
     return (tmp);
 }
 
-server::server(const std::list<std::string> &conf, int n_serv, int &count_loc)
+server::server(const std::list<std::string> &conf, int n_serv)
 {
+    int count_loc = 0;
+    int j = 0;
     std::list<std::string>::const_iterator it = conf.begin();
     while (it != conf.end() && n_serv != 0)
     {
@@ -135,6 +137,7 @@ server::server(const std::list<std::string> &conf, int n_serv, int &count_loc)
         if (it->rfind("};") != std::string::npos)
             break;
         std::string input = *it;
+        // WE SHOULD REPLACE THE WHITESPACES WITH NORMAL SPACES FIRST THEN SPLIT BY SPACE WHICH MEANS THAT WE DON'T NEED TO TRIM THE TAB ANYMORE
         std::string tabs = trim_tabs(input);
         std::string str = trim_spaces(tabs);
         std::vector<std::string> tokens = split(str, ' ');
@@ -149,4 +152,10 @@ server::server(const std::list<std::string> &conf, int n_serv, int &count_loc)
         else if (*tt == "error_page")
             this->error_page = set_error_page(tokens);
     }
+    while (j < count_loc)
+	{
+		location loc(conf, j);
+		this->locations.push_back(loc);
+		j++;
+	}
 }

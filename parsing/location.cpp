@@ -140,6 +140,7 @@ void location::FillAuto_index(std::string prompt)
 
 location::location(const std::list<std::string> &config, int j)
 {
+    std::string nextvalue;
     std::list<std::string>::const_iterator it = config.begin();
     std::cout << "J ==== " << j << std::endl;
     while (it != config.end() && j != 0)
@@ -160,10 +161,11 @@ location::location(const std::list<std::string> &config, int j)
     redirect = "404";
     cgi_pass = "404";
     //DON'T REDIRECT WHEN IT'S EMPTY
-    for (; it != config.end(); ++it)
+    for (; it != config.end() && std::next(it) != config.end(); ++it)
     {
         std::string tab = trim_tabs(*it);
         std::string prompt = trim_spaces(tab);
+        nextvalue = *std::next(it);
         if (prompt.find("}") != -1)
             break;
         if (prompt.find("location") != -1)
@@ -208,8 +210,12 @@ location::location(const std::list<std::string> &config, int j)
             this->FillCgi_pass(prompt);
             std::cout << "-------->" << cgi_pass << std::endl;
         }
-        else if (prompt == "}")
-            std::cout << "Closing/Opening bracket " << std::endl;
+        else if (prompt == "}" && (nextvalue != "};" || (nextvalue.find("location") == -1 && nextvalue.find("{") == -1)))
+        {
+            std::cout << "Please only have another location block after starting with one" << std::endl;
+            exit (1);
+        }
+        std::cout << "=========-------> " << prompt << "------- " << nextvalue << std::endl;
         //else
        //     std::cout << "Undefined element" << std::endl;
     }

@@ -18,7 +18,7 @@ class server
         std::vector<std::string> error_page;
         std::list<location> locations;
         server();
-        server(const std::list<std::string> &conf, int  n_serv, int &count_loc);
+        server(const std::list<std::string> &conf, int  n_serv);
         std::string trim_tabs(const std::string& str);
         std::string trim_spaces(const std::string& str);
 };
