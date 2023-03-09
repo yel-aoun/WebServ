@@ -5,6 +5,7 @@
 #include <iostream>
 #include <netdb.h>
 #include <string.h>
+#include <unistd.h>
 
 #define ISVALIDSOCKET(s) ((s) >= 0)
 #define CLOSESOCKET(s) close(s)
@@ -18,16 +19,16 @@ class Socket
 {
     private:
         SOCKET      _sockfd;
-        char*       _port;
+        int         _port;
     public:
-        Socket(char* port);
+        Socket(int  port);
         Socket(const Socket &rhs);
         Socket  &operator = (const Socket& rhs);
         void    init_socket();
         void    bind_socket();
         void    listen_socket();
-        Socket  creat_socket();
-        Socket  get_socket() const;
+        void    creat_socket();
+        SOCKET  get_socket() const;
         ~Socket();
 };
 
