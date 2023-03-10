@@ -17,13 +17,15 @@ class Server
         PORT                    _port;
         SOCKET                  _server_socket;
         SOCKET                  _max_socket;
-        std::list<Client>     _clients;
+        std::list<Client *>     _clients;
+        char                    _request_buff[MAX_REQUEST_SIZE + 1]; 
 
         void    init_sockfds();
         void    wait_on_clients();
         void    new_connection();
         void    accept_new_client();
-        void    drop_client(Client &client);
+        void    drop_client(std::list<Client *>::iterator client);
+        void    serve_clients();
     public:
         Server(PORT port);
         void    run_serve();

@@ -5,6 +5,7 @@
 
 #define SOCKET  int
 #define DATA    int
+#define MAX_REQUEST_SIZE 1024
 
 typedef struct sockaddr_storage sock_storage;
 
@@ -16,7 +17,7 @@ class Client
 
     public:
         socklen_t       _address_length;
-        sock_storage    _address;    
+        sock_storage    _address;  
         Client();
         Client(const Client& rhs);
         Client          &operator=(const Client& rhs);
