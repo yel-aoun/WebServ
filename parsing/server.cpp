@@ -3,44 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zouazahr <zouazahr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yel-aoun <yel-aoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 10:02:47 by yel-aoun          #+#    #+#             */
-/*   Updated: 2023/03/09 18:47:35 by zouazahr         ###   ########.fr       */
+/*   Updated: 2023/03/10 14:08:14 by yel-aoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "server.hpp"
 
-std::vector<std::string> split(const std::string &str, char delimiter)
+std::vector<std::string> split(const std::string &str)
 {
         std::vector<std::string> tokens;
         std::istringstream tokenStream(str);
         std::string token;
-        while (std::getline(tokenStream, token, delimiter))
+        while (std::getline(tokenStream, token, ' '))
         {
-            tokens.push_back(token);
+            if (!token.empty())
+                tokens.push_back(token);
         }
         return (tokens);
 }
 
-std::string server::trim_spaces(const std::string& str) {
-    std::string::size_type first = str.find_first_not_of(' ');
-    if (first == std::string::npos) {
-        return "";
-    }
-    std::string::size_type last = str.find_last_not_of(' ');
-    return str.substr(first, last - first + 1);
-}
-
-std::string server::trim_tabs(const std::string& str) {
-    std::string::size_type first = str.find_first_not_of('\t');
-    if (first == std::string::npos) {
-        return "";
-    }
-    std::string::size_type last = str.find_last_not_of('\t');
-    return str.substr(first, last - first + 1);
-}
 int set_port(std::vector<std::string> &tokens)
 {
     std::vector<std::string>::iterator it = tokens.begin();
@@ -50,15 +34,20 @@ int set_port(std::vector<std::string> &tokens)
     else
     {
         std::string str = *it;
-        for(std::string::const_iterator it = str.begin(); it != str.end(); it++)
+        std::string::const_iterator it = str.begin();
+        if (it != str.end())
         {
-            if (!isdigit(*it))
-                return (8080);
+            for(; it != str.end(); it++)
+            {
+                if (!isdigit(*it))
+                    return (8080);
+            }
+            std::stringstream ss(str);
+            ss >> num;
+            return (num);
         }
-        std::stringstream ss(str);
-        ss >> num;
     }
-    return (num);
+    return (8080);
 }
 
 std::string set_host_name(std::vector<std::string> &tokens)
@@ -138,9 +127,7 @@ server::server(const std::list<std::string> &conf, int n_serv)
             break;
         std::string input = *it;
         // WE SHOULD REPLACE THE WHITESPACES WITH NORMAL SPACES FIRST THEN SPLIT BY SPACE WHICH MEANS THAT WE DON'T NEED TO TRIM THE TAB ANYMORE
-        std::string tabs = trim_tabs(input);
-        std::string str = trim_spaces(tabs);
-        std::vector<std::string> tokens = split(str, ' ');
+        std::vector<std::string> tokens = split(input);
         std::vector<std::string>::iterator tt = tokens.begin();
         if (*tt == "port")
             this->port = set_port(tokens);
@@ -152,10 +139,10 @@ server::server(const std::list<std::string> &conf, int n_serv)
         else if (*tt == "error_page")
             this->error_page = set_error_page(tokens);
     }
-    while (j < count_loc)
-	{
-		location loc(conf, j);
-		this->locations.push_back(loc);
-		j++;
-	}
+    // while (j < count_loc)
+	// {
+	// 	location loc(conf, j);
+	// 	this->locations.push_back(loc);
+	// 	j++;
+	// }
 }

@@ -19,7 +19,5 @@ class server
         std::list<location> locations;
         server();
         server(const std::list<std::string> &conf, int  n_serv);
-        std::string trim_tabs(const std::string& str);
-        std::string trim_spaces(const std::string& str);
 };
 #endif
