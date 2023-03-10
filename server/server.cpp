@@ -73,18 +73,21 @@ void    Server::run_serve()
     {
         this->wait_on_clients();
         if (FD_ISSET(this->_server_socket, &this->_reads))
+        {
             this->accept_new_client();
+            this->drop_client(this->_clients.begin());
+        }
     }
 }
 
-void    Server::drop_client(Client &client)
+void    Server::drop_client(std::list<Client *>::iterator &client)
 {
-    CLOSESOCKET(client.get_sockfd());
+    CLOSESOCKET((*client)->get_sockfd());
     std::list<Client>::iterator iter;
 
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
-        if(client.get_sockfd() == (*iter).get_sockfd())
+        if((*client)->get_sockfd() == (*iter).get_sockfd())
             iter = this->_clients.erase(iter);
         return ;
     }

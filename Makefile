@@ -6,7 +6,7 @@ SRC = parsing/main.cpp parsing/webserv.cpp parsing/location.cpp parsing/server.c
 
 CXX = c++
 
-CPPFLAGS = -std=c++98 -fsanitize=address #-Wall -Wextra -Werror -std=c++98 
+CPPFLAGS = -std=c++98 #-fsanitize=address #-Wall -Wextra -Werror -std=c++98 
 
 OBJ = $(SRC:.cpp=.o)
 

@@ -19,12 +19,12 @@ class Server
         SOCKET                  _max_socket;
         std::list<Client>     _clients;
 
+    public:
         void    init_sockfds();
         void    wait_on_clients();
         void    new_connection();
         void    accept_new_client();
-        void    drop_client(Client &client);
-    public:
+        void    drop_client(std::list<Client *>::iterator &client);
         Server(PORT port);
         void    run_serve();
         // const char *get_client_address(Client *);

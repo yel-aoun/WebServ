@@ -16,5 +16,6 @@ class webserv
         std::list<std::string> config;
         std::list<server> servers;
         webserv(std::string conf_file);
+        std::string trim_spaces(std::string& str);
 };
 # endif
