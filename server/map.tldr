@@ -104,8 +104,13 @@
             "parentId": "page",
             "childIndex": 6,
             "point": [
+<<<<<<< HEAD
               100.21,
               405.97
+=======
+              1309.4,
+              365.01
+>>>>>>> 16db6c2343c7da43a87f5508321d2036e114d96d
             ],
             "rotation": 0,
             "text": "create socket() : init_socket() + bind_socket() \n+ listen_socket()",

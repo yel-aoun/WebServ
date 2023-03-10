@@ -142,7 +142,6 @@ location::location(const std::list<std::string> &config, int j)
 {
     std::string nextvalue;
     std::list<std::string>::const_iterator it = config.begin();
-    std::cout << "J ==== " << j << std::endl;
     while (it != config.end() && j != 0)
     {
         if (it->find("}") != -1)
