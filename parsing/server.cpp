@@ -6,7 +6,7 @@
 /*   By: zouazahr <zouazahr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 10:02:47 by yel-aoun          #+#    #+#             */
-/*   Updated: 2023/03/09 18:47:35 by zouazahr         ###   ########.fr       */
+/*   Updated: 2023/03/10 11:28:15 by zouazahr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ std::vector<std::string> set_error_page(std::vector<std::string> &tokens)
 
 server::server(const std::list<std::string> &conf, int n_serv)
 {
+    int ind = 0;
     int count_loc = 0;
     int j = 0;
     std::list<std::string>::const_iterator it = conf.begin();
@@ -132,8 +133,15 @@ server::server(const std::list<std::string> &conf, int n_serv)
     // this->error_page;
     for(; it != conf.end(); it++)
     {
+        if ((it->find("location") != -1 && it->rfind("{") != -1) && ind)
+            break;
         if (it->find("location") != -1 && it->rfind("{") != -1)
+        {
             count_loc++;
+            ind++;
+        }
+        if (it->rfind("}") != -1 && it->rfind("};") == -1)
+            ind--;
         if (it->rfind("};") != std::string::npos)
             break;
         std::string input = *it;
@@ -154,6 +162,12 @@ server::server(const std::list<std::string> &conf, int n_serv)
     }
     while (j < count_loc)
 	{
+        std::cout << "IND ==== " << ind << std::endl;
+        if (ind)
+        {
+            std::cout << "You fucked up" << std::endl;
+            exit (1);
+        }
 		location loc(conf, j);
 		this->locations.push_back(loc);
 		j++;

@@ -48,7 +48,7 @@ webserv::webserv(std::string conf_file)
 	int j = 0;
 	while (i < count_serv)
 	{ // creat new object for server fill and push back to the servers list
-		server	serv(config, i, count_loc);
+		server	serv(config, i);
 	// for (std::list<location>::iterator it = serv.locations.begin();  it != serv.locations.end(); it++)
 	// {
 	// 	std::cout << "======> " << (*it).root << std::endl; 
