@@ -45,7 +45,7 @@ std::string location::trim_directory(int slash)
 {
     int x = this->locations.rfind("/");
     std::cout << "THE LOCATION OF / IS " << x << std::endl;
-    std::string sub = locations.substr(0, x + 1);
+    std::string sub = locations.substr(0, x);
     std::cout << "THE SUBSTRING IS " << sub << std::endl;
     return (sub);
 }
@@ -63,17 +63,20 @@ void location::FillLocation(std::string prompt)
     std::vector<std::string>::iterator it = substring.begin() + 1;
     this->locations = *it;
     int slash = count_slash(this->locations);
+    std::string tmp;
     while (slash)
     {
-        if (access(this->locations.c_str(), F_OK) == 0)
+        if (access(tmp.c_str(), F_OK) == 0)
             break;
         else
         {
             this->locations = trim_directory(slash);
+            tmp = this->locations + "/";
             std::cout << "LOCATIONS  " << this->locations << std::endl;
         }
         slash--;
     }
+    this->locations = tmp;
 }
 
 void location::FillAllow_methods(std::string prompt)
