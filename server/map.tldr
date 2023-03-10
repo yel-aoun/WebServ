@@ -9,13 +9,20 @@
         "name": "Page 1",
         "childIndex": 1,
         "shapes": {
-          "84d3ed30-f332-4613-2878-988d30945560": {
-            "id": "84d3ed30-f332-4613-2878-988d30945560",
+          "cb363a1b-c40e-49e3-2450-289bd4e4b20a": {
+            "id": "cb363a1b-c40e-49e3-2450-289bd4e4b20a",
             "type": "text",
             "name": "Text",
             "parentId": "page",
-            "childIndex": 2,
+            "childIndex": 1,
             "point": [
+<<<<<<< HEAD
+              65.39,
+              41.9
+            ],
+            "rotation": 0,
+            "text": "Our server's main loop can then be simplified. It waits for new connections or new data.\nWhen new data is received, it checks whether the data consists of a complete HTTP request.\nIf a complete HTTP request is received, the server attempts to send the requested resource.\nIf the HTTP request is malformed or the resource cannot be found, then the server sends an\nerror message to the connected client instead.",
+=======
               102.29,
               -196.2
             ],
@@ -87,10 +94,15 @@
             ],
             "rotation": 0,
             "text": "listen_socket() : to get socket listen\nto a port",
+>>>>>>> da169b9f5f3e9f759cb0a86fa3746690b5ceb73e
             "style": {
               "color": "black",
               "size": "small",
               "isFilled": false,
+<<<<<<< HEAD
+              "dash": "draw",
+              "scale": 1.0828666666666666,
+=======
               "dash": "solid",
               "scale": 1,
               "font": "script",
@@ -388,6 +400,7 @@
               "isFilled": false,
               "dash": "solid",
               "scale": 1,
+>>>>>>> da169b9f5f3e9f759cb0a86fa3746690b5ceb73e
               "font": "script",
               "textAlign": "middle"
             }
