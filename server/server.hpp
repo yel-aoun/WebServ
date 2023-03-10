@@ -9,6 +9,7 @@
 #include <list>
 
 #define PORT    int
+#define MAX_REQUEST_SIZE 10
 
 class Server
 {

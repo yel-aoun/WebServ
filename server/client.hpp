@@ -5,7 +5,6 @@
 
 #define SOCKET  int
 #define DATA    int
-#define MAX_REQUEST_SIZE 1024
 
 typedef struct sockaddr_storage sock_storage;
 

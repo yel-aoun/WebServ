@@ -23,7 +23,7 @@ Client &Client::operator=(const Client& rhs)
 }
 
 SOCKET  Client::get_sockfd(void)
-{
+{;
     return (this->_sockfd);
 }
 

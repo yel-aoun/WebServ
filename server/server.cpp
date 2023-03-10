@@ -12,13 +12,12 @@ void  Server::init_sockfds()
     FD_ZERO(&this->_reads);
     FD_SET(this->_server_socket, &this->_reads);
     this->_max_socket = this->_server_socket;
-    std::list<Client *>::iterator client_iter;
-
-    for(client_iter = this->_clients.begin(); client_iter != this->_clients.end(); client_iter++)
+    std::list<Client *>::iterator iter;
+    for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
-        FD_SET((*client_iter)->get_sockfd(), &this->_reads);
-        if ((*client_iter)->get_sockfd() > this->_max_socket)
-            this->_max_socket = (*client_iter)->get_sockfd();
+        FD_SET((*iter)->get_sockfd(), &this->_reads);
+        if ((*iter)->get_sockfd() > this->_max_socket)
+            this->_max_socket = (*iter)->get_sockfd();
     }
 }
 
@@ -52,11 +51,12 @@ const char *get_client_address(Client *ci)
 
 void    Server::accept_new_client()
 {
-    Client *client;
+    Client *client = new Client;
 
-    client->set_sockfd(accept(this->_server_socket, \
+    SOCKET r = accept(this->_server_socket, \
         reinterpret_cast<struct sockaddr *>(&client->_address), \
-        &(client->_address_length)));
+        &(client->_address_length));
+    client->set_sockfd(r);
     if (!ISVALIDSOCKET(client->get_sockfd()))
     {
         std::cerr << "accept() failed." << std::endl;
@@ -85,18 +85,20 @@ void    Server::serve_clients()
 
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
-        memset(this->_request_buff, 0, MAX_REQUEST_SIZE + 1);
-        request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
-        if (request_size < 1)
+        if(FD_ISSET((*iter)->get_sockfd(), &this->_reads))
         {
-            printf("Unexpected disconnect from %s.\n",
-            get_client_address(*iter));
-            drop_client(iter);
+            memset(this->_request_buff, 0, MAX_REQUEST_SIZE + 1);
+            request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
+            std::cout << "request size: " << request_size << std::endl;
+            if (request_size < 1)
+            {
+                printf("Unexpected disconnect from %s.\n",
+                get_client_address(*iter));
+                drop_client(iter);
+            }
+            (*iter)->set_received_data(request_size);
+            //this->drop_client(iter);
         }
-        (*iter)->set_received_data(request_size);
-        std::cout << this->_request_buff << std::endl;
-        std::cout << "=======> Max Recived data: " << (*iter)->get_received_data() << std::endl;
-        this->drop_client(iter);
     }
 }
 
