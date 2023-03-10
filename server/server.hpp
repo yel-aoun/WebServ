@@ -1,7 +1,6 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "utils.hpp"
 #include "client.hpp"
 #include "socket.hpp"
 
@@ -9,22 +8,28 @@
 #include <iterator>
 #include <list>
 
-#define SOCKET int
+#define PORT    int
 
 class Server
 {
     private:
-        std::string         _host;
-        std::string         _port;
-        SOCKET              _server;
-        std::list<Client>   _clients;
+        fd_set                  _reads;
+        PORT                    _port;
+        SOCKET                  _server_socket;
+        SOCKET                  _max_socket;
+        std::list<Client>     _clients;
+
     public:
-        Server(std::string port);
-        Server(std::string host, std::string port);
-        fd_set  wait_on_clients(SOCKET server);
-        Client  get_client(SOCKET s);
-        void    drop_client(Client client);
-        void    serve_resource(Client client, const char *path);
+        void    init_sockfds();
+        void    wait_on_clients();
+        void    new_connection();
+        void    accept_new_client();
+        void    drop_client(std::list<Client *>::iterator &client);
+        Server(PORT port);
+        void    run_serve();
+        // const char *get_client_address(Client *);
+        // void    serve_resource(Client client, const char *path);
+        ~Server();
 };
 
 #endif

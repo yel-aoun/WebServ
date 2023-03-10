@@ -35,6 +35,8 @@ void location::FillLocation(std::string prompt)
     std::vector<std::string> substring = splitString(prompt, " ");
     if (substring.size() != 3)
     {
+        for (std::vector<std::string>::iterator it = substring.begin(); it != substring.end(); ++it)
+            std::cout << "********" << *it << std::endl;
         std::cout << "Error! the location block should start like this: Location 'your desired location' {" << std::endl;
         exit (1);
     }
@@ -46,20 +48,14 @@ void location::FillAllow_methods(std::string prompt)
 
     std::vector<std::string> substring = splitString(prompt, " ");
     if (substring.size() < 2 || substring.size() > 4)
-    {
-        for (std::vector<std::string>::iterator it = substring.begin(); it != substring.end(); ++it)
-                std::cout << "------> " << *it << std::endl;
-        std::cout << "Error! the allow_methods param has something wrong in it" << std::endl;
-        exit (1);
-    }
-
+        return;
+    allow_methods.clear();
     for (std::vector<std::string>::iterator it = substring.begin() + 1 ; it != substring.end(); ++it)
     {
         if (*it == "POST" || *it == "GET" || *it == "DELETE")
             this->allow_methods.push_back(*it);
         else
         {
-            std::cout << "----->" << *it << std::endl;
             std::cout << "Error! Please ensure that the methods specified are either POST, GET or DELETE" << std::endl;
             exit (1);
         }
@@ -69,13 +65,17 @@ void location::FillAllow_methods(std::string prompt)
 void location::FillIndex(std::string prompt)
 {
     std::vector<std::string> substring = splitString(prompt, " ");
-    if (substring.size() != 2)
+    // if (substring.size() < 2)
+    // {
+        // std::cout << "Error! there's something wrong with the index parameter" << std::endl;
+        // exit (1);
+    // }
+    if (substring.size() > 1)
     {
-        std::cout << "Error! there's something wrong with the index parameter" << std::endl;
-        exit (1);
+        index.clear();
+        for(std::vector<std::string>::iterator it = substring.begin() + 1; it != substring.end(); ++it)
+            index.push_back(*it);
     }
-    std::vector<std::string>::iterator it = substring.begin() + 1;
-    this->index = *it;
 }
 
 void location::FillRedirect(std::string prompt)
@@ -83,8 +83,9 @@ void location::FillRedirect(std::string prompt)
     std::vector<std::string> substring = splitString(prompt, " ");
     if (substring.size() != 2)
     {
-        std::cout << "Error! there's something wrong with the redirect parameter" << std::endl;
-        exit (1);
+        // std::cout << "Error! there's something wrong with the redirect parameter" << std::endl;
+        // exit (1);
+        return;
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
     this->redirect = *it;
@@ -95,8 +96,9 @@ void location::FillRoot(std::string prompt)
     std::vector<std::string> substring = splitString(prompt, " ");
     if (substring.size() != 2)
     {
-        std::cout << "Error! there's something wrong with the root parameter" << std::endl;
-        exit (1);
+        // std::cout << "Error! there's something wrong with the root parameter" << std::endl;
+        // exit (1);
+        return;
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
     this->root = *it;
@@ -107,8 +109,9 @@ void location::FillCgi_pass(std::string prompt)
     std::vector<std::string> substring = splitString(prompt, " ");
     if (substring.size() != 2)
     {
-        std::cout << "Error! there's something wrong with the cgi_pass parameter" << std::endl;
-        exit (1);
+         std::cout << "Error! there's something wrong with the cgi_pass parameter" << std::endl;
+         exit (1);
+        //return ;
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
     this->cgi_pass = *it;
@@ -130,20 +133,41 @@ void location::FillAuto_index(std::string prompt)
 {
     std::vector<std::string> substring = splitString(prompt, " ");
     if (substring.size() != 2)
-    {
-        std::cout << "Error! there's something wrong with the auto_index parameter" << std::endl;
-        exit (1);
-    }
+        return;
     std::vector<std::string>::iterator it = substring.begin() + 1;
     this->auto_index = *it;
 }
 
-location::location(const std::list<std::string> &config)
+location::location(const std::list<std::string> &config, int j)
 {
-    for ( std::list<std::string>::const_iterator it = config.begin(); it != config.end(); ++it)
+    std::string nextvalue;
+    std::list<std::string>::const_iterator it = config.begin();
+    std::cout << "J ==== " << j << std::endl;
+    while (it != config.end() && j != 0)
+    {
+        if (it->find("}") != -1)
+            j--;
+        it++;
+    }
+    allow_methods.push_back("GET");
+    allow_methods.push_back("POST");
+    allow_methods.push_back("DELETE");
+    redirect.clear();
+    auto_index = "404";
+    root = "/var/www/html/";
+    index.push_back("index.html");
+    index.push_back("index.htm");
+    index.push_back("index.php");
+    redirect = "404";
+    cgi_pass = "404";
+    //DON'T REDIRECT WHEN IT'S EMPTY
+    for (; it != config.end() && std::next(it) != config.end(); ++it)
     {
         std::string tab = trim_tabs(*it);
         std::string prompt = trim_spaces(tab);
+        nextvalue = *std::next(it);
+        if (prompt.find("}") != -1)
+            break;
         if (prompt.find("location") != -1)
         {
             //TRY TO HANDLE IF THE LOCATION ISN'T SPECIFIED
@@ -174,7 +198,7 @@ location::location(const std::list<std::string> &config)
         else if (prompt.find("index") != -1)
         {
             this->FillIndex(prompt);
-            std::cout << "-------->" << index << std::endl;
+            //std::cout << "-------->" << index << std::endl;
         }
         else if (prompt.find("upload_pass") != -1)
         {
@@ -186,9 +210,13 @@ location::location(const std::list<std::string> &config)
             this->FillCgi_pass(prompt);
             std::cout << "-------->" << cgi_pass << std::endl;
         }
-        else if (prompt == "}" || prompt == "{")
-            std::cout << "Closing/Opening bracket " << std::endl;
-        else
-            std::cout << "Undefined element" << std::endl;
+        else if (prompt == "}" && (nextvalue != "};" || (nextvalue.find("location") == -1 && nextvalue.find("{") == -1)))
+        {
+            std::cout << "Please only have another location block after starting with one" << std::endl;
+            exit (1);
+        }
+        std::cout << "=========-------> " << prompt << "------- " << nextvalue << std::endl;
+        //else
+       //     std::cout << "Undefined element" << std::endl;
     }
 }
