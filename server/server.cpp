@@ -31,12 +31,13 @@ void    Server::wait_on_clients()
     this->init_sockfds();
     restrict.tv_sec = 10;
     restrict.tv_usec = 0;
-    std::cout << "max socket = " << this->_max_socket  << std::endl;
+    //std::cout << "max socket = " << this->_max_socket  << std::endl;
     if (select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict) < 0)
     {
         std::cerr << "select() failed" << std::endl;
         exit(EXIT_FAILURE);
     }
+    
 }
 
 const char *get_client_address(Client *ci)
@@ -73,9 +74,7 @@ void    Server::run_serve()
     {
         this->wait_on_clients();
         if (FD_ISSET(this->_server_socket, &this->_reads))
-        {
             this->accept_new_client();
-<<<<<<< HEAD
         this->serve_clients();
     }
 }
@@ -91,7 +90,7 @@ void    Server::serve_clients()
         {
             memset(this->_request_buff, 0, MAX_REQUEST_SIZE + 1);
             request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
-            std::cout << "request size: " << request_size << std::endl;
+            //std::cout << "request size: " << request_size << std::endl;
             if (request_size < 1)
             {
                 printf("Unexpected disconnect from %s.\n",
@@ -99,15 +98,16 @@ void    Server::serve_clients()
                 drop_client(iter);
             }
             (*iter)->set_received_data(request_size);
-            //this->drop_client(iter);
-=======
-            this->drop_client(this->_clients.begin());
->>>>>>> 16db6c2343c7da43a87f5508321d2036e114d96d
+            (*iter)->_request.append(this->_request_buff);
+            if(request_size < MAX_REQUEST_SIZE)
+            {
+                std::cout << (*iter)->_request << std::endl;
+                this->drop_client(iter);
+            }
         }
     }
 }
 
-<<<<<<< HEAD
 void    Server::drop_client(std::list<Client *>::iterator client)
 {
     CLOSESOCKET((*client)->get_sockfd());
@@ -116,16 +116,6 @@ void    Server::drop_client(std::list<Client *>::iterator client)
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
         if((*client)->get_sockfd() == (*iter)->get_sockfd())
-=======
-void    Server::drop_client(std::list<Client *>::iterator &client)
-{
-    CLOSESOCKET((*client)->get_sockfd());
-    std::list<Client>::iterator iter;
-
-    for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
-    {
-        if((*client)->get_sockfd() == (*iter).get_sockfd())
->>>>>>> 16db6c2343c7da43a87f5508321d2036e114d96d
             iter = this->_clients.erase(iter);
         return ;
     }
