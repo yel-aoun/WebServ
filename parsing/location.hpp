@@ -6,7 +6,7 @@
 #include <string>
 #include <list>
 #include <vector>
-
+#include <unistd.h>
 class location
 {
     private:
@@ -30,5 +30,7 @@ class location
     void FillCgi_pass(std::string prompt);
     void FillUpload_pass(std::string prompt);
     void FillAuto_index(std::string prompt);
+    std::string trim_directory(int slash);
+
 };
 # endif
