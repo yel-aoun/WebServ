@@ -106,9 +106,13 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
     this->host_name = "172.0.0.1";
     this->max_client_body_size = 1;
     // this->error_page;
-    std::cout << "Hello universe" << std::endl;
     for(; it != conf.end(); it++)
     {
+        if ((*it).empty())
+        {
+            for (; (*it).empty() != 0; ++it)
+                it++;
+        }
         if ((it->find("location") != -1 && it->rfind("{") != -1) && ind)
             break;
         if (it->find("location") != -1 && it->rfind("{") != -1)
