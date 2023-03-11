@@ -113,6 +113,8 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
             for (; (*it).empty() != 0; ++it)
                 it++;
         }
+        if ((*it).empty())
+            for (; (*it).empty() != 0; ++it);
         if ((it->find("location") != -1 && it->rfind("{") != -1) && ind)
             break;
         if (it->find("location") != -1 && it->rfind("{") != -1)
