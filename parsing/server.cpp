@@ -138,7 +138,6 @@ server::server(const std::list<std::string> &conf, int n_serv)
     }
     while (j < count_loc)
 	{
-        std::cout << "IND ==== " << ind << std::endl;
         if (ind)
         {
             std::cout << "You fucked up" << std::endl;
