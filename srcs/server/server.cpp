@@ -34,7 +34,7 @@ void    Server::wait_on_clients()
     struct timeval restrict;
 
     this->init_sockfds();
-    restrict.tv_sec = 10;
+    restrict.tv_sec = 1;
     restrict.tv_usec = 0;
     //std::cout << "max socket = " << this->_max_socket  << std::endl;
     if (select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict) < 0)
@@ -74,15 +74,12 @@ void    Server::accept_new_client()
 
 void    Server::run_serve()
 {
-    int i = 0;
-    while(1)
-    {
-        std::cout << "hello world" << std::endl;
-        this->wait_on_clients();
-        if (FD_ISSET(this->_server_socket, &this->_reads))
-            this->accept_new_client();
-        this->serve_clients();
-    }
+    std::cout << "server port = " << this->_port << std::endl; 
+    std::cout << "hello from server socket = " << this->_server_socket << std::endl;
+    this->wait_on_clients();
+    if (FD_ISSET(this->_server_socket, &this->_reads))
+        this->accept_new_client();
+    this->serve_clients();
 }
 
 void    Server::serve_clients()

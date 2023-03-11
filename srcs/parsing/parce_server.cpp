@@ -108,6 +108,11 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
     // this->error_page;
     for(; it != conf.end(); it++)
     {
+        if ((*it).empty())
+        {
+            for (; (*it).empty() != 0; ++it)
+                it++;
+        }
         if ((it->find("location") != -1 && it->rfind("{") != -1) && ind)
             break;
         if (it->find("location") != -1 && it->rfind("{") != -1)
@@ -133,16 +138,16 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
         else if (*tt == "error_page")
             this->error_page = set_error_page(tokens);
     }
-    // while (j < count_loc)
-	// {
-    //     std::cout << "IND ==== " << ind << std::endl;
-    //     if (ind)
-    //     {
-    //         std::cout << "You fucked up" << std::endl;
-    //         exit (1);
-    //     }
-	// 	location loc(conf, j);
-	// 	this->locations.push_back(loc);
-	// 	j++;
-	// }
+    while (j < count_loc)
+	{
+        if (ind)
+        {
+            std::cout << "You fucked up" << std::endl;
+            exit (1);
+        }
+		location loc(conf, j);
+		this->locations.push_back(loc);
+		j++;
+	}
+
 }

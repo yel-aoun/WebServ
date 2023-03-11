@@ -7,6 +7,8 @@
 #include <list>
 #include <vector>
 #include <unistd.h>
+#include <sstream>
+
 class location
 {
     private:
@@ -31,6 +33,6 @@ class location
     void FillUpload_pass(std::string prompt);
     void FillAuto_index(std::string prompt);
     std::string trim_directory(int slash);
-
+    void initialize();
 };
 # endif

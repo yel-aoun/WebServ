@@ -80,18 +80,11 @@ Webserv::Webserv(std::string conf_file)
 {
 	parce_config_file(conf_file);
 	run_webservs();
-	// std::list<server>::iterator it = this->servers.begin();
-	// while (it != this->servers.end())
-	// {
-	// 	std::cout << "port is " << (*it).port << std::endl;
-	// 	it++;
-	// }
 }
 
 void Webserv::init_servers()
 {
 	std::list<parce_server>::iterator iter;
-
 	for(iter = servers_data.begin(); iter != servers_data.end(); iter++)
 	{
 		Server *sv = new Server(*iter);
