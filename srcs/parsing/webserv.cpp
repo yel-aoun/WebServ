@@ -85,11 +85,9 @@ Webserv::Webserv(std::string conf_file)
 void Webserv::init_servers()
 {
 	std::list<parce_server>::iterator iter;
-
 	for(iter = servers_data.begin(); iter != servers_data.end(); iter++)
 	{
 		Server *sv = new Server(*iter);
-
 		this->servers.push_back(sv);
 	}
 }
@@ -101,7 +99,10 @@ void Webserv::run_webservs()
 	{
 		std::list<Server *>::iterator iter;
 		for(iter = this->servers.begin(); iter != this->servers.end(); iter++)
+		{
 			(*iter)->run_serve();
+			std::cout<<"runing servers"<<std::endl;
+		}
 	}
 	
 	// call the servers after meargin them.
