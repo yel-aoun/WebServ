@@ -109,6 +109,7 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
     this->host_name = "172.0.0.1";
     this->max_client_body_size = 1;
     // this->error_page;
+    std::cout << "Hello universe" << std::endl;
     for(; it != conf.end(); it++)
     {
         if ((it->find("location") != -1 && it->rfind("{") != -1) && ind)
@@ -136,7 +137,6 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
         else if (*tt == "error_page")
             this->error_page = set_error_page(tokens);
     }
-<<<<<<< HEAD:parsing/server.cpp
     while (j < count_loc)
 	{
         if (ind)
@@ -148,18 +148,5 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
 		this->locations.push_back(loc);
 		j++;
 	}
-=======
-    // while (j < count_loc)
-	// {
-    //     std::cout << "IND ==== " << ind << std::endl;
-    //     if (ind)
-    //     {
-    //         std::cout << "You fucked up" << std::endl;
-    //         exit (1);
-    //     }
-	// 	location loc(conf, j);
-	// 	this->locations.push_back(loc);
-	// 	j++;
-	// }
->>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/parsing/parce_server.cpp
+
 }

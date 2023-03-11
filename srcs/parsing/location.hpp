@@ -33,6 +33,6 @@ class location
     void FillUpload_pass(std::string prompt);
     void FillAuto_index(std::string prompt);
     std::string trim_directory(int slash);
-    void location::initialize();
+    void initialize();
 };
 # endif
