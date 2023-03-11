@@ -1,5 +1,5 @@
-# ifndef SERVER_HPP
-# define SERVER_HPP
+# ifndef PARCE_SERVER_HPP
+# define PARCE_SERVER_HPP
 
 #include <iostream>
 #include <fstream>
@@ -7,9 +7,9 @@
 #include <vector>
 # include <list>
 #include <sstream>
-# include "location.hpp"
+#include "location.hpp"
 
-class server
+class parce_server
 {
     public :
         int port;
@@ -17,7 +17,7 @@ class server
         int max_client_body_size;
         std::vector<std::string> error_page;
         std::list<location> locations;
-        server();
-        server(const std::list<std::string> &conf, int  n_serv);
+        parce_server();
+        parce_server(const std::list<std::string> &conf, int  n_serv);
 };
 #endif

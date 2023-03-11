@@ -1,5 +1,5 @@
 
-# include "server.hpp"
+# include "parce_server.hpp"
 
 std::vector<std::string> split(const std::string &str)
 {
@@ -90,7 +90,7 @@ std::vector<std::string> set_error_page(std::vector<std::string> &tokens)
     return (tmp);
 }
 
-server::server(const std::list<std::string> &conf, int n_serv)
+parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
 {
     int ind = 0;
     int count_loc = 0;
@@ -98,13 +98,10 @@ server::server(const std::list<std::string> &conf, int n_serv)
     std::list<std::string>::const_iterator it = conf.begin();
     while (it != conf.end() && n_serv != 0)
     {
-        if (it->find("};"))
+        if (it->find("};") != std::string::npos)
             n_serv--;
         it++;
     }
-    // i must set the default of my variables each time i work on new server 
-    //so the default will be set first and 
-    //then i read from the conf file to change the default if i must to
     this->port = 8080;
     this->host_name = "172.0.0.1";
     this->max_client_body_size = 1;
@@ -136,16 +133,16 @@ server::server(const std::list<std::string> &conf, int n_serv)
         else if (*tt == "error_page")
             this->error_page = set_error_page(tokens);
     }
-    while (j < count_loc)
-	{
-        std::cout << "IND ==== " << ind << std::endl;
-        if (ind)
-        {
-            std::cout << "You fucked up" << std::endl;
-            exit (1);
-        }
-		location loc(conf, j);
-		this->locations.push_back(loc);
-		j++;
-	}
+    // while (j < count_loc)
+	// {
+    //     std::cout << "IND ==== " << ind << std::endl;
+    //     if (ind)
+    //     {
+    //         std::cout << "You fucked up" << std::endl;
+    //         exit (1);
+    //     }
+	// 	location loc(conf, j);
+	// 	this->locations.push_back(loc);
+	// 	j++;
+	// }
 }

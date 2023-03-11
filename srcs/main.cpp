@@ -1,4 +1,4 @@
-# include "webserv.hpp"
+# include "parsing/webserv.hpp"
 
 int main(int argc, char **argv)
 {
@@ -7,6 +7,5 @@ int main(int argc, char **argv)
         std::cerr << "incorrect number of argument's"<<std::endl;
         exit(1);
     }
-    webserv web(argv[1]);
-    
+    Webserv web(argv[1]);
 }

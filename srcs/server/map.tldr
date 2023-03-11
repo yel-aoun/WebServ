@@ -16,8 +16,13 @@
             "parentId": "page",
             "childIndex": 2,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1324.37,
               -238.72
+=======
+              778.09,
+              -1284.18
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "Socket class",
@@ -38,8 +43,13 @@
             "parentId": "page",
             "childIndex": 3,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1384.79,
               216.45
+=======
+              838.51,
+              -829.01
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "socket bind(): to bind a socket",
@@ -60,8 +70,13 @@
             "parentId": "page",
             "childIndex": 4,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1361.46,
               153.45
+=======
+              815.18,
+              -892.01
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "init_socket() : to initialize a socket",
@@ -82,8 +97,13 @@
             "parentId": "page",
             "childIndex": 5,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1361.96,
               279.12
+=======
+              815.68,
+              -766.34
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "listen_socket() : to get socket listen\nto a port",
@@ -104,8 +124,13 @@
             "parentId": "page",
             "childIndex": 6,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1309.4,
               365.01
+=======
+              776.01,
+              -682.01
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "create socket() : init_socket() + bind_socket() \n+ listen_socket()",
@@ -126,8 +151,13 @@
             "parentId": "page",
             "childIndex": 7,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1245.29,
               -119.67
+=======
+              699.01,
+              -1165.13
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "size": [
               580.33,
@@ -154,8 +184,13 @@
             "parentId": "page",
             "childIndex": 8,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1249.29,
               450.12
+=======
+              703.01,
+              -595.34
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "bend": -0.000017522809126151177,
@@ -208,8 +243,13 @@
             "parentId": "page",
             "childIndex": 9,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1270.79,
               518.45
+=======
+              733.87,
+              -526.57
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "this class is to create a socket that listen in specific port",
@@ -230,8 +270,13 @@
             "parentId": "page",
             "childIndex": 10,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1450.12,
               451.69
+=======
+              903.84,
+              -593.77
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "purpose",
@@ -252,8 +297,13 @@
             "parentId": "page",
             "childIndex": 11,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1251.96,
               72.79
+=======
+              705.68,
+              -972.67
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "bend": 1.2455980218197965e-7,
@@ -306,8 +356,13 @@
             "parentId": "page",
             "childIndex": 12,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1443.96,
               79.12
+=======
+              897.68,
+              -966.34
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "Methods",
@@ -328,8 +383,13 @@
             "parentId": "page",
             "childIndex": 13,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1432.71,
               -114.22
+=======
+              886.43,
+              -1159.68
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "Argument",
@@ -350,8 +410,13 @@
             "parentId": "page",
             "childIndex": 14,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1306.55,
               -50.4
+=======
+              769.91,
+              -1095.42
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "_socketfd:  is socket file descreptor tha listen\nto specifc port.",
@@ -372,8 +437,13 @@
             "parentId": "page",
             "childIndex": 15,
             "point": [
+<<<<<<< HEAD:server/map.tldr
               1290.2,
               13.47
+=======
+              743.92,
+              -1031.99
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
             ],
             "rotation": 0,
             "text": "_port: is the socket listning port, passed by a server.",
@@ -395,14 +465,31 @@
       "page": {
         "id": "page",
         "selectedIds": [
+<<<<<<< HEAD:server/map.tldr
           "b761e5f6-e786-4693-1e72-a2d6084b05a9"
+=======
+          "84d3ed30-f332-4613-2878-988d30945560",
+          "030a87f2-f24f-4bbf-060f-3431fe7429a1",
+          "6a36ee8a-baa4-4019-054b-73cda9235e78",
+          "46980f0d-3aca-4359-252c-c7a6dce0d389",
+          "b761e5f6-e786-4693-1e72-a2d6084b05a9",
+          "fc1d2c1b-32b5-4e2d-1195-06bec20a4c1d",
+          "e97fc027-4036-42fd-1208-c9cebda1d102",
+          "b7c6f692-8b10-411d-1ddc-df445bd04f29",
+          "6db7e471-8a3f-444b-2695-b013bcb22a95",
+          "d40ecff6-026a-405f-2a7e-fea43a71da59",
+          "c9ae946b-44d4-464c-0a65-dcc4e15654f8",
+          "e466fddd-7b12-4515-1dff-aa939e446ee8",
+          "a62aea5c-d788-4919-369b-8d11cc1140eb",
+          "6bba56aa-52e6-4b02-3dcd-46122bc7c18a"
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/server/map.tldr
         ],
         "camera": {
           "point": [
-            0,
-            0
+            995.82,
+            1381.26
           ],
-          "zoom": 1
+          "zoom": 0.25
         }
       }
     },
