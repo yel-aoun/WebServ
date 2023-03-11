@@ -1,7 +1,12 @@
 #include "server.hpp"
 
-Server::Server(PORT port):_port(port)
+Server::Server(parce_server &server_data)
 {
+    this->_port = server_data.port;
+    this->_host_name = server_data.host_name;
+    this->_max_client_body_size = server_data.max_client_body_size;
+    this->_error_page = server_data.error_page;
+    this->_locations = server_data.locations;
     Socket socket(this->_port);
     this->_server_socket = socket.get_socket();
 }
@@ -72,6 +77,7 @@ void    Server::run_serve()
     int i = 0;
     while(1)
     {
+        std::cout << "hello world" << std::endl;
         this->wait_on_clients();
         if (FD_ISSET(this->_server_socket, &this->_reads))
             this->accept_new_client();

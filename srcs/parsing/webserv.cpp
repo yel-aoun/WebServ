@@ -22,8 +22,8 @@ std::string	ft_trim_and_replace(std::string conf_file)
 	return (trim_spaces(conf_file));
 }
 
-webserv::webserv(std::string conf_file)
-{
+ void Webserv::parce_config_file(std::string &conf_file)
+ {
 	int count_location = 0;
 	int count_serv = 0;
 	int count_loc = 0;
@@ -69,23 +69,46 @@ webserv::webserv(std::string conf_file)
 	i = 0;
 	int j = 0;
 	while (i < count_serv)
-	{ // creat new object for server fill and push back to the servers list
-		server	serv(config, i);
-	// for (std::list<location>::iterator it = serv.locations.begin();  it != serv.locations.end(); it++)
-	// {
-	// 	std::cout << "======> " << (*it).root << std::endl; 
-	// }
-	 	this->servers.push_back(serv);
+	{
+		parce_server	serv(config, i);
+	 	this->servers_data.push_back(serv);
 	 	i++;
 	}
-	std::list<server>::iterator it = this->servers.begin();
-	while (it != this->servers.end())
+ }
+
+Webserv::Webserv(std::string conf_file)
+{
+	parce_config_file(conf_file);
+	run_webservs();
+	// std::list<server>::iterator it = this->servers.begin();
+	// while (it != this->servers.end())
+	// {
+	// 	std::cout << "port is " << (*it).port << std::endl;
+	// 	it++;
+	// }
+}
+
+void Webserv::init_servers()
+{
+	std::list<parce_server>::iterator iter;
+
+	for(iter = servers_data.begin(); iter != servers_data.end(); iter++)
 	{
-		std::cout << "port is " << (*it).port << std::endl;
-		it++;
+		Server *sv = new Server(*iter);
+
+		this->servers.push_back(sv);
 	}
-    // for(std::list<std::string>::iterator it = config.begin(); it != config.end(); ++it)
-    // {
-    //     std::cout << *it << std::endl;
-    // }
+}
+
+void Webserv::run_webservs()
+{
+	this->init_servers();
+	while (1)
+	{
+		std::list<Server *>::iterator iter;
+		for(iter = this->servers.begin(); iter != this->servers.end(); iter++)
+			(*iter)->run_serve();
+	}
+	
+	// call the servers after meargin them.
 }

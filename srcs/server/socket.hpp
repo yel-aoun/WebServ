@@ -20,13 +20,13 @@ class Socket
     private:
         SOCKET      _sockfd;
         int         _port;
+        void    init_socket();
+        void    bind_socket();
+        void    listen_socket();
     public:
         Socket(int  port);
         Socket(const Socket &rhs);
         Socket  &operator = (const Socket& rhs);
-        void    init_socket();
-        void    bind_socket();
-        void    listen_socket();
         void    creat_socket();
         SOCKET  get_socket() const;
         ~Socket();

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <iterator>
 #include <list>
+#include "../parsing/parce_server.hpp"
 
 #define PORT    int
 #define MAX_REQUEST_SIZE 1024
@@ -14,8 +15,12 @@
 class Server
 {
     private:
-        fd_set                  _reads;
         PORT                    _port;
+        std::string             _host_name;
+        int                     _max_client_body_size;
+        std::vector<std::string> _error_page;
+        std::list<location>     _locations;
+        fd_set                  _reads;
         SOCKET                  _server_socket;
         SOCKET                  _max_socket;
         std::list<Client *>     _clients;
@@ -28,7 +33,7 @@ class Server
         void    drop_client(std::list<Client *>::iterator client);
         void    serve_clients();
     public:
-        Server(PORT port);
+        Server(parce_server &server_data);
         void    run_serve();
         // const char *get_client_address(Client *);
         // void    serve_resource(Client client, const char *path);
