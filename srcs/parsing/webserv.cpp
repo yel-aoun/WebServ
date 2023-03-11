@@ -90,6 +90,7 @@ void Webserv::init_servers()
 		Server *sv = new Server(*iter);
 		this->servers.push_back(sv);
 	}
+	std::cout<<this->servers.size()<<std::endl;
 }
 
 void Webserv::run_webservs()
@@ -98,6 +99,7 @@ void Webserv::run_webservs()
 	while (1)
 	{
 		std::list<Server *>::iterator iter;
+		// std::cout<<this->servers.size()<<std::endl;
 		for(iter = this->servers.begin(); iter != this->servers.end(); iter++)
 		{
 			(*iter)->run_serve();
