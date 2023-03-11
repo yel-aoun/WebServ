@@ -18,7 +18,8 @@ class Client
     public:
         socklen_t       _address_length;
         sock_storage    _address;
-        std::string     _request; 
+        std::string     _request;
+    
         Client();
         Client(const Client& rhs);
         Client          &operator=(const Client& rhs);

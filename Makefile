@@ -1,4 +1,4 @@
-NAME = Webserv
+NAME = webserv
 SOURCES = main.cpp parsing/webserv.cpp parsing/location.cpp parsing/parce_server.cpp \
 					server/client.cpp server/server.cpp server/socket.cpp
 OBJ_PATH  = objs

@@ -9,8 +9,8 @@
 #include <list>
 #include "../parsing/parce_server.hpp"
 
-#define PORT    int
-#define MAX_REQUEST_SIZE 1024
+#define PORT                int
+#define MAX_REQUEST_SIZE    1024
 
 class Server
 {
@@ -20,6 +20,7 @@ class Server
         int                     _max_client_body_size;
         std::vector<std::string> _error_page;
         std::list<location>     _locations;
+        fd_set                  _writes;
         fd_set                  _reads;
         SOCKET                  _server_socket;
         SOCKET                  _max_socket;

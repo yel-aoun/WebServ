@@ -109,6 +109,4 @@ void Webserv::run_webservs()
 		for(iter = this->servers.begin(); iter != this->servers.end(); iter++)
 			(*iter)->run_serve();
 	}
-	
-	// call the servers after meargin them.
 }

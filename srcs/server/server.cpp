@@ -11,24 +11,22 @@ Server::Server(parce_server &server_data)
     this->_server_socket = socket.get_socket();
 }
 
-// this function is init sockfds for a serve and clients.
 void  Server::init_sockfds()
 {
     FD_ZERO(&this->_reads);
+    FD_ZERO(&this->_writes);
     FD_SET(this->_server_socket, &this->_reads);
     this->_max_socket = this->_server_socket;
     std::list<Client *>::iterator iter;
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
+        FD_SET((*iter)->get_sockfd(), &this->_writes);
         FD_SET((*iter)->get_sockfd(), &this->_reads);
         if ((*iter)->get_sockfd() > this->_max_socket)
             this->_max_socket = (*iter)->get_sockfd();
     }
 }
 
-// this function tell some connection comes,
-// and we know that the connection happened when select detects changes in the server socket.
-// and select have 1 second to check if no connection happened we have to move one to serve clients that already connected
 void    Server::wait_on_clients()
 {
     struct timeval restrict;
@@ -36,13 +34,11 @@ void    Server::wait_on_clients()
     this->init_sockfds();
     restrict.tv_sec = 10;
     restrict.tv_usec = 0;
-    //std::cout << "max socket = " << this->_max_socket  << std::endl;
     if (select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict) < 0)
     {
         std::cerr << "select() failed" << std::endl;
         exit(EXIT_FAILURE);
     }
-    
 }
 
 const char *get_client_address(Client *ci)
@@ -74,15 +70,11 @@ void    Server::accept_new_client()
 
 void    Server::run_serve()
 {
-    int i = 0;
-    while(1)
-    {
-        std::cout << "hello world" << std::endl;
-        this->wait_on_clients();
-        if (FD_ISSET(this->_server_socket, &this->_reads))
-            this->accept_new_client();
-        this->serve_clients();
-    }
+    std::cout << "server number:  " << this->_server_socket - 2 << std::endl;
+    this->wait_on_clients();
+    if (FD_ISSET(this->_server_socket, &this->_reads))
+        this->accept_new_client();
+    this->serve_clients();
 }
 
 void    Server::serve_clients()
@@ -96,7 +88,6 @@ void    Server::serve_clients()
         {
             memset(this->_request_buff, 0, MAX_REQUEST_SIZE + 1);
             request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
-            //std::cout << "request size: " << request_size << std::endl;
             if (request_size < 1)
             {
                 printf("Unexpected disconnect from %s.\n",
