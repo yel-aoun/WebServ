@@ -9,22 +9,15 @@
         "name": "Page 1",
         "childIndex": 1,
         "shapes": {
-          "cb363a1b-c40e-49e3-2450-289bd4e4b20a": {
-            "id": "cb363a1b-c40e-49e3-2450-289bd4e4b20a",
+          "84d3ed30-f332-4613-2878-988d30945560": {
+            "id": "84d3ed30-f332-4613-2878-988d30945560",
             "type": "text",
             "name": "Text",
             "parentId": "page",
-            "childIndex": 1,
+            "childIndex": 2,
             "point": [
-<<<<<<< HEAD
-              65.39,
-              41.9
-            ],
-            "rotation": 0,
-            "text": "Our server's main loop can then be simplified. It waits for new connections or new data.\nWhen new data is received, it checks whether the data consists of a complete HTTP request.\nIf a complete HTTP request is received, the server attempts to send the requested resource.\nIf the HTTP request is malformed or the resource cannot be found, then the server sends an\nerror message to the connected client instead.",
-=======
-              102.29,
-              -196.2
+              1324.37,
+              -238.72
             ],
             "rotation": 0,
             "text": "Socket class",
@@ -45,8 +38,8 @@
             "parentId": "page",
             "childIndex": 3,
             "point": [
-              162.71,
-              258.97
+              1384.79,
+              216.45
             ],
             "rotation": 0,
             "text": "socket bind(): to bind a socket",
@@ -67,8 +60,8 @@
             "parentId": "page",
             "childIndex": 4,
             "point": [
-              139.38,
-              195.97
+              1361.46,
+              153.45
             ],
             "rotation": 0,
             "text": "init_socket() : to initialize a socket",
@@ -89,20 +82,15 @@
             "parentId": "page",
             "childIndex": 5,
             "point": [
-              139.88,
-              321.64
+              1361.96,
+              279.12
             ],
             "rotation": 0,
             "text": "listen_socket() : to get socket listen\nto a port",
->>>>>>> da169b9f5f3e9f759cb0a86fa3746690b5ceb73e
             "style": {
               "color": "black",
               "size": "small",
               "isFilled": false,
-<<<<<<< HEAD
-              "dash": "draw",
-              "scale": 1.0828666666666666,
-=======
               "dash": "solid",
               "scale": 1,
               "font": "script",
@@ -116,13 +104,8 @@
             "parentId": "page",
             "childIndex": 6,
             "point": [
-<<<<<<< HEAD
-              100.21,
-              405.97
-=======
               1309.4,
               365.01
->>>>>>> 16db6c2343c7da43a87f5508321d2036e114d96d
             ],
             "rotation": 0,
             "text": "create socket() : init_socket() + bind_socket() \n+ listen_socket()",
@@ -143,8 +126,8 @@
             "parentId": "page",
             "childIndex": 7,
             "point": [
-              23.21,
-              -77.15
+              1245.29,
+              -119.67
             ],
             "size": [
               580.33,
@@ -171,8 +154,8 @@
             "parentId": "page",
             "childIndex": 8,
             "point": [
-              27.21,
-              492.64
+              1249.29,
+              450.12
             ],
             "rotation": 0,
             "bend": -0.000017522809126151177,
@@ -225,8 +208,8 @@
             "parentId": "page",
             "childIndex": 9,
             "point": [
-              48.71,
-              560.97
+              1270.79,
+              518.45
             ],
             "rotation": 0,
             "text": "this class is to create a socket that listen in specific port",
@@ -247,8 +230,8 @@
             "parentId": "page",
             "childIndex": 10,
             "point": [
-              228.04,
-              494.21
+              1450.12,
+              451.69
             ],
             "rotation": 0,
             "text": "purpose",
@@ -269,8 +252,8 @@
             "parentId": "page",
             "childIndex": 11,
             "point": [
-              29.88,
-              115.31
+              1251.96,
+              72.79
             ],
             "rotation": 0,
             "bend": 1.2455980218197965e-7,
@@ -323,8 +306,8 @@
             "parentId": "page",
             "childIndex": 12,
             "point": [
-              221.88,
-              121.64
+              1443.96,
+              79.12
             ],
             "rotation": 0,
             "text": "Methods",
@@ -345,8 +328,8 @@
             "parentId": "page",
             "childIndex": 13,
             "point": [
-              210.63,
-              -71.7
+              1432.71,
+              -114.22
             ],
             "rotation": 0,
             "text": "Argument",
@@ -367,8 +350,8 @@
             "parentId": "page",
             "childIndex": 14,
             "point": [
-              94.11,
-              -7.44
+              1306.55,
+              -50.4
             ],
             "rotation": 0,
             "text": "_socketfd:  is socket file descreptor tha listen\nto specifc port.",
@@ -389,8 +372,8 @@
             "parentId": "page",
             "childIndex": 15,
             "point": [
-              68.12,
-              55.99
+              1290.2,
+              13.47
             ],
             "rotation": 0,
             "text": "_port: is the socket listning port, passed by a server.",
@@ -400,7 +383,6 @@
               "isFilled": false,
               "dash": "solid",
               "scale": 1,
->>>>>>> da169b9f5f3e9f759cb0a86fa3746690b5ceb73e
               "font": "script",
               "textAlign": "middle"
             }
@@ -412,7 +394,9 @@
     "pageStates": {
       "page": {
         "id": "page",
-        "selectedIds": [],
+        "selectedIds": [
+          "b761e5f6-e786-4693-1e72-a2d6084b05a9"
+        ],
         "camera": {
           "point": [
             0,
