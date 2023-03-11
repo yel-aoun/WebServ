@@ -1,26 +1,32 @@
-
-
 NAME = Webserv
+SOURCES = main.cpp parsing/webserv.cpp parsing/location.cpp parsing/parce_server.cpp \
+					server/client.cpp server/server.cpp server/socket.cpp
+OBJ_PATH  = objs
+SRC_PATH = srcs
 
-SRC = parsing/main.cpp parsing/webserv.cpp parsing/location.cpp parsing/server.cpp
+CC = c++
+CFLAGS = #-Wall -Wextra -Werror
 
-CXX = c++
+OBJS = $(addprefix $(OBJ_PATH)/,$(SOURCES:.cpp=.o))
+.PHONY: all clean fclean re
 
-CPPFLAGS = -std=c++98 #-fsanitize=address #-Wall -Wextra -Werror -std=c++98 
+all : $(OBJ_PATH) $(NAME)
 
-OBJ = $(SRC:.cpp=.o)
+$(NAME) : $(OBJS)
+	$(CC) $(CFLAGS) -std=c++98 $(OBJS) -o  $(NAME)
 
-all :$(NAME)
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp $(HEADER)
+	@$(CC) $(CFLAGS) -c -o $@ $<
 
-$(NAME) : $(OBJ)
-	$(CXX) $(CPPFLAGS) $(SRC) -o $(NAME)
+$(OBJ_PATH):
+	@mkdir objs
+	@mkdir objs/parsing
+	@mkdir objs/request
+	@mkdir objs/server
 
-clean :
-	rm -f $(OBJ)
+clean:
+	rm -fr objs
 
-fclean : clean
+fclean: clean
 	rm -f $(NAME)
-
-re : fclean all
-
-.PHONY : all clean fclean re
+re : fclean all%

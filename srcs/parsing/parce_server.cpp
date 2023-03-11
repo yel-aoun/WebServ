@@ -1,5 +1,5 @@
 
-# include "server.hpp"
+# include "parce_server.hpp"
 
 std::vector<std::string> split(const std::string &str)
 {
@@ -90,7 +90,7 @@ std::vector<std::string> set_error_page(std::vector<std::string> &tokens)
     return (tmp);
 }
 
-server::server(const std::list<std::string> &conf, int n_serv)
+parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
 {
     int ind = 0;
     int count_loc = 0;
@@ -136,6 +136,7 @@ server::server(const std::list<std::string> &conf, int n_serv)
         else if (*tt == "error_page")
             this->error_page = set_error_page(tokens);
     }
+<<<<<<< HEAD:parsing/server.cpp
     while (j < count_loc)
 	{
         if (ind)
@@ -147,4 +148,18 @@ server::server(const std::list<std::string> &conf, int n_serv)
 		this->locations.push_back(loc);
 		j++;
 	}
+=======
+    // while (j < count_loc)
+	// {
+    //     std::cout << "IND ==== " << ind << std::endl;
+    //     if (ind)
+    //     {
+    //         std::cout << "You fucked up" << std::endl;
+    //         exit (1);
+    //     }
+	// 	location loc(conf, j);
+	// 	this->locations.push_back(loc);
+	// 	j++;
+	// }
+>>>>>>> 63b65bad3c5f707607ecb114a0b5a0a395ea0055:srcs/parsing/parce_server.cpp
 }
