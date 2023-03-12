@@ -60,19 +60,24 @@ std::string	ft_trim_and_replace(std::string conf_file)
             config.push_back(ft_trim_and_replace(conf_file));
 		}
 		filein.close();
+		if (i != 0)
+		{
+			std::cout << "Error! Please close every bracket" << std::endl;
+			exit (1);
+		}
+		i = 0;
+		int j = 0;
+		while (i < count_serv)
+		{
+			parce_server	serv(config, i);
+	 		this->servers_data.push_back(serv);
+	 		i++;
+		}
 	}
-	if (i != 0)
+	else
 	{
-		std::cout << "Error! Please close every bracket" << std::endl;
+		std::cout << "Error! Please check if the file exists!" << std::endl;
 		exit (1);
-	}
-	i = 0;
-	int j = 0;
-	while (i < count_serv)
-	{
-		parce_server	serv(config, i);
-	 	this->servers_data.push_back(serv);
-	 	i++;
 	}
  }
 

@@ -3,6 +3,7 @@
 
 #include <sys/socket.h>
 #include <iostream>
+#include <map>
 
 #define SOCKET  int
 #define DATA    int
@@ -14,7 +15,7 @@ class Client
     private:
         SOCKET          _sockfd;
         DATA            _received_data;
-
+        std::map<std::string, std::string> parce_request;
     public:
         socklen_t       _address_length;
         sock_storage    _address;
