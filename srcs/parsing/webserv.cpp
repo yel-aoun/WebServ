@@ -41,6 +41,7 @@ std::string	ft_trim_and_replace(std::string conf_file)
 	}
     std::ifstream filein;
 	filein.open(conf_file);
+	std::cout<<conf_file<<std::endl;
 	if (filein)
 	{
 		while (filein.good())
