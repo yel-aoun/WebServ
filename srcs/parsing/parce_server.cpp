@@ -139,12 +139,11 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
 	{
         if (ind)
         {
-            std::cout << "You fucked up" << std::endl;
+            std::cout << "Error! Putting a location block inside another one doesn't work" << std::endl;
             exit (1);
         }
 		location loc(conf, j);
 		this->locations.push_back(loc);
 		j++;
 	}
-
 }
