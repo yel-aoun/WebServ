@@ -41,7 +41,6 @@
 	}
     std::ifstream filein;
 	filein.open(conf_file);
-	std::cout<<conf_file<<std::endl;
 	if (filein)
 	{
 		while (filein.good())
@@ -96,7 +95,7 @@ void Webserv::init_servers()
 		Server *sv = new Server(*iter);
 		this->servers.push_back(sv);
 	}
-	std::cout<<this->servers.size()<<std::endl;
+	// std::cout<<this->servers.size()<<std::endl;
 }
 
 void Webserv::run_webservs()

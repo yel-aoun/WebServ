@@ -15,24 +15,36 @@ int set_port(std::vector<std::string> &tokens)
     std::vector<std::string>::iterator it = tokens.begin();
     int num;
     if (++it == tokens.end())
-        return (8080); // the end of 
+    {
+        std::cout<<"you must set a value for the port"<<std::endl;
+        exit (1);
+    }
     else
     {
         std::string str = *it;
-        std::string::const_iterator it = str.begin();
-        if (it != str.end())
+        std::string::const_iterator iter = str.begin();
+        if (iter != str.end())
         {
-            for(; it != str.end(); it++)
+            for(; iter != str.end(); iter++)
             {
-                if (!isdigit(*it))
-                    return (8080);
+                if (!isdigit(*iter))
+                {
+                    std::cout<<"you must set a value for the port"<<std::endl;
+                    exit (1);
+                }
             }
             std::stringstream ss(str);
             ss >> num;
+            if (str.length() != 4)
+            {
+                std::cout<<"your port must have 4 numbers"<<std::endl;
+                exit(1);
+            }
             return (num);
         }
     }
-    return (8080);
+    std::cout<<"you must set a value for the port"<<std::endl;
+    exit (1);
 }
 
 std::string set_host_name(std::vector<std::string> &tokens)
@@ -98,10 +110,12 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
             n_serv--;
         it++;
     }
-    this->port = 8080;
+    // this->port = 8080;
     this->host_name = "172.0.0.1";
-    this->max_client_body_size = 1;
     // this->error_page;
+    int p = 0;
+    int m = 0;
+    int e = 0;
     for(; it != conf.end(); it++)
     {
         if ((*it).empty())
@@ -122,14 +136,50 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
         std::vector<std::string> tokens = split(input);
         std::vector<std::string>::iterator tt = tokens.begin();
         if (*tt == "port")
+        {
+            p++;
+            if (p != 1)
+            {
+                std::cout<<"you must use only one port in your server"<<std::endl;
+                exit (1);
+            }
             this->port = set_port(tokens);
-        else if (*tt == "host_name")
-            // std::cout<<*tt<<std::endl;
-            this->host_name = set_host_name(tokens);
+        }
         else if (*tt == "max_client_body_size")
+        {
+            m++; 
+            if (m != 1)
+            {
+                std::cout<<"you must use only one max_client_body_size in your server"<<std::endl;
+                exit (1);
+            }
             this->max_client_body_size = set_max_client_body_size(tokens);
+        }
         else if (*tt == "error_page")
+        {
+            e++; 
+            if (e != 1)
+            {
+                std::cout<<"you must use only one error_page in your server"<<std::endl;
+                exit (1);
+            }
             this->error_page = set_error_page(tokens);
+        }
+    }
+    if (p == 0)
+    {
+        std::cout<<"port must exist in your config file"<<std::endl;
+        exit (1);
+    }
+    if (m == 0)
+    {
+        std::cout<<"max_client_body_size must exist in your config file"<<std::endl;
+        exit (1);
+    }
+    if (e == 0)
+    {
+        std::cout<<"error_page bock must exist in your config file"<<std::endl;
+        exit (1);
     }
     while (j < count_loc)
 	{
