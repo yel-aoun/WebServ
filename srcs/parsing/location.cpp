@@ -44,9 +44,7 @@ int count_slash(std::string location)
 std::string location::trim_directory(int slash)
 {
     int x = this->locations.rfind("/");
-    std::cout << "THE LOCATION OF / IS " << x << std::endl;
     std::string sub = locations.substr(0, x);
-    std::cout << "THE SUBSTRING IS " << sub << std::endl;
     return (sub);
 }
 
@@ -62,9 +60,10 @@ void location::FillLocation(std::string prompt)
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
     this->locations = *it;
-    int slash = count_slash(this->locations);
-    std::string tmp;
-    while (slash)
+    // LET YOUSSEF USE IT FOR GET
+    //int slash = count_slash(this->locations);
+    //std::string tmp;
+    /*while (slash)
     {
         if (access(tmp.c_str(), F_OK) == 0)
             break;
@@ -72,11 +71,10 @@ void location::FillLocation(std::string prompt)
         {
             this->locations = trim_directory(slash);
             tmp = this->locations + "/";
-            std::cout << "LOCATIONS  " << this->locations << std::endl;
         }
         slash--;
     }
-    this->locations = tmp;
+    this->locations = tmp;*/
 }
 
 void location::FillAllow_methods(std::string prompt)
@@ -174,16 +172,8 @@ void location::FillAuto_index(std::string prompt)
     this->auto_index = *it;
 }
 
-location::location(const std::list<std::string> &config, int j)
+void location::initialize()
 {
-    std::string nextvalue;
-    std::list<std::string>::const_iterator it = config.begin();
-    while (it != config.end() && j != 0)
-    {
-        if (it->find("}") != -1)
-            j--;
-        it++;
-    }
     allow_methods.push_back("GET");
     allow_methods.push_back("POST");
     allow_methods.push_back("DELETE");
@@ -195,6 +185,19 @@ location::location(const std::list<std::string> &config, int j)
     index.push_back("index.php");
     redirect = "404";
     cgi_pass = "404";
+}
+
+location::location(const std::list<std::string> &config, int j)
+{
+    std::string nextvalue;
+    std::list<std::string>::const_iterator it = config.begin();
+    while (it != config.end() && j != 0)
+    {
+        if (it->find("}") != -1)
+            j--;
+        it++;
+    }
+    this->initialize();
     //DON'T REDIRECT WHEN IT'S EMPTY
     for (; it != config.end() && std::next(it) != config.end(); ++it)
     {
@@ -204,54 +207,26 @@ location::location(const std::list<std::string> &config, int j)
         if (prompt.find("}") != -1)
             break;
         if (prompt.find("location") != -1)
-        {
             //TRY TO HANDLE IF THE LOCATION ISN'T SPECIFIED
             this->FillLocation(prompt);
-            std::cout << this->locations << std::endl;
-        }
         else if (prompt.find("allow_methods") != -1)
-        {
             this->FillAllow_methods(prompt);
-            for (std::list<std::string>::iterator it = allow_methods.begin(); it != allow_methods.end(); ++it)
-                std::cout << "------> " << *it << std::endl;
-        }
         else if (prompt.find("redirect") != -1)
-        {
             this->FillRedirect(prompt);
-            std::cout << "-------->" << redirect << std::endl;
-        }
         else if (prompt.find("auto_index") != -1)
-        {
             this->FillAuto_index(*it);
-            std::cout << "-------->" << auto_index << std::endl;
-        }
         else if (prompt.find("root") != -1)
-        {
             this->FillRoot(prompt);
-            std::cout << "-------->" << root << std::endl;
-        }
         else if (prompt.find("index") != -1)
-        {
             this->FillIndex(prompt);
-            //std::cout << "-------->" << index << std::endl;
-        }
         else if (prompt.find("upload_pass") != -1)
-        {
             this->FillUpload_pass(prompt);
-            std::cout << "-------->" << upload_pass << std::endl;
-        }
         else if (prompt.find("cgi_pass") != -1)
-        {
             this->FillCgi_pass(prompt);
-            std::cout << "-------->" << cgi_pass << std::endl;
-        }
         else if (prompt == "}" && (nextvalue != "};" || (nextvalue.find("location") == -1 && nextvalue.find("{") == -1)))
         {
             std::cout << "Please only have another location block after starting with one" << std::endl;
             exit (1);
         }
-        std::cout << "=========-------> " << prompt << "------- " << nextvalue << std::endl;
-        //else
-       //     std::cout << "Undefined element" << std::endl;
     }
 }

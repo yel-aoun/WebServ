@@ -60,19 +60,24 @@ std::string	ft_trim_and_replace(std::string conf_file)
             config.push_back(ft_trim_and_replace(conf_file));
 		}
 		filein.close();
+		if (i != 0)
+		{
+			std::cout << "Error! Please close every bracket" << std::endl;
+			exit (1);
+		}
+		i = 0;
+		int j = 0;
+		while (i < count_serv)
+		{
+			parce_server	serv(config, i);
+	 		this->servers_data.push_back(serv);
+	 		i++;
+		}
 	}
-	if (i != 0)
+	else
 	{
-		std::cout << "Error! Please close every bracket" << std::endl;
+		std::cout << "Error! Please check if the file exists!" << std::endl;
 		exit (1);
-	}
-	i = 0;
-	int j = 0;
-	while (i < count_serv)
-	{
-		parce_server	serv(config, i);
-	 	this->servers_data.push_back(serv);
-	 	i++;
 	}
  }
 
@@ -85,13 +90,12 @@ Webserv::Webserv(std::string conf_file)
 void Webserv::init_servers()
 {
 	std::list<parce_server>::iterator iter;
-
 	for(iter = servers_data.begin(); iter != servers_data.end(); iter++)
 	{
 		Server *sv = new Server(*iter);
-
 		this->servers.push_back(sv);
 	}
+	std::cout<<this->servers.size()<<std::endl;
 }
 
 void Webserv::run_webservs()
@@ -100,7 +104,11 @@ void Webserv::run_webservs()
 	while (1)
 	{
 		std::list<Server *>::iterator iter;
+		// std::cout<<this->servers.size()<<std::endl;
 		for(iter = this->servers.begin(); iter != this->servers.end(); iter++)
+		{
 			(*iter)->run_serve();
+			std::cout<<"runing servers"<<std::endl;
+		}
 	}
 }
