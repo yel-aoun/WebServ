@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <iostream>
 #include <map>
+#include <vector>
 
 #define SOCKET  int
 #define DATA    int

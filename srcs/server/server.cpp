@@ -99,12 +99,12 @@ void    Server::serve_clients()
             {
                 Request req((*iter)->_request);
                 (*iter)->request_pack = req.request;
-                
+
                 //*******************************************************************
                 //*this block is for printing the content of the map<string, vector>*
                 //*******************************************************************
 
-                // std::vector<std::string> vec = (*iter)->request_pack.find("User-Agent")->second;
+                // std::vector<std::string> vec = (*iter)->request_pack.find("PATH")->second;
                 // std::vector<std::string>::iterator iter = vec.begin();
                 // for(; iter != vec.end(); iter++)
                 // {
