@@ -11,7 +11,7 @@ int main() {
         "Accept: text/html,application/xhtml+xml\r\n"
         "Accept-Language: en-US,en;q=0.5\r\n"
         "Connection: keep-alive\r\n"
-        "\r\n";
+        "\r\n\r\n";
 
     std::stringstream ss(requestBuffer);
 

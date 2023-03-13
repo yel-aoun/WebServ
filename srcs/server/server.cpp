@@ -1,5 +1,7 @@
 #include "server.hpp"
 
+static int i = 0;
+
 Server::Server(parce_server &server_data)
 {
     this->_port = server_data.port;
@@ -11,24 +13,21 @@ Server::Server(parce_server &server_data)
     this->_server_socket = socket.get_socket();
 }
 
-// this function is init sockfds for a serve and clients.
 void  Server::init_sockfds()
 {
     FD_ZERO(&this->_reads);
+    FD_ZERO(&this->_writes);
     FD_SET(this->_server_socket, &this->_reads);
     this->_max_socket = this->_server_socket;
     std::list<Client *>::iterator iter;
-    for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
-    {
+    for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)    {
+        FD_SET((*iter)->get_sockfd(), &this->_writes);
         FD_SET((*iter)->get_sockfd(), &this->_reads);
         if ((*iter)->get_sockfd() > this->_max_socket)
             this->_max_socket = (*iter)->get_sockfd();
     }
 }
 
-// this function tell some connection comes,
-// and we know that the connection happened when select detects changes in the server socket.
-// and select have 1 second to check if no connection happened we have to move one to serve clients that already connected
 void    Server::wait_on_clients()
 {
     struct timeval restrict;
@@ -36,13 +35,11 @@ void    Server::wait_on_clients()
     this->init_sockfds();
     restrict.tv_sec = 1;
     restrict.tv_usec = 0;
-    //std::cout << "max socket = " << this->_max_socket  << std::endl;
     if (select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict) < 0)
     {
         std::cerr << "select() failed" << std::endl;
         exit(EXIT_FAILURE);
     }
-    
 }
 
 const char *get_client_address(Client *ci)
@@ -69,17 +66,15 @@ void    Server::accept_new_client()
         exit(EXIT_FAILURE);
     }
     this->_clients.push_back(client);
-    std::cout << "New connection from : " << get_client_address(client) << std::endl;
 }
 
 void    Server::run_serve()
 {
-    std::cout << "server port = " << this->_port << std::endl; 
-    std::cout << "hello from server socket = " << this->_server_socket << std::endl;
     this->wait_on_clients();
     if (FD_ISSET(this->_server_socket, &this->_reads))
         this->accept_new_client();
-    this->serve_clients();
+    else
+        this->serve_clients();
 }
 
 void    Server::serve_clients()
@@ -93,26 +88,29 @@ void    Server::serve_clients()
         {
             memset(this->_request_buff, 0, MAX_REQUEST_SIZE + 1);
             request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
-            //std::cout << "request size: " << request_size << std::endl;
             if (request_size < 1)
             {
-                printf("Unexpected disconnect from %s.\n",
-                get_client_address(*iter));
+                std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
                 drop_client(iter);
             }
-            else
+            (*iter)->set_received_data(request_size);
+            (*iter)->_request.append(this->_request_buff);
+            if(!std::strcmp(this->_request_buff + request_size -  4, "\r\n\r\n"))
             {
-                (*iter)->set_received_data(request_size);
-                (*iter)->_request.append(this->_request_buff);
-                if(request_size < MAX_REQUEST_SIZE)
-                {
-                    // Request req((*iter)->_request);
-                    // std::cout << "Hello***************" << std::endl;
-                    // (*iter)->request_pack = req.request;
-                    // std::cout <<"----------"<< (*iter)->request_pack.find("METHOD")->second<<"----------"<< std::endl;
-                    std::cout <<(*iter)->_request<< std::endl;
-                    //this->drop_client(iter);
-                }
+                Request req((*iter)->_request);
+                (*iter)->request_pack = req.request;
+                
+                //*******************************************************************
+                //*this block is for printing the content of the map<string, vector>*
+                //*******************************************************************
+
+                // std::vector<std::string> vec = (*iter)->request_pack.find("User-Agent")->second;
+                // std::vector<std::string>::iterator iter = vec.begin();
+                // for(; iter != vec.end(); iter++)
+                // {
+                //     std::cout<<(*iter)<<std::endl;
+                // }
+                // std::cout<<(*iter)->_request<<std::endl;
             }
         }
     }

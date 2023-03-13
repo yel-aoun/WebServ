@@ -4,21 +4,12 @@ Request::Request(std::string &buffer)
 {
     std::stringstream ss(buffer);
     std::string token;
-    // std::cout<<"+++++______+++++++ " <<std::endl;
-    // std::cout<<"-=+-=+"<<token<<std::endl;
     int i = 0;
     while (std::getline(ss, token))
     {
-        std::cout<<"=====>"<<i<<std::endl;
-        // if (token[0] == '\r')
-        // {
-        //     std::cout<<"found"<<std::endl;
-        //     break ;
-        // }
         fill_map_request(token);
         i++;
     }
-    std::cout<<"++++"<<this->request.find("PATH")->second<<"++++"<<std::endl;
 }
 
 void    Request::fill_map_request(std::string   &buff_line)
@@ -28,25 +19,25 @@ void    Request::fill_map_request(std::string   &buff_line)
     ss >> token;
     if (token == "GET" || token == "POST" || token == "DELETE")
     {
-        this->request.insert(std::make_pair("METHOD",token));
+        std::vector<std::string> meth;
+        meth.push_back(token);
+        this->request.insert(std::make_pair("METHOD",meth));
         ss >> token;
-        this->request.insert(std::make_pair("PATH",token));
+        std::vector<std::string> path;
+        path.push_back(token);
+        this->request.insert(std::make_pair("PATH",path));
+        ss >> token;
+        std::vector<std::string> http;
+        http.push_back(token);
+        this->request.insert(std::make_pair("HTTP",http));
     }
-//    else
-//    {
-//        if (token == "Host:")
-//            this->request.insert(std::make_pair("HOST",token));
-//        else if(token == "User-Agent:")
-//            this->request.insert(std::make_pair("USER_AGENT",token));
-//        // else if(token == "Accept:")
-//        // {
-//        //     ss >> token;
-//        //     std::string str = token;
-//        //     while (ss >> token)
-//        //     {
-//        //         str = str + " " + token;
-//        //     }
-//        //     this->request.insert(std::make_pair("ACCEPT",token));
-//        // }
-//    }
+   else
+   {
+        std::vector<std::string> value;
+        int len = token.length();
+        std::string key = token.substr(0, len - 1);
+        while (ss >> token)
+            value.push_back(token);
+        this->request.insert(std::make_pair(key,value));
+   }
 }

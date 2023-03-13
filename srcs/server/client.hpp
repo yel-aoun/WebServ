@@ -16,7 +16,7 @@ class Client
         SOCKET  _sockfd;
         DATA    _received_data;
     public:
-        std::map<std::string, std::string>  request_pack;
+        std::map<std::string, std::vector<std::string> >  request_pack;
         socklen_t       _address_length;
         sock_storage    _address;
         std::string     _request;
