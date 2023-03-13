@@ -3,6 +3,7 @@
 
 #include "client.hpp"
 #include "socket.hpp"
+#include <cstring>
 
 #include <iostream>
 #include <iterator>
@@ -10,7 +11,7 @@
 #include "../parsing/parce_server.hpp"
 
 #define PORT                int
-#define MAX_REQUEST_SIZE    1024
+#define MAX_REQUEST_SIZE    10
 
 class Server
 {

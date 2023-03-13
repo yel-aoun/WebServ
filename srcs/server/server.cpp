@@ -1,5 +1,7 @@
 #include "server.hpp"
 
+static int i = 0;
+
 Server::Server(parce_server &server_data)
 {
     this->_port = server_data.port;
@@ -18,8 +20,7 @@ void  Server::init_sockfds()
     FD_SET(this->_server_socket, &this->_reads);
     this->_max_socket = this->_server_socket;
     std::list<Client *>::iterator iter;
-    for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
-    {
+    for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)    {
         FD_SET((*iter)->get_sockfd(), &this->_writes);
         FD_SET((*iter)->get_sockfd(), &this->_reads);
         if ((*iter)->get_sockfd() > this->_max_socket)
@@ -65,16 +66,15 @@ void    Server::accept_new_client()
         exit(EXIT_FAILURE);
     }
     this->_clients.push_back(client);
-    std::cout << "New connection from : " << get_client_address(client) << std::endl;
 }
 
 void    Server::run_serve()
 {
-    std::cout << "server number:  " << this->_server_socket - 2 << std::endl;
     this->wait_on_clients();
     if (FD_ISSET(this->_server_socket, &this->_reads))
         this->accept_new_client();
-    this->serve_clients();
+    else
+        this->serve_clients();
 }
 
 void    Server::serve_clients()
@@ -90,17 +90,13 @@ void    Server::serve_clients()
             request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
             if (request_size < 1)
             {
-                printf("Unexpected disconnect from %s.\n",
-                get_client_address(*iter));
+                std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
                 drop_client(iter);
             }
             (*iter)->set_received_data(request_size);
             (*iter)->_request.append(this->_request_buff);
-            if(request_size < MAX_REQUEST_SIZE)
-            {
+            if(!std::strcmp(this->_request_buff + request_size -  4, "\r\n\r\n"))
                 std::cout << (*iter)->_request << std::endl;
-                this->drop_client(iter);
-            }
         }
     }
 }
