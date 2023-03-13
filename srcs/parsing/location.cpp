@@ -1,33 +1,16 @@
 #include "location.hpp"
 //DON'T FORGET TO SET THE DEFAULT VALUES OF SOME PARAMETERS
-std::vector<std::string> splitString(const std::string& str, std::string delimiter) {
-    std::vector<std::string> substrings;
-    std::size_t pos = 0;
-    std::size_t found;
-    while ((found = str.find(delimiter, pos)) != -1) {
-        substrings.push_back(str.substr(pos, found - pos));
-        pos = found + delimiter.length();
+std::vector<std::string> splitString(const std::string& str)
+{
+    std::vector<std::string> tokens;
+    std::istringstream tokenStream(str);
+    std::string token;
+    while (std::getline(tokenStream, token, ' '))
+    {
+        if (!token.empty())
+            tokens.push_back(token);
     }
-    substrings.push_back(str.substr(pos));
-    return substrings;
-}
-
-std::string trim_spaces(const std::string& str) {
-    std::string::size_type first = str.find_first_not_of(' ');
-    if (first == std::string::npos) {
-        return "";
-    }
-    std::string::size_type last = str.find_last_not_of(' ');
-    return str.substr(first, last - first + 1);
-}
-
-std::string trim_tabs(const std::string& str) {
-    std::string::size_type first = str.find_first_not_of('\t');
-    if (first == std::string::npos) {
-        return "";
-    }
-    std::string::size_type last = str.find_last_not_of('\t');
-    return str.substr(first, last - first + 1);
+     return (tokens);
 }
 
 int count_slash(std::string location)
@@ -50,7 +33,9 @@ std::string location::trim_directory(int slash)
 
 void location::FillLocation(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt, " ");
+
+    std::vector<std::string> substring = splitString(prompt);
+
     if (substring.size() != 3)
     {
         for (std::vector<std::string>::iterator it = substring.begin(); it != substring.end(); ++it)
@@ -80,7 +65,7 @@ void location::FillLocation(std::string prompt)
 void location::FillAllow_methods(std::string prompt)
 {
 
-    std::vector<std::string> substring = splitString(prompt, " ");
+    std::vector<std::string> substring = splitString(prompt);
     if (substring.size() < 2 || substring.size() > 4)
         return;
     allow_methods.clear();
@@ -98,7 +83,7 @@ void location::FillAllow_methods(std::string prompt)
 
 void location::FillIndex(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt, " ");
+    std::vector<std::string> substring = splitString(prompt);
     // if (substring.size() < 2)
     // {
         // std::cout << "Error! there's something wrong with the index parameter" << std::endl;
@@ -114,7 +99,7 @@ void location::FillIndex(std::string prompt)
 
 void location::FillRedirect(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt, " ");
+    std::vector<std::string> substring = splitString(prompt);
     if (substring.size() != 2)
     {
         // std::cout << "Error! there's something wrong with the redirect parameter" << std::endl;
@@ -127,7 +112,7 @@ void location::FillRedirect(std::string prompt)
 
 void location::FillRoot(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt, " ");
+    std::vector<std::string> substring = splitString(prompt);
     if (substring.size() != 2)
     {
         // std::cout << "Error! there's something wrong with the root parameter" << std::endl;
@@ -140,7 +125,7 @@ void location::FillRoot(std::string prompt)
 
 void location::FillCgi_pass(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt, " ");
+    std::vector<std::string> substring = splitString(prompt);
     if (substring.size() != 2)
     {
          std::cout << "Error! there's something wrong with the cgi_pass parameter" << std::endl;
@@ -153,7 +138,7 @@ void location::FillCgi_pass(std::string prompt)
 
 void location::FillUpload_pass(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt, " ");
+    std::vector<std::string> substring = splitString(prompt);
     if (substring.size() != 2)
     {
         std::cout << "Error! there's something wrong with the upload_pass parameter" << std::endl;
@@ -165,7 +150,7 @@ void location::FillUpload_pass(std::string prompt)
 
 void location::FillAuto_index(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt, " ");
+    std::vector<std::string> substring = splitString(prompt);
     if (substring.size() != 2)
         return;
     std::vector<std::string>::iterator it = substring.begin() + 1;
@@ -201,29 +186,30 @@ location::location(const std::list<std::string> &config, int j)
     //DON'T REDIRECT WHEN IT'S EMPTY
     for (; it != config.end() && std::next(it) != config.end(); ++it)
     {
-        std::string tab = trim_tabs(*it);
-        std::string prompt = trim_spaces(tab);
+        std::string input = *it;
+        //std::vector<std::string> prompt = splitString(input);
+        //std::vector<std::string>::iterator tt = prompt.begin();
         nextvalue = *std::next(it);
-        if (prompt.find("}") != -1)
+        if ((*it).find("}") != -1)
             break;
-        if (prompt.find("location") != -1)
+        if ((*it).find("location") != -1)
             //TRY TO HANDLE IF THE LOCATION ISN'T SPECIFIED
-            this->FillLocation(prompt);
-        else if (prompt.find("allow_methods") != -1)
-            this->FillAllow_methods(prompt);
-        else if (prompt.find("redirect") != -1)
-            this->FillRedirect(prompt);
-        else if (prompt.find("auto_index") != -1)
+            this->FillLocation(*it);
+        else if ((*it).find("allow_methods") != -1)
+            this->FillAllow_methods(*it);
+        else if ((*it).find("redirect") != -1)
+            this->FillRedirect(*it);
+        else if ((*it).find("auto_index") != -1)
             this->FillAuto_index(*it);
-        else if (prompt.find("root") != -1)
-            this->FillRoot(prompt);
-        else if (prompt.find("index") != -1)
-            this->FillIndex(prompt);
-        else if (prompt.find("upload_pass") != -1)
-            this->FillUpload_pass(prompt);
-        else if (prompt.find("cgi_pass") != -1)
-            this->FillCgi_pass(prompt);
-        else if (prompt == "}" && (nextvalue != "};" || (nextvalue.find("location") == -1 && nextvalue.find("{") == -1)))
+        else if ((*it).find("root") != -1)
+            this->FillRoot(*it);
+        else if ((*it).find("index") != -1)
+            this->FillIndex(*it);
+        else if ((*it).find("upload_pass") != -1)
+            this->FillUpload_pass(*it);
+        else if ((*it).find("cgi_pass") != -1)
+            this->FillCgi_pass(*it);
+        else if (*it == "}" && (nextvalue != "};" || (nextvalue.find("location") == -1 && nextvalue.find("{") == -1)))
         {
             std::cout << "Please only have another location block after starting with one" << std::endl;
             exit (1);

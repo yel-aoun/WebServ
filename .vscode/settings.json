@@ -1,5 +1,6 @@
 {
     "files.associations": {
+<<<<<<< HEAD
         "vector": "cpp",
         "istream": "cpp",
         "utility": "cpp",
@@ -69,4 +70,11 @@
         "unordered_map": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
+=======
+        "iostream": "cpp",
+        "string": "cpp",
+        "list": "cpp",
+        "iosfwd": "cpp"
+    }
+>>>>>>> d12b9db793d0440c479b1326b33fbe23486ec8aa
 }
