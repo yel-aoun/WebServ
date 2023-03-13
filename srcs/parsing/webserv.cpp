@@ -111,6 +111,4 @@ void Webserv::run_webservs()
 			std::cout<<"runing servers"<<std::endl;
 		}
 	}
-	
-	// call the servers after meargin them.
 }
