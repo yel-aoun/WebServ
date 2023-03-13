@@ -100,12 +100,19 @@ void    Server::serve_clients()
                 get_client_address(*iter));
                 drop_client(iter);
             }
-            (*iter)->set_received_data(request_size);
-            (*iter)->_request.append(this->_request_buff);
-            if(request_size < MAX_REQUEST_SIZE)
+            else
             {
-                std::cout << (*iter)->_request << std::endl;
-                this->drop_client(iter);
+                (*iter)->set_received_data(request_size);
+                (*iter)->_request.append(this->_request_buff);
+                if(request_size < MAX_REQUEST_SIZE)
+                {
+                    // Request req((*iter)->_request);
+                    // std::cout << "Hello***************" << std::endl;
+                    // (*iter)->request_pack = req.request;
+                    // std::cout <<"----------"<< (*iter)->request_pack.find("METHOD")->second<<"----------"<< std::endl;
+                    std::cout <<(*iter)->_request<< std::endl;
+                    //this->drop_client(iter);
+                }
             }
         }
     }

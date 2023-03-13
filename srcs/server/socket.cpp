@@ -29,11 +29,13 @@ void    Socket::init_socket()
 void    Socket::bind_socket()
 {
     struct sockaddr_in addr;
+    int use = 1;
 
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(this->_port);
+    setsockopt(_sockfd,SOL_SOCKET,SO_REUSEADDR, &use,sizeof(use));
     if(bind(this->_sockfd, reinterpret_cast<const sockaddr *>(&addr), sizeof(addr)))
     {
         std::cerr << "bind() failed." << GETSOCKETERRNO() << std::endl;

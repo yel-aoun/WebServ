@@ -60,9 +60,10 @@ void location::FillLocation(std::string prompt)
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
     this->locations = *it;
-    int slash = count_slash(this->locations);
-    std::string tmp;
-    while (slash)
+    // LET YOUSSEF USE IT FOR GET
+    //int slash = count_slash(this->locations);
+    //std::string tmp;
+    /*while (slash)
     {
         if (access(tmp.c_str(), F_OK) == 0)
             break;
@@ -73,7 +74,7 @@ void location::FillLocation(std::string prompt)
         }
         slash--;
     }
-    this->locations = tmp;
+    this->locations = tmp;*/
 }
 
 void location::FillAllow_methods(std::string prompt)

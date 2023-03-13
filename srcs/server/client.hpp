@@ -3,6 +3,7 @@
 
 #include <sys/socket.h>
 #include <iostream>
+#include <map>
 
 #define SOCKET  int
 #define DATA    int
@@ -12,13 +13,13 @@ typedef struct sockaddr_storage sock_storage;
 class Client
 {
     private:
-        SOCKET          _sockfd;
-        DATA            _received_data;
-
+        SOCKET  _sockfd;
+        DATA    _received_data;
     public:
+        std::map<std::string, std::string>  request_pack;
         socklen_t       _address_length;
         sock_storage    _address;
-        std::string     _request; 
+        std::string     _request;
         Client();
         Client(const Client& rhs);
         Client          &operator=(const Client& rhs);

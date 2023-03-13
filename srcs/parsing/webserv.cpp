@@ -1,26 +1,26 @@
 # include "webserv.hpp"
 
-std::string trim_spaces(std::string& str) {
-    std::string::size_type first = str.find_first_not_of(' ');
-    if (first == std::string::npos) {
-        return "";
-    }
-    std::string::size_type last = str.find_last_not_of(' ');
-    return str.substr(first, last - first + 1);
-}
+// std::string trim_spaces(std::string& str) {
+//     std::string::size_type first = str.find_first_not_of(' ');
+//     if (first == std::string::npos) {
+//         return "";
+//     }
+//     std::string::size_type last = str.find_last_not_of(' ');
+//     return str.substr(first, last - first + 1);
+// }
 
-std::string	ft_trim_and_replace(std::string conf_file)
-{
-	int len = conf_file.length();
-	int i = 0;
-	while (i  < len)
-	{
-		if (conf_file[i] == '\t')
-			conf_file.replace(i, 1, " ");
-		i++;
-	}
-	return (trim_spaces(conf_file));
-}
+// std::string	ft_trim_and_replace(std::string conf_file)
+// {
+// 	int len = conf_file.length();
+// 	int i = 0;
+// 	while (i  < len)
+// 	{
+// 		if (conf_file[i] == '\t')
+// 			conf_file.replace(i, 1, " ");
+// 		i++;
+// 	}
+// 	return (trim_spaces(conf_file));
+// }
 
  void Webserv::parce_config_file(std::string &conf_file)
  {
@@ -58,22 +58,27 @@ std::string	ft_trim_and_replace(std::string conf_file)
 			}
 			if (conf_file.find("server") != std::string::npos)
 				count_serv++;
-            config.push_back(ft_trim_and_replace(conf_file));
+            config.push_back(conf_file);
 		}
 		filein.close();
+		if (i != 0)
+		{
+			std::cout << "Error! Please close every bracket" << std::endl;
+			exit (1);
+		}
+		i = 0;
+		int j = 0;
+		while (i < count_serv)
+		{
+			parce_server	serv(config, i);
+	 		this->servers_data.push_back(serv);
+	 		i++;
+		}
 	}
-	if (i != 0)
+	else
 	{
-		std::cout << "Error! Please close every bracket" << std::endl;
+		std::cout << "Error! Please check if the file exists!" << std::endl;
 		exit (1);
-	}
-	i = 0;
-	int j = 0;
-	while (i < count_serv)
-	{
-		parce_server	serv(config, i);
-	 	this->servers_data.push_back(serv);
-	 	i++;
 	}
  }
 
