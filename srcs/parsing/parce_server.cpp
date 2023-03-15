@@ -29,9 +29,14 @@ int set_port(std::vector<std::string> &tokens)
             {
                 if (!isdigit(*iter))
                 {
-                    std::cout<<"you must set a value for the port"<<std::endl;
+                    std::cout<<"a port must contain numbers"<<std::endl;
                     exit (1);
                 }
+            }
+            if (++it != tokens.end())
+            {
+                std::cout<<"just one value needed by port"<<std::endl;
+                exit (1);
             }
             std::stringstream ss(str);
             ss >> num;
@@ -47,33 +52,44 @@ int set_port(std::vector<std::string> &tokens)
     exit (1);
 }
 
-std::string set_host_name(std::vector<std::string> &tokens)
-{
-    std::vector<std::string>::iterator it = tokens.begin();
-    if (++it == tokens.end())
-        return ("127.0.0.1");
-    else
-    {
-        return (*it);
-    }
-}
+// std::string set_host_name(std::vector<std::string> &tokens)
+// {
+//     std::vector<std::string>::iterator it = tokens.begin();
+//     if (++it == tokens.end())
+//         return ("127.0.0.1");
+//     else
+//     {
+//         return (*it);
+//     }
+// }
 
 int set_max_client_body_size(std::vector<std::string> &tokens)
 {
     std::vector<std::string>::iterator it = tokens.begin();
     int num;
     if (++it == tokens.end())
-        return (1);
+    {
+        std::cout<<"You must set a value for max_client_body_size "<<std::endl;
+        exit(1);
+    }
     else
     {
         std::string str = *it;
         for(std::string::const_iterator it = str.begin(); it != str.end(); it++)
         {
             if (!isdigit(*it))
-                return (8080);
+            {
+                std::cout<<"max_client_body_size must contain a number"<<std::endl;
+                exit(1);
+            }
         }
         std::stringstream ss(str);
         ss >> num;
+    }
+    if (++it != tokens.end())
+    {
+        std::cout<<"You must set only one  value for max_client_body_size "<<std::endl;
+        exit(1);
     }
     return (num);
 }
@@ -84,17 +100,35 @@ std::vector<std::string> set_error_page(std::vector<std::string> &tokens)
     std::vector<std::string> tmp;
     if (++it == tokens.end())
     {
-        tmp.push_back("defualt");
-        return (tmp);
+        std::cout<<"you must set an error_page"<<std::endl;
+        exit(1);
     }
     else
     {
-        tmp.push_back(*it);
+        std::string str = *it;
+        for(std::string::const_iterator it = str.begin(); it != str.end(); it++)
+        {
+            if (!isdigit(*it))
+            {
+                std::cout<<"error_page must contain a number"<<std::endl;
+                exit(1);
+            }
+        }
+        tmp.push_back(str);
         if (++it == tokens.end())
-            return (tmp);
+        {
+            std::cout<<"error_page must have two argument's"<<std::endl;
+            exit(1);
+        }
         else
             tmp.push_back(*it);
+        if (++it != tokens.end())
+        {
+            std::cout<<"error_page must have only two argument's"<<std::endl;
+            exit(1);
+        }
     }
+
     return (tmp);
 }
 

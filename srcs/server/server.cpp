@@ -93,6 +93,7 @@ void    Server::serve_clients()
                 std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
                 drop_client(iter);
             }
+            // std::cout<<this-> _request_buff << std::endl;
             (*iter)->set_received_data(request_size);
             (*iter)->_request.append(this->_request_buff);
             if(!std::strcmp(this->_request_buff + request_size -  4, "\r\n\r\n"))
@@ -100,16 +101,26 @@ void    Server::serve_clients()
                 Request req((*iter)->_request);
                 (*iter)->request_pack = req.request;
 
-                //*******************************************************************
-                //*this block is for printing the content of the map<string, vector>*
-                //*******************************************************************
+                // *******************************************************************
+                // *this block is for printing the content of the map<string, vector>*
+                // *******************************************************************
 
-                // std::vector<std::string> vec = (*iter)->request_pack.find("PATH")->second;
-                // std::vector<std::string>::iterator iter = vec.begin();
-                // for(; iter != vec.end(); iter++)
-                // {
-                //     std::cout<<(*iter)<<std::endl;
-                // }
+                std::map<std::string, std::vector<std::string> >::iterator map = (*iter)->request_pack.find("METHOD");
+                if (map != (*iter)->request_pack.end())
+                {
+                    std::vector<std::string> vec = map->second;
+                    std::vector<std::string>::iterator iter = vec.begin();
+                    for(; iter != vec.end(); iter++)
+                    {
+                        if ((*iter) == "POST")
+                            //POST HERE
+                        if ((*iter) == "GET")
+                            //GET HERE
+                        if ((*iter) == "DELETE")
+                            //DELETE HERE
+                        std::cout<<(*iter)<<std::endl;
+                    }
+                }
                 // std::cout<<(*iter)->_request<<std::endl;
             }
         }
