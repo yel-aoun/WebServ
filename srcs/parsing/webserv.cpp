@@ -1,29 +1,6 @@
 # include "webserv.hpp"
-
-// std::string trim_spaces(std::string& str) {
-//     std::string::size_type first = str.find_first_not_of(' ');
-//     if (first == std::string::npos) {
-//         return "";
-//     }
-//     std::string::size_type last = str.find_last_not_of(' ');
-//     return str.substr(first, last - first + 1);
-// }
-
-// std::string	ft_trim_and_replace(std::string conf_file)
-// {
-// 	int len = conf_file.length();
-// 	int i = 0;
-// 	while (i  < len)
-// 	{
-// 		if (conf_file[i] == '\t')
-// 			conf_file.replace(i, 1, " ");
-// 		i++;
-// 	}
-// 	return (trim_spaces(conf_file));
-// }
-
- void Webserv::parce_config_file(std::string &conf_file)
- {
+void Webserv::parce_config_file(std::string &conf_file)
+{
 	int count_location = 0;
 	int count_serv = 0;
 	int count_loc = 0;
@@ -79,7 +56,7 @@
 		std::cout << "Error! Please check if the file exists!" << std::endl;
 		exit (1);
 	}
- }
+}
 
 Webserv::Webserv(std::string conf_file)
 {
