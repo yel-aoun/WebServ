@@ -1,6 +1,7 @@
 NAME = webserv
 SOURCES = main.cpp parsing/webserv.cpp parsing/location.cpp parsing/parce_server.cpp \
-					server/client.cpp server/server.cpp server/socket.cpp
+					server/client.cpp server/server.cpp server/socket.cpp \
+					request/request.cpp
 OBJ_PATH  = objs
 SRC_PATH = srcs
 
@@ -29,4 +30,4 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
-re : fclean all%
+re : fclean all

@@ -96,7 +96,22 @@ void    Server::serve_clients()
             (*iter)->set_received_data(request_size);
             (*iter)->_request.append(this->_request_buff);
             if(!std::strcmp(this->_request_buff + request_size -  4, "\r\n\r\n"))
-                std::cout << (*iter)->_request << std::endl;
+            {
+                Request req((*iter)->_request);
+                (*iter)->request_pack = req.request;
+
+                //*******************************************************************
+                //*this block is for printing the content of the map<string, vector>*
+                //*******************************************************************
+
+                // std::vector<std::string> vec = (*iter)->request_pack.find("PATH")->second;
+                // std::vector<std::string>::iterator iter = vec.begin();
+                // for(; iter != vec.end(); iter++)
+                // {
+                //     std::cout<<(*iter)<<std::endl;
+                // }
+                // std::cout<<(*iter)->_request<<std::endl;
+            }
         }
     }
 }

@@ -9,6 +9,8 @@
 #include <sstream>
 #include "location.hpp"
 
+#define P   int i;
+
 class parce_server
 {
     public :

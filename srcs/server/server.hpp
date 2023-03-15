@@ -9,9 +9,10 @@
 #include <iterator>
 #include <list>
 #include "../parsing/parce_server.hpp"
+#include "../request/request.hpp"
 
 #define PORT                int
-#define MAX_REQUEST_SIZE    10
+#define MAX_REQUEST_SIZE    1024
 
 class Server
 {
