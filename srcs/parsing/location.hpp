@@ -34,5 +34,29 @@ class location
     void FillAuto_index(std::string prompt);
     std::string trim_directory(int slash);
     void initialize();
+    std::string get_locations() const
+    {
+        return (this->locations);
+    }
+    std::list<std::string> get_allow_methods() const
+    {
+        return (this->allow_methods);
+    }
+    std::list<std::string> get_index() const
+    {
+        return (this->index);
+    }
+    std::string get_cgi_pass() const
+    {
+        return (this->cgi_pass);
+    }
+    std::string get_upload_pass() const
+    {
+        return (this->upload_pass);
+    }
+    std::string get_auto_index() const
+    {
+        return (this->auto_index);
+    }
 };
 # endif

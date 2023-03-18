@@ -13,6 +13,11 @@ Server::Server(parce_server &server_data)
     this->_server_socket = socket.get_socket();
 }
 
+std::list<location> Server::get_locations() const
+{
+    return(this->_locations);
+};
+
 void  Server::init_sockfds()
 {
     FD_ZERO(&this->_reads);
@@ -93,7 +98,7 @@ void    Server::serve_clients()
                 std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
                 drop_client(iter);
             }
-            // std::cout<<this-> _request_buff << std::endl;
+               //std::cout<<this-> _request_buff << std::endl;
             (*iter)->set_received_data(request_size);
             (*iter)->_request.append(this->_request_buff);
             if(!std::strcmp(this->_request_buff + request_size -  4, "\r\n\r\n"))
@@ -109,19 +114,26 @@ void    Server::serve_clients()
                 if (map != (*iter)->request_pack.end())
                 {
                     std::vector<std::string> vec = map->second;
-                    std::vector<std::string>::iterator iter = vec.begin();
-                    for(; iter != vec.end(); iter++)
+                    std::vector<std::string>::iterator itt = vec.begin();
+                    for(; itt != vec.end(); itt++)
                     {
-                        if ((*iter) == "POST")
+                        if ((*itt) == "POST")
+                        {
+                            //std::cout << "*-*-**-*-*-*-*-**-*-*-" << std::endl;
+                            //std::cout << _request_buff << std::endl;
+                            //std::string body = _request_buff;
+                            //std::cout << body << std::endl;
+                            req.post((*iter)->_request, *this, iter);
+                        }
                             //POST HERE
-                        if ((*iter) == "GET")
+                       // if ((*iter) == "GET")
                             //GET HERE
-                        if ((*iter) == "DELETE")
+                        //if ((*iter) == "DELETE")
                             //DELETE HERE
-                        std::cout<<(*iter)<<std::endl;
+                        //std::cout<<(*iter)<<std::endl;
                     }
                 }
-                // std::cout<<(*iter)->_request<<std::endl;
+                //std::cout<<(*iter)->_request<<std::endl;
             }
         }
     }

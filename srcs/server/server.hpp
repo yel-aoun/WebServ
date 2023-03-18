@@ -12,7 +12,7 @@
 #include "../request/request.hpp"
 
 #define PORT                int
-#define MAX_REQUEST_SIZE    1024
+#define MAX_REQUEST_SIZE    10
 
 class Server
 {
@@ -38,6 +38,7 @@ class Server
     public:
         Server(parce_server &server_data);
         void    run_serve();
+        std::list<location>     get_locations() const;
         // const char *get_client_address(Client *);
         // void    serve_resource(Client client, const char *path);
         ~Server();

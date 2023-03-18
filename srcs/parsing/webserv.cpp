@@ -85,7 +85,7 @@ void Webserv::run_webservs()
 		for(iter = this->servers.begin(); iter != this->servers.end(); iter++)
 		{
 			(*iter)->run_serve();
-			std::cout<<"runing servers"<<std::endl;
+			std::cout<<"running servers"<<std::endl;
 		}
 	}
 }

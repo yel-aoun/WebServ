@@ -6,6 +6,13 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include "../server/server.hpp"
+#include "../parsing/parce_server.hpp"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+class Server;
+class location;
 class Request
 {
     private:
@@ -16,5 +23,6 @@ class Request
         std::map<std::string, std::vector<std::string> > request;
         Request();
         Request(std::string &buffer);
+        void post(std::string buff, Server serv, std::list<Client *>::iterator iter);
 };
 #endif
