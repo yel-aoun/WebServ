@@ -102,15 +102,18 @@ void    Server::serve_clients()
                //std::cout<<this-> _request_buff << std::endl;
             (*iter)->set_received_data(request_size);
             (*iter)->_request.append(this->_request_buff);
+            std::cout << this->_request_buff;
             if(!(*iter)->_request_type)
             {
                 if(std::strstr((*iter)->_request.c_str() , "\r\n\r\n"))
                 {
                     Request req((*iter)->_request, iter);
 
-                    std::cout << (*iter)->_request << std::endl;
                     if((*iter)->method == "POST")
+                    {
                         (*iter)->_request_type = true;
+                        (*iter)->post.exec_head(_request_buff, *this, (*iter)->path);
+                    }
                     // // *******************************************************************
                     // // *this block is for printing the content of the map<string, vector>*
                     // // *******************************************************************
@@ -135,7 +138,8 @@ void    Server::serve_clients()
             }
             else
             {
-                std::cout << this->_request_buff << std::endl;
+                
+                (*iter)->post.exec_body(_request_buff, *this, (*iter)->path);
             }
         }
     }

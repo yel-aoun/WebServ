@@ -1,6 +1,5 @@
 #include "client.hpp"
-
-Client::Client(): _received_data(0) 
+Client::Client(): _received_data(0)
 {
     this->_address_length = sizeof(this->_address);
     this->_request_type = false;

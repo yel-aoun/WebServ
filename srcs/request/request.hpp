@@ -14,6 +14,7 @@
 #include "../server/client.hpp"
 class Server;
 class location;
+class Client;
 class Request
 {
     private:
@@ -28,6 +29,5 @@ class Request
         std::map<std::string, std::vector<std::string> > request;
         Request();
         Request(std::string &buffer, std::list<Client *>::iterator   iter);
-        void post(std::string buff, Server serv, std::list<Client *>::iterator iter);
 };
 #endif

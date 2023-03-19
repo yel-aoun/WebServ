@@ -4,16 +4,14 @@
 #include "client.hpp"
 #include "socket.hpp"
 #include <cstring>
-
+#include "../request/request.hpp"
 #include <iostream>
 #include <iterator>
 #include <list>
 #include "../parsing/parce_server.hpp"
-#include "../request/request.hpp"
 
 #define PORT                int
 #define MAX_REQUEST_SIZE    1024
-
 class Server
 {
     private:
