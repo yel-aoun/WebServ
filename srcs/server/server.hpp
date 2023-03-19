@@ -12,7 +12,7 @@
 #include "../request/request.hpp"
 
 #define PORT                int
-#define MAX_REQUEST_SIZE    10
+#define MAX_REQUEST_SIZE    1024
 
 class Server
 {
@@ -27,7 +27,7 @@ class Server
         SOCKET                  _server_socket;
         SOCKET                  _max_socket;
         std::list<Client *>     _clients;
-        char                    _request_buff[MAX_REQUEST_SIZE + 1]; 
+        char                    _request_buff[MAX_REQUEST_SIZE + 1];
 
         void    init_sockfds();
         void    wait_on_clients();

@@ -38,7 +38,7 @@ void    Server::wait_on_clients()
     struct timeval restrict;
 
     this->init_sockfds();
-    restrict.tv_sec = 1;
+    restrict.tv_sec = 10;
     restrict.tv_usec = 0;
     if (select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict) < 0)
     {
@@ -97,43 +97,45 @@ void    Server::serve_clients()
             {
                 std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
                 drop_client(iter);
+                continue;
             }
                //std::cout<<this-> _request_buff << std::endl;
             (*iter)->set_received_data(request_size);
             (*iter)->_request.append(this->_request_buff);
-            if(!std::strcmp(this->_request_buff + request_size -  4, "\r\n\r\n"))
+            if(!(*iter)->_request_type)
             {
-                Request req((*iter)->_request);
-                (*iter)->request_pack = req.request;
-
-                // *******************************************************************
-                // *this block is for printing the content of the map<string, vector>*
-                // *******************************************************************
-
-                std::map<std::string, std::vector<std::string> >::iterator map = (*iter)->request_pack.find("METHOD");
-                if (map != (*iter)->request_pack.end())
+                if(std::strstr((*iter)->_request.c_str() , "\r\n\r\n"))
                 {
-                    std::vector<std::string> vec = map->second;
-                    std::vector<std::string>::iterator itt = vec.begin();
-                    for(; itt != vec.end(); itt++)
-                    {
-                        if ((*itt) == "POST")
-                        {
-                            //std::cout << "*-*-**-*-*-*-*-**-*-*-" << std::endl;
-                            //std::cout << _request_buff << std::endl;
-                            //std::string body = _request_buff;
-                            //std::cout << body << std::endl;
-                            req.post((*iter)->_request, *this, iter);
-                        }
-                            //POST HERE
-                       // if ((*iter) == "GET")
-                            //GET HERE
-                        //if ((*iter) == "DELETE")
-                            //DELETE HERE
-                        //std::cout<<(*iter)<<std::endl;
-                    }
+                    Request req((*iter)->_request, iter);
+
+                    std::cout << (*iter)->_request << std::endl;
+                    if((*iter)->method == "POST")
+                        (*iter)->_request_type = true;
+                    // // *******************************************************************
+                    // // *this block is for printing the content of the map<string, vector>*
+                    // // *******************************************************************
+
+                    // std::map<std::string, std::vector<std::string> >::iterator map = (*iter)->request_pack.find("METHOD");
+                    // if (map != (*iter)->request_pack.end())
+                    // {
+                    //     std::vector<std::string> vec = map->second;
+                    //     std::vector<std::string>::iterator itt = vec.begin();
+                    //     for(; itt != vec.end(); itt++)
+                    //     {
+                    //         if ((*itt) == "POST")
+                    //             (*iter)->_request_type = true;
+                    //         // else if((*itt) == "GET")
+                    //         //     run get Request
+                    //         // else if((itt) == "DELETE")
+                    //         //     run delete request
+                    //         std::cout<<*itt<<std::endl;
+                    //     }
+                    // }
                 }
-                //std::cout<<(*iter)->_request<<std::endl;
+            }
+            else
+            {
+                std::cout << this->_request_buff << std::endl;
             }
         }
     }

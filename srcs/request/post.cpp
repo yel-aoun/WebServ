@@ -33,6 +33,8 @@ int hexToDec(const std::string& hexStr) {
 
 std::string seperate_header(std::string buff)
 {
+    if (buff.find("\r\n\r\n") == -1)
+        return (buff);
     int x = buff.find("\r\n\r\n") + 2;
     std::string body = buff.substr(x, buff.size() - (x + 1));
     return (body);
@@ -66,6 +68,7 @@ void Request::post(std::string buff, Server serv, std::list<Client *>::iterator 
                 {
                     std::string body = seperate_header(buff);
                     std::string hex = check_hexa(body);
+                    std::cout << "HEX ===== " << hex << std::endl;
                     int num_to_read = hexToDec(hex);
                      int ind = skip_hex(body);
                     file.write(&body[ind], num_to_read);

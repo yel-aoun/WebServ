@@ -16,11 +16,18 @@ class Client
     private:
         SOCKET  _sockfd;
         DATA    _received_data;
+        
     public:
         std::map<std::string, std::vector<std::string> >  request_pack;
+        std::string method;
+        std::string path;
+        std::string query;
+        std::string http;
+
         socklen_t       _address_length;
         sock_storage    _address;
         std::string     _request;
+        bool            _request_type;
         Client();
         Client(const Client& rhs);
         Client          &operator=(const Client& rhs);

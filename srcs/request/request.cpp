@@ -1,6 +1,6 @@
 # include "request.hpp"
 
-Request::Request(std::string &buffer)
+Request::Request(std::string &buffer, std::list<Client *>::iterator   iter)
 {
     std::stringstream ss(buffer);
     std::string token;
@@ -10,6 +10,11 @@ Request::Request(std::string &buffer)
         fill_map_request(token);
         i++;
     }
+    (*iter)->request_pack = this->request;
+    (*iter)->method = this->method;
+    (*iter)->path = this->path;
+    (*iter)->query = this->query;
+    (*iter)->http = this->http;
 }
 
 void    Request::fill_map_request(std::string   &buff_line)
@@ -19,32 +24,20 @@ void    Request::fill_map_request(std::string   &buff_line)
     ss >> token;
     if (token == "GET" || token == "POST" || token == "DELETE")
     {
-        std::vector<std::string> meth;
-        meth.push_back(token);
-        this->request.insert(std::make_pair("METHOD",meth));
+        this->method = token;
         ss >> token;
         std::vector<std::string> path_query;
         std::stringstream str(token);
         std::string splt;
         while (getline(str, splt, '?'))
-        {
             path_query.push_back(splt);
-        }
         std::vector<std::string>::iterator iter = path_query.begin();
-        std::vector<std::string> path;
         std::string find = from_hexa_to_decimal(*iter);
-        path.push_back(find);
-        this->request.insert(std::make_pair("PATH",path));
+        this->path = find;
         if (++iter  != path_query.end())
-        {
-            std::vector<std::string> query;
-            query.push_back(*iter);
-            this->request.insert(std::make_pair("query",query));
-        }
+            this->query = *iter;
         ss >> token;
-        std::vector<std::string> http;
-        http.push_back(token);
-        this->request.insert(std::make_pair("HTTP",http));
+        this->http = token;
     }
    else
    {
