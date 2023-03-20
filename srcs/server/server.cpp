@@ -107,10 +107,12 @@ void    Server::serve_clients()
                 if(std::strstr((*iter)->_request.c_str() , "\r\n\r\n"))
                 {
                     Request req((*iter)->_request, iter);
-
-                    std::cout << (*iter)->_request << std::endl;
+                    check_path((*iter)->path, (*iter)->request_pack);
                     if((*iter)->method == "POST")
                         (*iter)->_request_type = true;
+                    // std::cout << (*iter)->_request << std::endl;
+                    // else if ((*iter)->method == "GET")
+                    //     Get((*iter)->path)
                     // // *******************************************************************
                     // // *this block is for printing the content of the map<string, vector>*
                     // // *******************************************************************
@@ -128,15 +130,15 @@ void    Server::serve_clients()
                     //         //     run get Request
                     //         // else if((itt) == "DELETE")
                     //         //     run delete request
-                    //         std::cout<<*itt<<std::endl;
+                            std::cout<<(*iter)->_request<<std::endl;
                     //     }
                     // }
                 }
             }
-            else
-            {
-                std::cout << this->_request_buff << std::endl;
-            }
+            // else
+            // {
+            //     std::cout << this->_request_buff << std::endl;
+            // }
         }
     }
 }
@@ -158,4 +160,29 @@ void    Server::drop_client(std::list<Client *>::iterator client)
 Server::~Server()
 {
     // close server socket;
+}
+
+void    Server::check_path(std::string &path, std::map<std::string, std::vector<std::string> > &map_req)
+{
+    check_transfer_in_coding(map_req);
+}
+
+void    Server::check_transfer_in_coding(std::map<std::string, std::vector<std::string> > &map_req)
+{
+    std::map<std::string, std::vector<std::string> >::iterator map = map_req.find("Transfer-Encoding");
+    if (map != map_req.end())
+    {
+        std::vector<std::string> vec = map->second;
+        std::vector<std::string>::iterator itt = vec.begin();
+        for(; itt != vec.end(); itt++)
+        {
+            if ((*itt) != "chunked")
+            {
+                std::cout<< "error /501"<<std::endl;
+                // sent a 501 error page and drop client
+                return ;
+            }
+        }
+    }
+    return ;
 }
