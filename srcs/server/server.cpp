@@ -118,27 +118,25 @@ void    Server::serve_clients()
                     // // *this block is for printing the content of the map<string, vector>*
                     // // *******************************************************************
 
-                    // std::map<std::string, std::vector<std::string> >::iterator map = (*iter)->request_pack.find("METHOD");
-                    // if (map != (*iter)->request_pack.end())
-                    // {
-                    //     std::vector<std::string> vec = map->second;
-                    //     std::vector<std::string>::iterator itt = vec.begin();
-                    //     for(; itt != vec.end(); itt++)
-                    //     {
-                    //         if ((*itt) == "POST")
-                    //             (*iter)->_request_type = true;
-                    //         // else if((*itt) == "GET")
-                    //         //     run get Request
-                    //         // else if((itt) == "DELETE")
-                    //         //     run delete request
-                    //         std::cout<<*itt<<std::endl;
-                    //     }
-                    // }
+                    std::map<std::string, std::vector<std::string> >::iterator map = (*iter)->request_pack.find("Content-Type");
+                    if (map != (*iter)->request_pack.end())
+                    {
+                        std::vector<std::string> vec = map->second;
+                        std::vector<std::string>::iterator itt = vec.begin();
+                        for(; itt != vec.end(); itt++)
+                        {
+                            if ((*itt) == "POST")
+                                (*iter)->_request_type = true;
+                            // else if((*itt) == "GET")
+                            //     run get Request
+                            // else if((itt) == "DELETE")
+                            //     run delete request
+                        }
+                    }
                 }
             }
             else
             {
-                
                 (*iter)->post.exec_body(_request_buff, *this, (*iter)->path);
             }
         }
