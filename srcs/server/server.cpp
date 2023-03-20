@@ -113,8 +113,9 @@ void    Server::serve_clients()
 
                     if((*iter)->method == "POST")
                     {
-                        (*iter)->_request_type = true;
-                        // (*iter)->post.exec_head(_request_buff, *this, (*iter)->path);
+                        //OPERATOR OVERLOAD
+                        Post p((*iter)->content_type, (*iter)->boundary);
+                        (*iter)->post = p;
                     }
 
                 }

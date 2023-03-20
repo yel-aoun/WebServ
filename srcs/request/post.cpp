@@ -2,11 +2,14 @@
 #include "post.hpp"
 #include "../server/server.hpp"
 #include "../parsing/location.hpp"
+#include "../server/client.hpp"
 
 
-Post::Post(): body_or_head(0), _post_type(0)
+Post::Post(int content_type, std::string boundary): body_or_head(0), _post_type(0)
 {
-    this->generate_extensions();
+    this->_post_type = content_type;
+    this->boundary = boundary;
+    // this->generate_extensions();
     // this->_post_func[0] = &this->normal_post;
 }
 
@@ -32,7 +35,7 @@ int Post::hexToDec(const std::string& hexStr) {
     return decNum;
 }
 
-std::string Post::seperate_header(std::string buff)
+std::string Post::seperate_header(std::string buff, std::list<Client *>::iterator   iter)
 {
     if (body_or_head == 1)
         return (buff);
@@ -40,8 +43,8 @@ std::string Post::seperate_header(std::string buff)
         return (buff);
     int x = buff.find("\r\n\r\n") + 2;
     std::string body = buff.substr(x, buff.size() - (x + 1));
-    body_or_head = 1;
-    
+    this->_post_type = (*iter)->content_type;
+
     return (body);
 }
 
@@ -94,7 +97,6 @@ void Post::exec_head(std::string buff, Server &serv, std::string &path)
 
 void Post::exec_body(std::string buff, Server &serv, std::string &path)
 {
-    std::cout << "Hello22222222222222222" << std::endl;
     if (!path.empty())
     {
         std::list<location> loc = serv.get_locations();
@@ -122,25 +124,6 @@ void Post::exec_body(std::string buff, Server &serv, std::string &path)
         }
     }
 }
-//  //   std::ofstream outfile("test2.txt"); 
-
-//     // if (outfile.is_open())
-//     // {
-        
-//     // }
-//     // ifstream file("myfile.txt");
-//     // if (!file.is_open()) {
-//     //     cerr << "Error opening file." << endl;
-//     //     return 1;
-//     // }
-//     // char buffer[1024];
-//     // while (!file.eof()) {
-//     //     file.read(buffer, sizeof(buffer));
-//     //     int size = file.gcount();
-//     //     send_chunk(sockfd, buffer, size);
-//     //}
-
-// }
 
 std::string Post::generate_file_name(std::string mime_type)
 {

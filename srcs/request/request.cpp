@@ -47,12 +47,13 @@ void    Request::fill_map_request(std::string   &buff_line)
         int len = token.length();
         std::string key = token.substr(0, len - 1);
         if (key == "Content-Type")
-        {
+        { 
             ss >> token;
-            ss >> token;
-            this->content_type = 1;
-            this->boundary = &token[9];
-            std::cout<<this->boundary<<std::endl;
+            if (ss >> token)
+            {
+                this->content_type = 1;
+                this->boundary = &token[9];
+            }   
         }
         else
         {
