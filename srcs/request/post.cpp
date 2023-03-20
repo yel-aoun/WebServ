@@ -1,5 +1,5 @@
 
-#include "post.hpp"
+#include "Post.hpp"
 #include "../server/server.hpp"
 #include "../parsing/location.hpp"
 
