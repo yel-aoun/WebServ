@@ -2,12 +2,18 @@
 #include "Post.hpp"
 #include "../server/server.hpp"
 #include "../parsing/location.hpp"
+#include "../server/client.hpp"
 
 
 Post::Post(): body_or_head(0), _post_type(0)
 {
     this->generate_extensions();
-    // this->_post_func[0] = &this->normal_post;
+}
+
+void    Post::call_post_func(Server &serv, std::string &path)
+{
+    if(this->_post_type == 0)
+        this->normal_post(serv, path);
 }
 
 std::string Post::check_hexa(std::string buff)
@@ -32,23 +38,30 @@ int Post::hexToDec(const std::string& hexStr) {
     return decNum;
 }
 
-std::string Post::seperate_header(std::string buff)
+
+
+
+void    Post::normal_post(Server &serv, std::string &path)
 {
-    if (body_or_head == 1)
-        return (buff);
-    if (buff.find("\r\n\r\n") == -1)
-        return (buff);
-    int x = buff.find("\r\n\r\n") + 2;
-    std::string body = buff.substr(x, buff.size() - (x + 1));
-    body_or_head = 1;
-    
-    return (body);
-}
-
-
-void        normal_post(std::string buff, Server &serv)
-{
-
+    std::list<location> loc = serv.get_locations();
+    std::ofstream file;
+       for (std::list<location>::iterator it = loc.begin(); it != loc.end(); ++it)
+       {
+           if (it->get_locations() == path)
+           {
+               if (access(it->get_upload_pass().c_str(), F_OK))
+                   int status = mkdir(it->get_upload_pass().c_str(), 0777);
+                if(access(std::strcat(const_cast<char *>(it->get_upload_pass().c_str()), "/testing"), F_OK))
+                    file(it->get_upload_pass() + "/testing");
+                else
+                    file.open(it->get_upload_pass() + "/testing");
+                if (file.is_open())
+                {
+                    if(!file.write(serv._request_buff, std::strlen(serv._request_buff)))
+                        file.close();
+                }
+           }
+       }
 }
 
 int Post::skip_hex(std::string body)
@@ -62,39 +75,38 @@ int Post::skip_hex(std::string body)
 
 void Post::exec_head(std::string buff, Server &serv, std::string &path)
 {
-    std::cout << "Hello" << std::endl;
-    if (!path.empty())
-    {
-        std::list<location> loc = serv.get_locations();
-        for (std::list<location>::iterator it = loc.begin(); it != loc.end(); ++it)
-        {
-            if (it->get_locations() == path)
-            {
-                if (access(it->get_upload_pass().c_str(), F_OK))
-                    int status = mkdir(it->get_upload_pass().c_str(), 0777);
-                std::ofstream file(it->get_upload_pass() + "/testing");
-                if (file.is_open())
-                {
-                    std::string body = seperate_header(buff);
-                    std::string hex = check_hexa(body);
-                    int num_to_read = hexToDec(hex);
-                     int ind = skip_hex(body);
-                    file.write(&body[ind], num_to_read);
-                    //if (i == body.find("\r\n0\r\n"))
-                    //{
-                        file.close();
-                      //  break;
-                    //}
-                }
-            }
-        }
-    }
+    // std::cout << "Hello" << std::endl;
+    // if (!path.empty())
+    // {
+    //     std::list<location> loc = serv.get_locations();
+    //     for (std::list<location>::iterator it = loc.begin(); it != loc.end(); ++it)
+    //     {
+    //         if (it->get_locations() == path)
+    //         {
+    //             if (access(it->get_upload_pass().c_str(), F_OK))
+    //                 int status = mkdir(it->get_upload_pass().c_str(), 0777);
+    //             std::ofstream file(it->get_upload_pass() + "/testing");
+    //             if (file.is_open())
+    //             {
+    //                 std::string body = seperate_header(buff);
+    //                 std::string hex = check_hexa(body);
+    //                 int num_to_read = hexToDec(hex);
+    //                  int ind = skip_hex(body);
+    //                 file.write(&body[ind], num_to_read);
+    //                 //if (i == body.find("\r\n0\r\n"))
+    //                 //{
+    //                     file.close();
+    //                   //  break;
+    //                 //}
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 
 void Post::exec_body(std::string buff, Server &serv, std::string &path)
 {
-    std::cout << "Hello22222222222222222" << std::endl;
     if (!path.empty())
     {
         std::list<location> loc = serv.get_locations();
@@ -122,25 +134,6 @@ void Post::exec_body(std::string buff, Server &serv, std::string &path)
         }
     }
 }
-//  //   std::ofstream outfile("test2.txt"); 
-
-//     // if (outfile.is_open())
-//     // {
-        
-//     // }
-//     // ifstream file("myfile.txt");
-//     // if (!file.is_open()) {
-//     //     cerr << "Error opening file." << endl;
-//     //     return 1;
-//     // }
-//     // char buffer[1024];
-//     // while (!file.eof()) {
-//     //     file.read(buffer, sizeof(buffer));
-//     //     int size = file.gcount();
-//     //     send_chunk(sockfd, buffer, size);
-//     //}
-
-// }
 
 std::string Post::generate_file_name(std::string mime_type)
 {

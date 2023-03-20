@@ -103,33 +103,26 @@ void    Server::serve_clients()
             }
             (*iter)->set_received_data(request_size);
             (*iter)->_request.append(this->_request_buff);
-
             if(!(*iter)->_request_type)
             {
                 if(std::strstr((*iter)->_request.c_str() , "\r\n\r\n"))
                 {
                     Request req((*iter)->_request, iter);
                     check_path(iter);
-
                     if((*iter)->method == "POST")
+                    if(req.method == "POST")
                     {
+                        check_path((*iter)->path, (*iter)->request_pack, (*iter)->content_type, iter);
+                        (*iter)->init_post_data();
                         (*iter)->_request_type = true;
-                        // (*iter)->post.exec_head(_request_buff, *this, (*iter)->path);
+                        std::strcpy(this->_request_buff, (this->seperate_header(this->_request_buff).c_str()));
+                        (*iter)->post.call_post_func(*this, (*iter)->path);
                     }
-
                 }
             }
-            std::map<std::string, std::vector<std::string> >::iterator map = (*iter)->request_pack.find("Content-Type");
-            if (map != (*iter)->request_pack.end())
+            else // this else is for just post becouse post containe the body.
             {
-                std::vector<std::string> vec = map->second;
-                std::vector<std::string>::iterator itt = vec.begin();
-                for(; itt != vec.end(); itt++)
-                {
-                    if ((*itt) == "POST")
-                        (*iter)->_request_type = true;
-
-                }
+                (*iter)->post.call_post_func(*this, (*iter)->path);
             }
         }
     }
@@ -152,6 +145,13 @@ void    Server::drop_client(std::list<Client *>::iterator client)
 Server::~Server()
 {
     // close server socket;
+}
+
+std::string Server::seperate_header(std::string buff)
+{
+    int x = buff.find("\r\n\r\n") + 2;
+    std::string body = buff.substr(x, buff.size() - (x + 1));
+    return (body.c_str());
 }
 
 void    Server::check_path(std::list<Client *>::iterator iter)
@@ -265,6 +265,6 @@ void    Server::check_uri(std::list<Client *>::iterator iter)
         return ;
     }
     // check for request body if larger than client max body size
-    get_matched_location_for_request_uri();
+    // get_matched_location_for_request_uri();
 }
 
