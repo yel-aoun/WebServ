@@ -102,15 +102,19 @@ void    Server::serve_clients()
                //std::cout<<this-> _request_buff << std::endl;
             (*iter)->set_received_data(request_size);
             (*iter)->_request.append(this->_request_buff);
+            // std::cout << this->_request_buff;
             if(!(*iter)->_request_type)
             {
                 if(std::strstr((*iter)->_request.c_str() , "\r\n\r\n"))
                 {
                     Request req((*iter)->_request, iter);
-                    check_path((*iter)->path, (*iter)->request_pack);
-                    if((*iter)->method == "POST")
-                        (*iter)->_request_type = true;
+                    check_path((*iter)->path, (*iter)->request_pack, (*iter)->content_type);
                     // std::cout << (*iter)->_request << std::endl;
+                    if((*iter)->method == "POST")
+                    {
+                        (*iter)->_request_type = true;
+                        // (*iter)->post.exec_head(_request_buff, *this, (*iter)->path);
+                    }
                     // else if ((*iter)->method == "GET")
                     //     Get((*iter)->path)
                     // // *******************************************************************
@@ -130,7 +134,7 @@ void    Server::serve_clients()
                     //         //     run get Request
                     //         // else if((itt) == "DELETE")
                     //         //     run delete request
-                            std::cout<<(*iter)->_request<<std::endl;
+                    //         // std::cout<<(*iter)->_request<<std::endl;
                     //     }
                     // }
                 }
@@ -139,8 +143,27 @@ void    Server::serve_clients()
             // {
             //     std::cout << this->_request_buff << std::endl;
             // }
+            std::map<std::string, std::vector<std::string> >::iterator map = (*iter)->request_pack.find("Content-Type");
+            if (map != (*iter)->request_pack.end())
+            {
+                std::vector<std::string> vec = map->second;
+                std::vector<std::string>::iterator itt = vec.begin();
+                for(; itt != vec.end(); itt++)
+                {
+                    if ((*itt) == "POST")
+                        (*iter)->_request_type = true;
+                    // else if((*itt) == "GET")
+                    //     run get Request
+                    // else if((itt) == "DELETE")
+                    //     run delete request
+                }
+            }
         }
     }
+    // else
+    // {
+    //     (*iter)->post.exec_body(_request_buff, *this, (*iter)->path);
+    // }
 }
 
 void    Server::drop_client(std::list<Client *>::iterator client)
@@ -162,17 +185,17 @@ Server::~Server()
     // close server socket;
 }
 
-void    Server::check_path(std::string &path, std::map<std::string, std::vector<std::string> > &map_req)
+void    Server::check_path(std::string &path, std::map<std::string, std::vector<std::string> > &map_req, int &content_type)
 {
-    check_transfer_in_coding(map_req);
+    check_transfer_in_coding(map_req, content_type);
 }
 
-void    Server::check_transfer_in_coding(std::map<std::string, std::vector<std::string> > &map_req)
+void    Server::check_transfer_in_coding(std::map<std::string, std::vector<std::string> > &map_req, int &content_type)
 {
-    std::map<std::string, std::vector<std::string> >::iterator map = map_req.find("Transfer-Encoding");
-    if (map != map_req.end())
+    std::map<std::string, std::vector<std::string> >::iterator m_ap = map_req.find("Transfer-Encoding");
+    if (m_ap != map_req.end())
     {
-        std::vector<std::string> vec = map->second;
+        std::vector<std::string> vec = m_ap->second;
         std::vector<std::string>::iterator itt = vec.begin();
         for(; itt != vec.end(); itt++)
         {
@@ -181,6 +204,16 @@ void    Server::check_transfer_in_coding(std::map<std::string, std::vector<std::
                 std::cout<< "error /501"<<std::endl;
                 // sent a 501 error page and drop client
                 return ;
+            }
+            else
+            {
+                if (content_type == 1)
+                {
+                    std::cout<<"error not implemented"<<std::endl;
+                    exit(0);
+                }
+                else
+                    content_type = 2;
             }
         }
     }

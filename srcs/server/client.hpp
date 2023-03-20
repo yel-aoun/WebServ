@@ -5,12 +5,10 @@
 #include <iostream>
 #include <map>
 #include <vector>
-
+#include "../request/Post.hpp"
 #define SOCKET  int
 #define DATA    int
-
 typedef struct sockaddr_storage sock_storage;
-
 class Client
 {
     private:
@@ -19,15 +17,18 @@ class Client
         
     public:
         std::map<std::string, std::vector<std::string> >  request_pack;
-        std::string method;
-        std::string path;
-        std::string query;
-        std::string http;
-
+        //std::vector<std::string> method
+        std::string     method;
+        int             content_type;
+        std::string     boundary;
+        std::string     path;
+        std::string     query;
+        std::string     http;
+        Post            post;
         socklen_t       _address_length;
         sock_storage    _address;
         std::string     _request;
-        bool            _request_type;
+        int             _request_type;
         Client();
         Client(const Client& rhs);
         Client          &operator=(const Client& rhs);

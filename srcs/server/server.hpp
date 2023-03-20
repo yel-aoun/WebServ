@@ -4,16 +4,14 @@
 #include "client.hpp"
 #include "socket.hpp"
 #include <cstring>
-
+#include "../request/request.hpp"
 #include <iostream>
 #include <iterator>
 #include <list>
 #include "../parsing/parce_server.hpp"
-#include "../request/request.hpp"
 
 #define PORT                int
 #define MAX_REQUEST_SIZE    1024
-
 class Server
 {
     private:
@@ -36,8 +34,8 @@ class Server
         void    drop_client(std::list<Client *>::iterator client);
         void    serve_clients();
 
-        void    check_path(std::string &path, std::map<std::string, std::vector<std::string> > &map);
-        void    check_transfer_in_coding(std::map<std::string, std::vector<std::string> > &map_req);
+        void    check_path(std::string &path, std::map<std::string, std::vector<std::string> > &map, int &content_type);
+        void    check_transfer_in_coding(std::map<std::string, std::vector<std::string> > &map_req, int &content_type);
 
     public:
         Server(parce_server &server_data);
