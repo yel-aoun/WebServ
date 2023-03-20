@@ -1,17 +1,7 @@
 #ifndef REQUEST_HPP
 #define REQUEST_HPP
 
-#include <map>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include "../server/server.hpp"
-#include "../parsing/parce_server.hpp"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include "../server/client.hpp"
+#include "../headers_cpp.hpp"
 class Server;
 class location;
 class Client;

@@ -1,11 +1,7 @@
 #ifndef SOCKET_HPP
 #define SOCKET_HPP
 
-#include <sys/socket.h>
-#include <iostream>
-#include <netdb.h>
-#include <string.h>
-#include <unistd.h>
+#include "../headers_cpp.hpp"
 
 #define ISVALIDSOCKET(s) ((s) >= 0)
 #define CLOSESOCKET(s) close(s)

@@ -1,4 +1,7 @@
 # include "webserv.hpp"
+# include "../server/server.hpp"
+# include "parce_server.hpp"
+
 void Webserv::parce_config_file(std::string &conf_file)
 {
 	int count_location = 0;

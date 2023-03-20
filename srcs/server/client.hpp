@@ -1,14 +1,14 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-#include <sys/socket.h>
-#include <iostream>
-#include <map>
-#include <vector>
-#include "../request/Post.hpp"
+#include "../headers_cpp.hpp"
+
 #define SOCKET  int
 #define DATA    int
+
+#include "../request/post.hpp"
 typedef struct sockaddr_storage sock_storage;
+
 class Client
 {
     private:

@@ -1,13 +1,8 @@
 # ifndef PARCE_SERVER_HPP
 # define PARCE_SERVER_HPP
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-# include <list>
-#include <sstream>
-#include "location.hpp"
+# include "../headers_cpp.hpp"
+# include "location.hpp"
 
 #define P   int i;
 

@@ -1,13 +1,7 @@
 # ifndef LOCATION_HPP
 # define LOCATION_HPP
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <list>
-#include <vector>
-#include <unistd.h>
-#include <sstream>
+#include "../headers_cpp.hpp"
 
 class location
 {

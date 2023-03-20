@@ -1,4 +1,5 @@
 #include "client.hpp"
+
 Client::Client(): _received_data(0)
 {
     this->_address_length = sizeof(this->_address);

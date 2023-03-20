@@ -1,6 +1,8 @@
 #include "server.hpp"
-
-static int i = 0;
+#include "../parsing/location.hpp"
+#include "../parsing/parce_server.hpp"
+#include "socket.hpp"
+#include "client.hpp"
 
 Server::Server(parce_server &server_data)
 {

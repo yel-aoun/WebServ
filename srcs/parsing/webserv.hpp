@@ -1,15 +1,9 @@
 # ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <list>
-#include <algorithm>
-#include "parce_server.hpp"
-#include "../server/server.hpp"
-
+# include "../headers_cpp.hpp"
+# include "parce_server.hpp"
+class Server;
 
 class Webserv
 {

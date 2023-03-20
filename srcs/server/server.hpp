@@ -1,17 +1,18 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "client.hpp"
-#include "socket.hpp"
-#include <cstring>
-#include "../request/request.hpp"
-#include <iostream>
-#include <iterator>
-#include <list>
-#include "../parsing/parce_server.hpp"
+#include "../headers_cpp.hpp"
 
+class Client;
+class Socket;
+#include "../request/request.hpp"
+class parce_server;
+
+#define SOCKET              int
 #define PORT                int
 #define MAX_REQUEST_SIZE    1024
+class location;
+
 class Server
 {
     private:
