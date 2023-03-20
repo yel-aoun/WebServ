@@ -46,4 +46,10 @@ void    Client::set_received_data(DATA data)
     this->_received_data += data;
 }
 
+void    Client::init_post_data()
+{
+    this->post.boundary = this->boundary;
+    this->post._post_type = this->content_type;
+}
+
 Client::~Client() {}

@@ -31,6 +31,7 @@ class Client
         int             _request_type;
         Client();
         Client(const Client& rhs);
+        void            init_post_data();
         Client          &operator=(const Client& rhs);
         SOCKET          get_sockfd(void);
         void            set_sockfd(SOCKET sfd);
