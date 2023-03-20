@@ -101,45 +101,35 @@ void    Server::serve_clients()
                 drop_client(iter);
                 continue;
             }
-               //std::cout<<this-> _request_buff << std::endl;
             (*iter)->set_received_data(request_size);
             (*iter)->_request.append(this->_request_buff);
-            std::cout << this->_request_buff;
+
             if(!(*iter)->_request_type)
             {
                 if(std::strstr((*iter)->_request.c_str() , "\r\n\r\n"))
                 {
                     Request req((*iter)->_request, iter);
+                    check_path((*iter)->path, (*iter)->request_pack, (*iter)->content_type, iter);
 
                     if((*iter)->method == "POST")
                     {
                         (*iter)->_request_type = true;
-                        (*iter)->post.exec_head(_request_buff, *this, (*iter)->path);
+                        // (*iter)->post.exec_head(_request_buff, *this, (*iter)->path);
                     }
-                    // // *******************************************************************
-                    // // *this block is for printing the content of the map<string, vector>*
-                    // // *******************************************************************
 
-                    std::map<std::string, std::vector<std::string> >::iterator map = (*iter)->request_pack.find("Content-Type");
-                    if (map != (*iter)->request_pack.end())
-                    {
-                        std::vector<std::string> vec = map->second;
-                        std::vector<std::string>::iterator itt = vec.begin();
-                        for(; itt != vec.end(); itt++)
-                        {
-                            if ((*itt) == "POST")
-                                (*iter)->_request_type = true;
-                            // else if((*itt) == "GET")
-                            //     run get Request
-                            // else if((itt) == "DELETE")
-                            //     run delete request
-                        }
-                    }
                 }
             }
-            else
+            std::map<std::string, std::vector<std::string> >::iterator map = (*iter)->request_pack.find("Content-Type");
+            if (map != (*iter)->request_pack.end())
             {
-                (*iter)->post.exec_body(_request_buff, *this, (*iter)->path);
+                std::vector<std::string> vec = map->second;
+                std::vector<std::string>::iterator itt = vec.begin();
+                for(; itt != vec.end(); itt++)
+                {
+                    if ((*itt) == "POST")
+                        (*iter)->_request_type = true;
+
+                }
             }
         }
     }
@@ -162,4 +152,39 @@ void    Server::drop_client(std::list<Client *>::iterator client)
 Server::~Server()
 {
     // close server socket;
+}
+
+void    Server::check_path(std::string &path, std::map<std::string, std::vector<std::string> > &map_req, int &content_type, std::list<Client *>::iterator iter)
+{
+    check_transfer_in_coding(map_req, content_type, iter);
+}
+
+void    Server::check_transfer_in_coding(std::map<std::string, std::vector<std::string> > &map_req, int &content_type, std::list<Client *>::iterator iter)
+{
+    std::map<std::string, std::vector<std::string> >::iterator m_ap = map_req.find("Transfer-Encoding");
+    if (m_ap != map_req.end())
+    {
+        std::vector<std::string> vec = m_ap->second;
+        std::vector<std::string>::iterator itt = vec.begin();
+        for(; itt != vec.end(); itt++)
+        {
+            if ((*itt) != "chunked")
+            {
+                std::cout<< "error /501"<<std::endl;
+                drop_client(iter);
+                return ;
+            }
+            else
+            {
+                if (content_type == 1)
+                {
+                    std::cout<<"error not implemented"<<std::endl;
+                    exit(0);
+                }
+                else
+                    content_type = 2;
+            }
+        }
+    }
+    return ;
 }

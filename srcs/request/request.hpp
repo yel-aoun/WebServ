@@ -4,7 +4,7 @@
 #include "../headers_cpp.hpp"
 class Server;
 class location;
-class Client;
+#include "../server/client.hpp"
 class Request
 {
     private:
@@ -16,6 +16,8 @@ class Request
         std::string path;
         std::string query;
         std::string http;
+        int         content_type;
+        std::string boundary;
         std::map<std::string, std::vector<std::string> > request;
         Request();
         Request(std::string &buffer, std::list<Client *>::iterator   iter);

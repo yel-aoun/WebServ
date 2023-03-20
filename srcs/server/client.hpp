@@ -20,7 +20,7 @@ class Client
         //std::vector<std::string> method
         std::string     method;
         int             content_type;
-        std::string     boudry;
+        std::string     boundary;
         std::string     path;
         std::string     query;
         std::string     http;

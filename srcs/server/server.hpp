@@ -34,6 +34,10 @@ class Server
         void    accept_new_client();
         void    drop_client(std::list<Client *>::iterator client);
         void    serve_clients();
+
+        void    check_path(std::string &path, std::map<std::string, std::vector<std::string> > &map, int &content_type, std::list<Client *>::iterator iter);
+        void    check_transfer_in_coding(std::map<std::string, std::vector<std::string> > &map_req, int &content_type, std::list<Client *>::iterator iter);
+
     public:
         Server(parce_server &server_data);
         void    run_serve();

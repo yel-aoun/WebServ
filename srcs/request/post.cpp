@@ -1,6 +1,8 @@
+
 #include "post.hpp"
 #include "../server/server.hpp"
 #include "../parsing/location.hpp"
+
 
 Post::Post(): body_or_head(0), _post_type(0)
 {
@@ -39,8 +41,10 @@ std::string Post::seperate_header(std::string buff)
     int x = buff.find("\r\n\r\n") + 2;
     std::string body = buff.substr(x, buff.size() - (x + 1));
     body_or_head = 1;
+    
     return (body);
 }
+
 
 void        normal_post(std::string buff, Server &serv)
 {
@@ -86,6 +90,7 @@ void Post::exec_head(std::string buff, Server &serv, std::string &path)
         }
     }
 }
+
 
 void Post::exec_body(std::string buff, Server &serv, std::string &path)
 {
