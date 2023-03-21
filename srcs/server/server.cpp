@@ -253,31 +253,3 @@ bool isURIValid(const std::string& uri, int len) {
     // All characters are allowed, URI is valid
     return true;
 }
-
-void    Server::check_uri(std::list<Client *>::iterator iter)
-{
-<<<<<<< HEAD
-    int x = buff.find("\r\n\r\n") + 4;
-    std::string body = buff.substr(x, buff.size() - (x + 1));
-    return (body.c_str());
-}
-=======
-    std::string uri = (*iter)->path;
-    std::cout<<uri<<std::endl;
-    int len = uri.length();
-    if (len > 2048)
-    {
-        std::cout<<"request-URI- too long error /414"<<std::endl;
-        // drop-client;
-        return ;
-    }
-    if (!isURIValid(uri, len)) {
-        std::cout << "URI have invalid characters error /400 bad request" << std::endl;
-        // drop-client;
-        return ;
-    }
-    // check for request body if larger than client max body size
-    // get_matched_location_for_request_uri();
-}
-
->>>>>>> d327f7884b2bac56cda70cd6d6a3a627a7bc1e12
