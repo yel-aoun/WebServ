@@ -13,6 +13,7 @@ class Post
     public:
         Post();
         int _post_type;
+        int body_size;
         std::string boundary;
         void        call_post_func(Server &server, Client *client);
         std::string generate_file_name(std::string extension);

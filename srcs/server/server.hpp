@@ -11,7 +11,7 @@ class parce_server;
 
 #define SOCKET              int
 #define PORT                int
-#define MAX_REQUEST_SIZE    1024
+#define MAX_REQUEST_SIZE    100
 class location;
 
 class Server
@@ -41,6 +41,7 @@ class Server
         char                    _request_buff[MAX_REQUEST_SIZE + 1];
         void    run_serve();
         std::list<location>     get_locations() const;
+        int get_max_client_body_size() const {return (_max_client_body_size);}
         // const char *get_client_address(Client *);
         // void    serve_resource(Client client, const char *path);
         ~Server();

@@ -6,7 +6,7 @@
 #define SOCKET  int
 #define DATA    int
 
-#include "../request/Post.hpp"
+#include "../request/post.hpp"
 typedef struct sockaddr_storage sock_storage;
 
 class Client

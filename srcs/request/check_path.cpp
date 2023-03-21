@@ -37,10 +37,8 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter)
                     if ((*iter)->content_type == 1)
                     {
                         std::cout<<"Transfer-Encoding(chunked) and boundry error not implemented"<<std::endl;
-                        // std::cout<< "error /501"<<std::endl;
-                        // drop_client(iter);
-                        this->skip = 1;
                         //set_error page of not implemented
+                        this->skip = 1;
                         return ;
                     }
                     else
@@ -49,7 +47,6 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter)
             }
         }
     }
-    // std::cout<<"heeer : "<<(*iter)->content_type<<std::endl;
     if (((*iter)->content_type == 0 || (*iter)->content_type == 1) && ((*iter)->method == "POST"))
     {
         std::map<std::string, std::vector<std::string> > map_req = (*iter)->request_pack;
@@ -64,6 +61,10 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter)
                 // drop_client(iter);
                 this->skip = 1;
                 return ;
+            }
+            else
+            {
+                std::cout<<"con-len : "<<*itt<<std::endl;
             }
         }
         else
@@ -102,7 +103,6 @@ bool isURIValid(const std::string& uri, int len) {
 void    Check_path::check_uri(std::list<Client *>::iterator iter)
 {
     std::string uri = (*iter)->path;
-    std::cout<<uri<<std::endl;
     int len = uri.length();
     if (len > 2048)
     {

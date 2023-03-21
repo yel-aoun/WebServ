@@ -90,10 +90,8 @@ void    Server::serve_clients()
     std::list<Client *>::iterator   iter;
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
-        std::cout<<"size : "<<this->_clients.size()<<std::endl;
         if(FD_ISSET((*iter)->get_sockfd(), &this->_reads))
         {
-            std::cout<<"hello"<<std::endl;
             memset(this->_request_buff, 0, MAX_REQUEST_SIZE + 1);
             request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
             //std::cout << request_size << std::endl;
@@ -109,6 +107,7 @@ void    Server::serve_clients()
                 (*iter)->_request.append(this->_request_buff);
                 if(std::strstr((*iter)->_request.c_str() , "\r\n\r\n"))
                 {
+                    std::cout<< (*iter)->_request<<std::endl;
                     Request req((*iter)->_request, iter);
                     Check_path path(iter);
                     if (path.skip == 1)
@@ -125,22 +124,32 @@ void    Server::serve_clients()
                             (*iter)->init_post_data();
                             (*iter)->_request_type = true;
                             std::strcpy(this->_request_buff, (this->seperate_header(this->_request_buff).c_str()));
+                            // (*iter)->post.body_size += std::strlen(this->_request_buff);
+                            // std::cout<<"body_size: "<< (*iter)->post.body_size<<std::endl;;
+                            // if ((*iter)->post.body_size > this->get_max_client_body_size())
+                            // {
+                            //     std::cout << "Size is bigger than max body size throw a error page" << std::endl;
+                            //     this->drop_client(iter);
+                            //     if (this->_clients.size() == 0)
+                            //         break ;
+                            // }
                             (*iter)->post.call_post_func(*this, (*iter));
                         }
+                        std::cout<<"calling methods"<<std::endl;
                     }
                 }
             }
-            else // this else is for just post becouse post containe the body.
-            {
-                (*iter)->post.call_post_func(*this, *iter);
-            }
+            // else // this else is for just post becouse post containe the body.
+            // {
+            //     (*iter)->post.call_post_func(*this, *iter);
+            // }
         }
-        else
-        {
-            if((*iter)->method == "POST")
-                (*iter)->file.close();
-            exit(0);
-        }
+        // else
+        // {
+        //     if((*iter)->method == "POST")
+        //         (*iter)->file.close();
+        //     exit(0);
+        // }
     }
 }
 
