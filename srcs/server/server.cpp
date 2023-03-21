@@ -40,7 +40,7 @@ void    Server::wait_on_clients()
     struct timeval restrict;
 
     this->init_sockfds();
-    restrict.tv_sec = 10;
+    restrict.tv_sec = 1;
     restrict.tv_usec = 0;
     if (select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict) < 0)
     {
@@ -88,13 +88,13 @@ void    Server::serve_clients()
 {
     int                             request_size;
     std::list<Client *>::iterator   iter;
-
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
         if(FD_ISSET((*iter)->get_sockfd(), &this->_reads))
         {
             memset(this->_request_buff, 0, MAX_REQUEST_SIZE + 1);
             request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
+            //std::cout << request_size << std::endl;
             if (request_size < 1)
             {
                 std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
@@ -102,9 +102,9 @@ void    Server::serve_clients()
                 continue;
             }
             (*iter)->set_received_data(request_size);
-            (*iter)->_request.append(this->_request_buff);
             if(!(*iter)->_request_type)
             {
+                (*iter)->_request.append(this->_request_buff);
                 if(std::strstr((*iter)->_request.c_str() , "\r\n\r\n"))
                 {
                     Request req((*iter)->_request, iter);
@@ -113,15 +113,21 @@ void    Server::serve_clients()
                         check_path((*iter)->path, (*iter)->request_pack, (*iter)->content_type, iter);
                         (*iter)->init_post_data();
                         (*iter)->_request_type = true;
-                        std::strcpy(this->_request_buff, (this->seperate_header(this->_request_buff).c_str()));
-                        (*iter)->post.call_post_func(*this, (*iter)->path);
+                        std::strcpy(this->_request_buff, seperate_header((*iter)->_request).c_str());
+                        (*iter)->post.call_post_func(*this, *iter);
                     }
                 }
             }
             else // this else is for just post becouse post containe the body.
             {
-                (*iter)->post.call_post_func(*this, (*iter)->path);
+                (*iter)->post.call_post_func(*this, *iter);
             }
+        }
+        else
+        {
+            if((*iter)->method == "POST")
+                (*iter)->file.close();
+            exit(0);
         }
     }
 }
@@ -182,7 +188,7 @@ void    Server::check_transfer_in_coding(std::map<std::string, std::vector<std::
 
 std::string Server::seperate_header(std::string buff)
 {
-    int x = buff.find("\r\n\r\n") + 2;
+    int x = buff.find("\r\n\r\n") + 4;
     std::string body = buff.substr(x, buff.size() - (x + 1));
     return (body.c_str());
 }

@@ -10,10 +10,10 @@ Post::Post(): body_or_head(0), _post_type(0)
     this->generate_extensions();
 }
 
-void    Post::call_post_func(Server &serv, std::string &path)
+void    Post::call_post_func(Server &serv, Client *client)
 {
     if(this->_post_type == 0)
-        this->normal_post(serv, path);
+        this->normal_post(serv, client);
 }
 
 std::string Post::check_hexa(std::string buff)
@@ -36,32 +36,6 @@ int Post::hexToDec(const std::string& hexStr) {
     int decNum;
     ss >> decNum;
     return decNum;
-}
-
-
-
-
-void    Post::normal_post(Server &serv, std::string &path)
-{
-    std::list<location> loc = serv.get_locations();
-    std::ofstream file;
-       for (std::list<location>::iterator it = loc.begin(); it != loc.end(); ++it)
-       {
-           if (it->get_locations() == path)
-           {
-               if (access(it->get_upload_pass().c_str(), F_OK))
-                   int status = mkdir(it->get_upload_pass().c_str(), 0777);
-                if(access(std::strcat(const_cast<char *>(it->get_upload_pass().c_str()), "/testing"), F_OK))
-                    file(it->get_upload_pass() + "/testing");
-                else
-                    file.open(it->get_upload_pass() + "/testing");
-                if (file.is_open())
-                {
-                    if(!file.write(serv._request_buff, std::strlen(serv._request_buff)))
-                        file.close();
-                }
-           }
-       }
 }
 
 int Post::skip_hex(std::string body)

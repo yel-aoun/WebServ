@@ -29,6 +29,7 @@ class Client
         sock_storage    _address;
         std::string     _request;
         int             _request_type;
+        std::ofstream   file;
         Client();
         Client(const Client& rhs);
         void            init_post_data();
