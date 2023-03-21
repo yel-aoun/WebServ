@@ -43,25 +43,25 @@ int Post::hexToDec(const std::string& hexStr) {
 
 void    Post::normal_post(Server &serv, std::string &path)
 {
-    std::list<location> loc = serv.get_locations();
-    std::ofstream file;
-       for (std::list<location>::iterator it = loc.begin(); it != loc.end(); ++it)
-       {
-           if (it->get_locations() == path)
-           {
-               if (access(it->get_upload_pass().c_str(), F_OK))
-                   int status = mkdir(it->get_upload_pass().c_str(), 0777);
-                if(access(std::strcat(const_cast<char *>(it->get_upload_pass().c_str()), "/testing"), F_OK))
-                    file(it->get_upload_pass() + "/testing");
-                else
-                    file.open(it->get_upload_pass() + "/testing");
-                if (file.is_open())
-                {
-                    if(!file.write(serv._request_buff, std::strlen(serv._request_buff)))
-                        file.close();
-                }
-           }
-       }
+    // std::list<location> loc = serv.get_locations();
+    // std::ofstream file;
+    //    for (std::list<location>::iterator it = loc.begin(); it != loc.end(); ++it)
+    //    {
+    //        if (it->get_locations() == path)
+    //        {
+    //            if (access(it->get_upload_pass().c_str(), F_OK))
+    //                int status = mkdir(it->get_upload_pass().c_str(), 0777);
+    //             if(access(std::strcat(const_cast<char *>(it->get_upload_pass().c_str()), "/testing"), F_OK))
+    //                 file(it->get_upload_pass() + "/testing");
+    //             else
+    //                 file.open(it->get_upload_pass() + "/testing");
+    //             if (file.is_open())
+    //             {
+    //                 if(!file.write(serv._request_buff, std::strlen(serv._request_buff)))
+    //                     file.close();
+    //             }
+    //        }
+    //    }
 }
 
 int Post::skip_hex(std::string body)
