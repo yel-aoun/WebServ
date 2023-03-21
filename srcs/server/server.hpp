@@ -6,6 +6,7 @@
 class Client;
 class Socket;
 #include "../request/request.hpp"
+# include "../request/check_path.hpp"
 class parce_server;
 
 #define SOCKET              int
@@ -34,15 +35,10 @@ class Server
         void    drop_client(std::list<Client *>::iterator client);
         void    serve_clients();
 
-        void    check_path(std::list<Client *>::iterator iter);
-        void    check_transfer_in_coding(std::list<Client *>::iterator iter);
-        void    check_uri(std::list<Client *>::iterator iter);
-
-        void    check_path(std::string &path, std::map<std::string, std::vector<std::string> > &map, int &content_type, std::list<Client *>::iterator iter);
-        void    check_transfer_in_coding(std::map<std::string, std::vector<std::string> > &map_req, int &content_type, std::list<Client *>::iterator iter);
-        std::string seperate_header(std::string buff);
+        void     seperate_header(Client *client);
     public:
         Server(parce_server &server_data);
+        int                     _request_size;
         char                    _request_buff[MAX_REQUEST_SIZE + 1];
         void    run_serve();
         std::list<location>     get_locations() const;

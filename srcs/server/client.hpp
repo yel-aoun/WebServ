@@ -13,9 +13,9 @@ class Client
 {
     private:
         SOCKET  _sockfd;
-        DATA    _received_data;
         
     public:
+        DATA    _received_data;
         std::map<std::string, std::vector<std::string> >  request_pack;
         //std::vector<std::string> method
         std::string     method;
