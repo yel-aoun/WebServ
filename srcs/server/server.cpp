@@ -4,7 +4,7 @@
 #include "socket.hpp"
 #include "client.hpp"
 
-Server::Server(parce_server &server_data)
+Server::Server(parce_server &server_data, std::map<std::string, std::string> &file_extensions)
 {
     this->_port = server_data.port;
     this->_host_name = server_data.host_name;
@@ -13,6 +13,7 @@ Server::Server(parce_server &server_data)
     this->_locations = server_data.locations;
     Socket socket(this->_port);
     this->_server_socket = socket.get_socket();
+    this->file_extensions = file_extensions;
 }
 
 std::list<location> Server::get_locations() const
@@ -104,7 +105,7 @@ void    Server::serve_clients()
             {
                 (*iter)->_request.append(this->_request_buff);
                 if(std::strstr((*iter)->_request.c_str() , "\r\n\r\n"))
-                {
+                { 
                     Request req((*iter)->_request, iter);
                     Check_path path(iter);
                     if (path.skip == 1)
@@ -127,6 +128,7 @@ void    Server::serve_clients()
             }
             else // this else is for just post becouse post containe the body.
             {
+                //std::cout << this->_request_buff;
                 (*iter)->post.call_post_func(*this, *iter);
             }
         }
@@ -160,10 +162,14 @@ Server::~Server()
 
 void Server::seperate_header(Client *client)
 {
+    //std::cout << this->_request_buff << std::endl;
     char *body = strstr(this->_request_buff , "\r\n\r\n");
     int x = body - this->_request_buff + 4;
     this->_request_size -= x;
     client->_received_data -= x;
     std::memcpy(this->_request_buff, body + 4, this->_request_size);
+    // std::cout << "==============================================" << std::endl;
+    // for(int i = 0; i < this->_request_size; i++)
+    //     std::cout << this->_request_buff[i];
     //std::cout << this->_request_size << std::endl;
 }

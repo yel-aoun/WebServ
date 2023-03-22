@@ -2,6 +2,14 @@
 # include "../server/server.hpp"
 # include "parce_server.hpp"
 
+Webserv::Webserv(std::string conf_file)
+{
+    this->generate_extensions();
+	parce_config_file(conf_file);
+	run_webservs();
+}
+
+
 void Webserv::parce_config_file(std::string &conf_file)
 {
 	int count_location = 0;
@@ -61,18 +69,12 @@ void Webserv::parce_config_file(std::string &conf_file)
 	}
 }
 
-Webserv::Webserv(std::string conf_file)
-{
-	parce_config_file(conf_file);
-	run_webservs();
-}
-
 void Webserv::init_servers()
 {
 	std::list<parce_server>::iterator iter;
 	for(iter = servers_data.begin(); iter != servers_data.end(); iter++)
 	{
-		Server *sv = new Server(*iter);
+		Server *sv = new Server(*iter, this->file_extensions);
 		this->servers.push_back(sv);
 	}
 	// std::cout<<this->servers.size()<<std::endl;
@@ -167,4 +169,4 @@ void Webserv::generate_extensions(void)
    this->file_extensions["video/3gpp"] = ".3gp";
    this->file_extensions["video/3gpp2"] = ".3g2";
    this->file_extensions["application/x-7z-compressed"] = ".7z";
-}
+ }

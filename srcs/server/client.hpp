@@ -29,6 +29,7 @@ class Client
         sock_storage    _address;
         std::string     _request;
         int             _request_type;
+        std::string     file_name;
         std::ofstream   file;
         Client();
         Client(const Client& rhs);
@@ -37,6 +38,7 @@ class Client
         SOCKET          get_sockfd(void);
         void            set_sockfd(SOCKET sfd);
         void            set_received_data(DATA data);
+        void        generate_file_name(std::string &mime_type, std::map<std::string, std::string> &file_extensions);
         DATA            get_received_data(void);
         ~Client();
 };

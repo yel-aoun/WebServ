@@ -11,7 +11,6 @@ Post::Post(): body_or_head(0), _post_type(0)
 
 void    Post::call_post_func(Server &serv, Client *client)
 {
-    
     if(this->_post_type == 0)
         this->normal_post(serv, client);
 }
@@ -130,19 +129,4 @@ void Post::exec_body(std::string buff, Server &serv, std::string &path)
             }
         }
     }
-}
-
-std::string Post::generate_file_name(std::string mime_type)
-{
-    // std::map <std::string, std::string>::iterator iter;
-    // std::string file_name;
-    // time_t      now;
-
-    // now = std::time(0);
-    // file_name = std::to_string(now);
-    // //iter = Webserv::file_extensions.find(mime_type);
-    // if(iter == Webserv::file_extensions.end())
-    //     return (file_name);
-    // else
-    //     return (file_name.append((*iter).second));
 }

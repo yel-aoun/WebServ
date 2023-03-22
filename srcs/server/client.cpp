@@ -52,4 +52,20 @@ void    Client::init_post_data()
     this->post._post_type = this->content_type;
 }
 
+void    Client::generate_file_name(std::string &mime_type, std::map<std::string, std::string> &file_extensions)
+{
+    std::map <std::string, std::string>::iterator iter;
+    std::string file_name;
+    time_t      now;
+
+    now = std::time(0);
+    file_name = "/";
+    file_name.append(std::to_string(now));
+    iter = file_extensions.find(mime_type);
+    if(iter == file_extensions.end())
+        this->file_name = file_name.append((*iter).second);
+    else
+        this->file_name = file_name.append((*iter).second);
+}
+
 Client::~Client() {}
