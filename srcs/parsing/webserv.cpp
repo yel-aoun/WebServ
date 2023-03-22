@@ -92,3 +92,79 @@ void Webserv::run_webservs()
 		}
 	}
 }
+
+void Webserv::generate_extensions(void)
+{
+   this->file_extensions["audio/aac"] = ".aac";
+   this->file_extensions["application/x-abiword"] = ".abw";
+   this->file_extensions["application/x-freearc"] = ".arc";
+   this->file_extensions["image/avif"] = ".avif";
+   this->file_extensions["video/x-msvideo"] = ".avi";
+   this->file_extensions["application/vnd.amazon.ebook"] = ".azw";
+   this->file_extensions["application/octet-stream"] = ".bin";
+   this->file_extensions["image/bmp"] = ".bmp";
+   this->file_extensions["application/x-bzip"] = ".bz";
+   this->file_extensions["application/x-bzip2"] = ".bz2";
+   this->file_extensions["application/x-cdf"] = ".cda";
+   this->file_extensions["application/x-csh"] = ".csh";
+   this->file_extensions["text/css"] = ".css";
+   this->file_extensions["text/csv"] = ".csv";
+   this->file_extensions["application/msword"] = ".doc";
+   this->file_extensions["application/vnd.openxmlformats-officedocument.wordprocessingml.document"] = ".docx";
+   this->file_extensions["application/vnd.ms-fontobject"] = ".eot";
+   this->file_extensions["application/epub+zip"] = ".epub";
+   this->file_extensions["application/gzip"] = ".gz";
+   this->file_extensions["image/gif"] = ".gif";
+   this->file_extensions["text/html"] = ".html";
+   this->file_extensions["image/vnd.microsoft.icon"] = ".ico";
+   this->file_extensions["text/calendar"] = ".ics";
+   this->file_extensions["application/java-archive"] = ".jar";
+   this->file_extensions["image/jpeg"] = ".jpg";
+   this->file_extensions["text/javascript"] = ".js";
+   this->file_extensions["application/json"] = ".json";
+   this->file_extensions["application/ld+json"] = ".jsonld";
+   this->file_extensions["audio/midi"] = ".midi";
+   this->file_extensions["text/javascript"] = ".mjs";
+   this->file_extensions["audio/mpeg"] = ".mp3";
+   this->file_extensions["video/mp4"] = ".mp4";
+   this->file_extensions["video/mpeg"] = ".mpeg";
+   this->file_extensions["application/vnd.apple.installer+xml"] = ".mpkg";
+   this->file_extensions["application/vnd.oasis.opendocument.presentation"] = ".odp";
+   this->file_extensions["application/vnd.oasis.opendocument.spreadsheet"] = ".ods";
+   this->file_extensions["application/vnd.oasis.opendocument.text"] = ".odt";
+   this->file_extensions["audio/ogg"] = ".oga";
+   this->file_extensions["video/ogg"] = ".ogv";
+   this->file_extensions["application/ogg"] = ".ogx";
+   this->file_extensions["audio/opus"] = ".opus";
+   this->file_extensions["font/otf"] = ".otf";
+   this->file_extensions["image/png"] = ".png";
+   this->file_extensions["application/pdf"] = ".pdf";
+   this->file_extensions["application/x-httpd-php"] = ".php";
+   this->file_extensions["application/vnd.ms-powerpoint"] = ".ppt";
+   this->file_extensions["application/vnd.openxmlformats-officedocument.presentationml.presentation"] = ".pptx";
+   this->file_extensions["application/vnd.rar"] = ".rar";
+   this->file_extensions["application/rtf"] = ".rtf";
+   this->file_extensions["application/x-sh"] = ".sh";
+   this->file_extensions["image/svg+xml"] = ".svg";
+   this->file_extensions["application/x-tar"] = ".tar";
+   this->file_extensions["image/tiff"] = ".tiff";
+   this->file_extensions["video/mp2t"] = ".ts";
+   this->file_extensions["font/ttf"] = ".ttf";
+   this->file_extensions["text/plain"] = ".txt";
+   this->file_extensions["application/vnd.visio"] = ".vsd";
+   this->file_extensions["audio/wav"] = ".wav";
+   this->file_extensions["audio/webm"] = ".weba";
+   this->file_extensions["video/webm"] = ".webm";
+   this->file_extensions["image/webp"] = ".webp";
+   this->file_extensions["font/woff"] = ".woff";
+   this->file_extensions["font/woff2"] = ".woff2";
+   this->file_extensions["application/xhtml+xml"] = ".xhtml";
+   this->file_extensions["application/vnd.ms-excel"] = ".xls";
+   this->file_extensions["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"] = ".xlsx	";
+   this->file_extensions["application/xml"] = ".xml";
+   this->file_extensions["application/vnd.mozilla.xul+xml"] = ".xul";
+   this->file_extensions["application/zip"] = ".zip";
+   this->file_extensions["video/3gpp"] = ".3gp";
+   this->file_extensions["video/3gpp2"] = ".3g2";
+   this->file_extensions["application/x-7z-compressed"] = ".7z";
+}

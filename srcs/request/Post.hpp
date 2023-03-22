@@ -9,7 +9,6 @@ class Post
     private:
         int body_or_head;
         std::string _buff;
-        std::map<std::string, std::string> _extensions;
     public:
         Post();
         int _post_type;

@@ -11,7 +11,7 @@ class parce_server;
 
 #define SOCKET              int
 #define PORT                int
-#define MAX_REQUEST_SIZE    1024
+#define MAX_REQUEST_SIZE    2048
 class location;
 
 class Server
@@ -23,7 +23,6 @@ class Server
         std::vector<std::string> _error_page;
         std::list<location>     _locations;
         fd_set                  _writes;
-        fd_set                  _reads;
         SOCKET                  _server_socket;
         SOCKET                  _max_socket;
         std::list<Client *>     _clients;
@@ -34,11 +33,11 @@ class Server
         void    accept_new_client();
         void    drop_client(std::list<Client *>::iterator client);
         void    serve_clients();
-
         void     seperate_header(Client *client);
     public:
         Server(parce_server &server_data);
         int                     _request_size;
+        fd_set                  _reads;
         char                    _request_buff[MAX_REQUEST_SIZE + 1];
         void    run_serve();
         std::list<location>     get_locations() const;

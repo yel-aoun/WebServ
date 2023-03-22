@@ -12,11 +12,9 @@ void    Post::normal_post(Server &serv, Client *client)
             {
                 if (access(it->get_upload_pass().c_str(), F_OK))
                     mkdir(it->get_upload_pass().c_str(), 0777);
-                if(access(std::strcat(const_cast<char *>(it->get_upload_pass().c_str()), "/mas3d.mp4"), F_OK))
-                    client->file.open(it->get_upload_pass() + "/mas3d.mp4", std::ios::binary);
+                if(access(std::strcat(const_cast<char *>(it->get_upload_pass().c_str()), "/video.mp4"), F_OK))
+                    client->file.open(it->get_upload_pass() + "/video.mp4", std::ios::binary | std::ios::app);
                 client->file.write(serv._request_buff, serv._request_size);
-                for(int i = 0; i < serv._request_size; i++)
-                    std::cout << serv._request_buff[i];
             }
         }
 
