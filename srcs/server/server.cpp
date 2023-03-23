@@ -4,7 +4,7 @@
 #include "socket.hpp"
 #include "client.hpp"
 
-Server::Server(parce_server &server_data)
+Server::Server(parce_server &server_data, std::map<std::string, std::string> &file_extensions)
 {
     this->_port = server_data.port;
     this->_host_name = server_data.host_name;
@@ -13,6 +13,7 @@ Server::Server(parce_server &server_data)
     this->_locations = server_data.locations;
     Socket socket(this->_port);
     this->_server_socket = socket.get_socket();
+    this->file_extensions = file_extensions;
 }
 
 std::list<location> Server::get_locations() const
@@ -42,7 +43,9 @@ void    Server::wait_on_clients()
     this->init_sockfds();
     restrict.tv_sec = 1;
     restrict.tv_usec = 0;
-    if (select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict) < 0)
+    int x = select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict);
+    std::cout << x << std::endl;
+    if (x < 0)
     {
         std::cerr << "select() failed" << std::endl;
         exit(EXIT_FAILURE);
@@ -128,26 +131,35 @@ void    Server::serve_clients()
                         std::cout<<"calling methods"<<std::endl;
                     }
                 }
-            }
-            else // this else is for just post becouse post containe the body.
-            {
-                // std::cout<<"req_size : "<<(*iter)->_received_data<<std::endl;
-                // if ((*iter)->_received_data > get_max_client_body_size())
-                // {
-                //     std::cout<<"error/ 413 request entity too large"<<std::endl;
-                //     drop_client(iter);
-                //     if (this->_clients.size() == 0)
-                //             break ;
-                // }
-                (*iter)->post.call_post_func(*this, *iter);
-            }
-        }
+                else // this else is for just post becouse post containe the body.
+                {
+                    // std::cout<<"req_size : "<<(*iter)->_received_data<<std::endl;
+                    // if ((*iter)->_received_data > get_max_client_body_size())
+                    // {
+                    //     std::cout<<"error/ 413 request entity too large"<<std::endl;
+                    //     drop_client(iter);
+                    //     if (this->_clients.size() == 0)
+                    //             break ;
+                    // }
+                    (*iter)->post.call_post_func(*this, *iter);
+                }
+        // // else
+        // // {
+        // //     if((*iter)->method == "POST")
+        // //         (*iter)->file.close();
+        // //     exit(0);
+        // // }
         // else
         // {
         //     if((*iter)->method == "POST")
+        //     {
+        //         std::cout << "clinet number = " << (*iter)->get_sockfd() - 3 << " is Done" << std::endl;
         //         (*iter)->file.close();
-        //     exit(0);
+            // }
+        //     //drop_client(iter);
         // }
+            }
+        }
     }
 }
 
@@ -165,10 +177,7 @@ void    Server::drop_client(std::list<Client *>::iterator client)
     std::cerr << "Drop Client not found !" << std::endl;
 }
 
-Server::~Server()
-{
-    // close server socket;
-}
+Server::~Server() {}
 
 void Server::seperate_header(Client *client)
 {
@@ -177,5 +186,4 @@ void Server::seperate_header(Client *client)
     this->_request_size -= x;
     client->_received_data -= x;
     std::memcpy(this->_request_buff, body + 4, this->_request_size);
-    //std::cout << this->_request_size << std::endl;
 }

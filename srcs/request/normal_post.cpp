@@ -10,13 +10,18 @@ void    Post::normal_post(Server &serv, Client *client)
         {
             if (it->get_locations() == client->path)
             {
+                if(client->file_path.empty())
+                {
+                    std::map<std::string, std::vector<std::string> >::iterator iter;
+                    iter = client->request_pack.find("Content-Type");
+                    client->file_path = it->get_upload_pass();
+                    client->generate_file_name(*((*iter).second.begin()), serv.file_extensions);
+                }
                 if (access(it->get_upload_pass().c_str(), F_OK))
                     mkdir(it->get_upload_pass().c_str(), 0777);
-                if(access(std::strcat(const_cast<char *>(it->get_upload_pass().c_str()), "/mas3d.mp4"), F_OK))
-                    client->file.open(it->get_upload_pass() + "/mas3d.mp4", std::ios::binary);
+                if(access(const_cast<char *>(client->file_path.c_str()), F_OK))
+                    client->file.open(client->file_path, std::ios::binary | std::ios::app);
                 client->file.write(serv._request_buff, serv._request_size);
-                for(int i = 0; i < serv._request_size; i++)
-                    std::cout << serv._request_buff[i];
             }
         }
 

@@ -47,7 +47,7 @@ void    Request::fill_map_request(std::string   &buff_line)
         int len = token.length();
         std::string key = token.substr(0, len - 1);
         if (key == "Content-Type")
-        { 
+        {
             ss >> token;
             value.push_back(token);
             if (ss >> token)

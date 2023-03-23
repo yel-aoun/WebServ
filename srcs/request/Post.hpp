@@ -7,22 +7,23 @@ class Client;
 class Post
 {
     private:
-        int body_or_head;
-        std::string _buff;
-        std::map<std::string, std::string> _extensions;
+
+        int         body_or_head;
+        
     public:
-        Post();
-        int _post_type;
+
+        int         _post_type;
         std::string boundary;
+
+        Post();
+        ~Post();
+
         void        call_post_func(Server &server, Client *client);
-        std::string generate_file_name(std::string extension);
-        void        generate_extensions(void);
         void        normal_post(Server &server, Client *client);
         void        exec_head(std::string buff, Server &serv, std::string &path);
         void        exec_body(std::string buff, Server &serv, std::string &path);
         int         skip_hex(std::string body);
         int         hexToDec(const std::string& hexStr);
         std::string check_hexa(std::string buff);
-        ~Post(){}
 };
 #endif

@@ -5,6 +5,7 @@
 #include "../server/server.hpp"
 // #include "../server/client.hpp"
 #include "../parsing/location.hpp"
+#include "../server/client.hpp"
 class location;
 class Check_path{
     private:
@@ -14,10 +15,13 @@ class Check_path{
         void    is_location_has_redirection(std::list<Client *>::iterator iter, Server &serv);
         void    is_method_allowed_in_location(std::list<Client *>::iterator iter);
     public:
+
         int skip;
         std::string loc_path;
         location location_match;
         Check_path(std::list<Client *>::iterator iter, Server &serv);
+
+        Check_path(std::list<Client *>::iterator iter);
         Check_path();
 };
 #endif

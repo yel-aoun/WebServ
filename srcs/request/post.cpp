@@ -3,18 +3,19 @@
 #include "../server/server.hpp"
 #include "../parsing/location.hpp"
 #include "../server/client.hpp"
+#include "../parsing/webserv.hpp"
 
 
-Post::Post(): body_or_head(0), _post_type(0)
-{
-    this->generate_extensions();
-}
+Post::Post(): body_or_head(0), _post_type(0) {}
+Post::~Post(){}
 
 void    Post::call_post_func(Server &serv, Client *client)
 {
-    
-    if(this->_post_type == 0)
-        this->normal_post(serv, client);
+    switch(this->_post_type)
+    {
+        case 0:
+            this->normal_post(serv, client);
+    }
 }
 
 std::string Post::check_hexa(std::string buff)
@@ -131,95 +132,4 @@ void Post::exec_body(std::string buff, Server &serv, std::string &path)
             }
         }
     }
-}
-
-std::string Post::generate_file_name(std::string mime_type)
-{
-    std::map <std::string, std::string>::iterator iter;
-    std::string file_name;
-    time_t      now;
-
-    now = std::time(0);
-    file_name = std::to_string(now);
-    iter = this->_extensions.find(mime_type);
-    if(iter == this->_extensions.end())
-        return (file_name);
-    else
-        return (file_name.append((*iter).second));
-}
-
-void Post::generate_extensions(void)
-{
-   this->_extensions["audio/aac"] = ".aac";
-   this->_extensions["application/x-abiword"] = ".abw";
-   this->_extensions["application/x-freearc"] = ".arc";
-   this->_extensions["image/avif"] = ".avif";
-   this->_extensions["video/x-msvideo"] = ".avi";
-   this->_extensions["application/vnd.amazon.ebook"] = ".azw";
-   this->_extensions["application/octet-stream"] = ".bin";
-   this->_extensions["image/bmp"] = ".bmp";
-   this->_extensions["application/x-bzip"] = ".bz";
-   this->_extensions["application/x-bzip2"] = ".bz2";
-   this->_extensions["application/x-cdf"] = ".cda";
-   this->_extensions["application/x-csh"] = ".csh";
-   this->_extensions["text/css"] = ".css";
-   this->_extensions["text/csv"] = ".csv";
-   this->_extensions["application/msword"] = ".doc";
-   this->_extensions["application/vnd.openxmlformats-officedocument.wordprocessingml.document"] = ".docx";
-   this->_extensions["application/vnd.ms-fontobject"] = ".eot";
-   this->_extensions["application/epub+zip"] = ".epub";
-   this->_extensions["application/gzip"] = ".gz";
-   this->_extensions["image/gif"] = ".gif";
-   this->_extensions["text/html"] = ".html";
-   this->_extensions["image/vnd.microsoft.icon"] = ".ico";
-   this->_extensions["text/calendar"] = ".ics";
-   this->_extensions["application/java-archive"] = ".jar";
-   this->_extensions["image/jpeg"] = ".jpg";
-   this->_extensions["text/javascript"] = ".js";
-   this->_extensions["application/json"] = ".json";
-   this->_extensions["application/ld+json"] = ".jsonld";
-   this->_extensions["audio/midi"] = ".midi";
-   this->_extensions["text/javascript"] = ".mjs";
-   this->_extensions["audio/mpeg"] = ".mp3";
-   this->_extensions["video/mp4"] = ".mp4";
-   this->_extensions["video/mpeg"] = ".mpeg";
-   this->_extensions["application/vnd.apple.installer+xml"] = ".mpkg";
-   this->_extensions["application/vnd.oasis.opendocument.presentation"] = ".odp";
-   this->_extensions["application/vnd.oasis.opendocument.spreadsheet"] = ".ods";
-   this->_extensions["application/vnd.oasis.opendocument.text"] = ".odt";
-   this->_extensions["audio/ogg"] = ".oga";
-   this->_extensions["video/ogg"] = ".ogv";
-   this->_extensions["application/ogg"] = ".ogx";
-   this->_extensions["audio/opus"] = ".opus";
-   this->_extensions["font/otf"] = ".otf";
-   this->_extensions["image/png"] = ".png";
-   this->_extensions["application/pdf"] = ".pdf";
-   this->_extensions["application/x-httpd-php"] = ".php";
-   this->_extensions["application/vnd.ms-powerpoint"] = ".ppt";
-   this->_extensions["application/vnd.openxmlformats-officedocument.presentationml.presentation"] = ".pptx";
-   this->_extensions["application/vnd.rar"] = ".rar";
-   this->_extensions["application/rtf"] = ".rtf";
-   this->_extensions["application/x-sh"] = ".sh";
-   this->_extensions["image/svg+xml"] = ".svg";
-   this->_extensions["application/x-tar"] = ".tar";
-   this->_extensions["image/tiff"] = ".tiff";
-   this->_extensions["video/mp2t"] = ".ts";
-   this->_extensions["font/ttf"] = ".ttf";
-   this->_extensions["text/plain"] = ".txt";
-   this->_extensions["application/vnd.visio"] = ".vsd";
-   this->_extensions["audio/wav"] = ".wav";
-   this->_extensions["audio/webm"] = ".weba";
-   this->_extensions["video/webm"] = ".webm";
-   this->_extensions["image/webp"] = ".webp";
-   this->_extensions["font/woff"] = ".woff";
-   this->_extensions["font/woff2"] = ".woff2";
-   this->_extensions["application/xhtml+xml"] = ".xhtml";
-   this->_extensions["application/vnd.ms-excel"] = ".xls";
-   this->_extensions["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"] = ".xlsx	";
-   this->_extensions["application/xml"] = ".xml";
-   this->_extensions["application/vnd.mozilla.xul+xml"] = ".xul";
-   this->_extensions["application/zip"] = ".zip";
-   this->_extensions["video/3gpp"] = ".3gp";
-   this->_extensions["video/3gpp2"] = ".3g2";
-   this->_extensions["application/x-7z-compressed"] = ".7z";
 }
