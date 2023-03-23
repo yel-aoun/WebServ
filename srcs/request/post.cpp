@@ -12,6 +12,7 @@ Post::Post(): body_or_head(0), _post_type(0)
 
 void    Post::call_post_func(Server &serv, Client *client)
 {
+    
     if(this->_post_type == 0)
         this->normal_post(serv, client);
 }

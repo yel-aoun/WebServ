@@ -11,7 +11,7 @@ class parce_server;
 
 #define SOCKET              int
 #define PORT                int
-#define MAX_REQUEST_SIZE    100
+#define MAX_REQUEST_SIZE    1024
 class location;
 
 class Server
@@ -35,9 +35,10 @@ class Server
         void    drop_client(std::list<Client *>::iterator client);
         void    serve_clients();
 
-        std::string seperate_header(std::string buff);
+        void     seperate_header(Client *client);
     public:
         Server(parce_server &server_data);
+        int                     _request_size;
         char                    _request_buff[MAX_REQUEST_SIZE + 1];
         void    run_serve();
         std::list<location>     get_locations() const;

@@ -86,22 +86,20 @@ void    Server::run_serve()
 
 void    Server::serve_clients()
 {
-    int                             request_size;
     std::list<Client *>::iterator   iter;
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
         if(FD_ISSET((*iter)->get_sockfd(), &this->_reads))
         {
             memset(this->_request_buff, 0, MAX_REQUEST_SIZE + 1);
-            request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
-            //std::cout << request_size << std::endl;
-            if (request_size < 1)
+            this->_request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
+            if (this->_request_size < 1)
             {
                 std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
                 drop_client(iter);
                 continue;
             }
-            (*iter)->set_received_data(request_size);
+            (*iter)->set_received_data(this->_request_size);
             if(!(*iter)->_request_type)
             {
                 (*iter)->_request.append(this->_request_buff);
@@ -109,40 +107,40 @@ void    Server::serve_clients()
                 {
                     std::cout<< (*iter)->_request<<std::endl;
                     Request req((*iter)->_request, iter);
-                    Check_path path(iter);
+                    Check_path path(iter, *this);
                     if (path.skip == 1)
                     {
-                        std::cout<<"should drop client heeer"<<std::endl;
                         drop_client(iter);
                         if (this->_clients.size() == 0)
                             break ;
                     }
                     else
                     {
+                        // std::cout<<"path : "<<(*iter)->location_match.get_locations()<<std::endl;
                         if(req.method == "POST")
                         {
                             (*iter)->init_post_data();
                             (*iter)->_request_type = true;
-                            std::strcpy(this->_request_buff, (this->seperate_header(this->_request_buff).c_str()));
-                            // (*iter)->post.body_size += std::strlen(this->_request_buff);
-                            // std::cout<<"body_size: "<< (*iter)->post.body_size<<std::endl;;
-                            // if ((*iter)->post.body_size > this->get_max_client_body_size())
-                            // {
-                            //     std::cout << "Size is bigger than max body size throw a error page" << std::endl;
-                            //     this->drop_client(iter);
-                            //     if (this->_clients.size() == 0)
-                            //         break ;
-                            // }
+                            // std::strcpy(this->_request_buff, (this->seperate_header((*iter)).c_str()));
+                            this->seperate_header((*iter));
                             (*iter)->post.call_post_func(*this, (*iter));
                         }
                         std::cout<<"calling methods"<<std::endl;
                     }
                 }
             }
-            // else // this else is for just post becouse post containe the body.
-            // {
-            //     (*iter)->post.call_post_func(*this, *iter);
-            // }
+            else // this else is for just post becouse post containe the body.
+            {
+                // std::cout<<"req_size : "<<(*iter)->_received_data<<std::endl;
+                // if ((*iter)->_received_data > get_max_client_body_size())
+                // {
+                //     std::cout<<"error/ 413 request entity too large"<<std::endl;
+                //     drop_client(iter);
+                //     if (this->_clients.size() == 0)
+                //             break ;
+                // }
+                (*iter)->post.call_post_func(*this, *iter);
+            }
         }
         // else
         // {
@@ -172,10 +170,12 @@ Server::~Server()
     // close server socket;
 }
 
-std::string Server::seperate_header(std::string buff)
+void Server::seperate_header(Client *client)
 {
-    int x = buff.find("\r\n\r\n") + 2;
-    std::string body = buff.substr(x, buff.size() - (x + 1));
-    return (body.c_str());
+    char *body = strstr(this->_request_buff , "\r\n\r\n");
+    int x = body - this->_request_buff + 4;
+    this->_request_size -= x;
+    client->_received_data -= x;
+    std::memcpy(this->_request_buff, body + 4, this->_request_size);
+    //std::cout << this->_request_size << std::endl;
 }
-

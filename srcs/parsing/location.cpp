@@ -115,8 +115,8 @@ void location::FillRoot(std::string prompt)
     std::vector<std::string> substring = splitString(prompt);
     if (substring.size() != 2)
     {
-        // std::cout << "Error! there's something wrong with the root parameter" << std::endl;
-        // exit (1);
+         std::cout << "Error! there's something wrong with the root parameter" << std::endl;
+         exit (1);
         return;
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
@@ -163,7 +163,7 @@ void location::initialize()
     allow_methods.push_back("POST");
     allow_methods.push_back("DELETE");
     redirect.clear();
-    auto_index = "404";
+    auto_index = "off";
     root = "/var/www/html/";
     index.push_back("index.html");
     index.push_back("index.htm");

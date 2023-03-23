@@ -1,11 +1,12 @@
 # include "check_path.hpp"
+#include "../parsing/location.hpp"
 
-Check_path::Check_path(std::list<Client *>::iterator iter): skip(0)
+Check_path::Check_path(std::list<Client *>::iterator iter, Server &serv): skip(0)
 {
-    check_transfer_encoding(iter);
+    check_transfer_encoding(iter, serv);
 }
 
-void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter)
+void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, Server &serv)
 {
     // (*iter)->path, (*iter)->request_pack, (*iter)->content_type,
     std::map<std::string, std::vector<std::string> > map_req = (*iter)->request_pack;
@@ -75,8 +76,7 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter)
             return ;
         }
     }
-    check_uri(iter);
-    return ;
+    check_uri(iter, serv);
 }
 
 bool isCharAllowed(char c) {
@@ -100,7 +100,7 @@ bool isURIValid(const std::string& uri, int len) {
     return true;
 }
 
-void    Check_path::check_uri(std::list<Client *>::iterator iter)
+void    Check_path::check_uri(std::list<Client *>::iterator iter, Server &serv)
 {
     std::string uri = (*iter)->path;
     int len = uri.length();
@@ -117,6 +117,66 @@ void    Check_path::check_uri(std::list<Client *>::iterator iter)
         this->skip = 1;
         return ;
     }
-    // check for request body if larger than client max body size
-    // get_matched_location_for_request_uri();
+    get_matched_location_for_request_uri(iter, serv);
+}
+
+void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::iterator iter, Server &serv)
+{
+    std::list<location> loc = serv.get_locations();
+    std::list<location>::iterator it;
+    int signe = 0;
+    for(it = loc.begin(); it != loc.end(); it++)
+    {
+        if ((*iter)->path.find((*it).get_locations()) != std::string::npos)
+        {
+            int i = (*it).get_locations().length();
+            if ((*iter)->path[i] == '/' || (*iter)->path.length() == i)
+            {
+                signe  = 1;
+                std::cout<<"location found"<<std::endl;
+                if (this->loc_path.length() < (*it).get_locations().length())
+                {
+                    this->loc_path = (*it).get_locations();
+                    this->location_match = (*it);
+                }
+            }
+        }
+    }
+    if (signe == 0)
+    {
+        std::cout<<"location not found"<<std::endl;
+        this->skip = 1;
+        return ;
+    }
+    else
+    {
+        (*iter)->location_match = this->location_match;
+        // std::string str = (*iter)->path.substr(loc_path.length(), (*iter)->path.length());
+        this->loc_path = this->location_match.root + &(*iter)->path[loc_path.length()];
+        (*iter)->loc_path = this->loc_path;
+        is_location_has_redirection(iter, serv);
+    }
+}
+
+void    Check_path::is_location_has_redirection(std::list<Client *>::iterator iter, Server &serv)
+{
+    // std::cout<<this->location_match.get_re
+    is_method_allowed_in_location(iter);
+}
+
+void    Check_path::is_method_allowed_in_location(std::list<Client *>::iterator iter)
+{
+    std::list<std::string> methodes = this->location_match.get_allow_methods();
+    std::list<std::string>::iterator it;
+    for(it = methodes.begin(); it != methodes.end(); it++)
+    {
+        if ((*iter)->method == (*it))
+            break ;
+    }
+    if ((*iter)->method != (*it))
+    {
+        std::cout<<"error / 405 method not allowed"<<std::endl;
+        this->skip = 1;
+        return ;
+    }
 }

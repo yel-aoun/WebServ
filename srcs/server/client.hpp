@@ -7,23 +7,26 @@
 #define DATA    int
 
 #include "../request/post.hpp"
+#include "../parsing/location.hpp"
 typedef struct sockaddr_storage sock_storage;
 
 class Client
 {
     private:
         SOCKET  _sockfd;
-        DATA    _received_data;
         
     public:
+        DATA    _received_data;
         std::map<std::string, std::vector<std::string> >  request_pack;
         //std::vector<std::string> method
         std::string     method;
         int             content_type;
         std::string     boundary;
         std::string     path;
+        std::string     loc_path;
         std::string     query;
         std::string     http;
+        location location_match;
         Post            post;
         socklen_t       _address_length;
         sock_storage    _address;
