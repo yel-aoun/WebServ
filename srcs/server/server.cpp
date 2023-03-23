@@ -43,7 +43,9 @@ void    Server::wait_on_clients()
     this->init_sockfds();
     restrict.tv_sec = 1;
     restrict.tv_usec = 0;
-    if (select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict) < 0)
+    int x = select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict);
+    std::cout << x << std::endl;
+    if (x < 0)
     {
         std::cerr << "select() failed" << std::endl;
         exit(EXIT_FAILURE);
@@ -127,16 +129,16 @@ void    Server::serve_clients()
                 }
             }
             else // this else is for just post becouse post containe the body.
-            {
-                //std::cout << this->_request_buff;
                 (*iter)->post.call_post_func(*this, *iter);
-            }
         }
         else
         {
             if((*iter)->method == "POST")
+            {
+                std::cout << "clinet number = " << (*iter)->get_sockfd() - 3 << " is Done" << std::endl;
                 (*iter)->file.close();
-            exit(0);
+            }
+            //drop_client(iter);
         }
     }
 }
@@ -155,21 +157,13 @@ void    Server::drop_client(std::list<Client *>::iterator client)
     std::cerr << "Drop Client not found !" << std::endl;
 }
 
-Server::~Server()
-{
-    // close server socket;
-}
+Server::~Server() {}
 
 void Server::seperate_header(Client *client)
 {
-    //std::cout << this->_request_buff << std::endl;
     char *body = strstr(this->_request_buff , "\r\n\r\n");
     int x = body - this->_request_buff + 4;
     this->_request_size -= x;
     client->_received_data -= x;
     std::memcpy(this->_request_buff, body + 4, this->_request_size);
-    // std::cout << "==============================================" << std::endl;
-    // for(int i = 0; i < this->_request_size; i++)
-    //     std::cout << this->_request_buff[i];
-    //std::cout << this->_request_size << std::endl;
 }

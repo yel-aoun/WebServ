@@ -6,13 +6,16 @@
 #include "../parsing/webserv.hpp"
 
 
-Post::Post(): body_or_head(0), _post_type(0)
-{}
+Post::Post(): body_or_head(0), _post_type(0) {}
+Post::~Post(){}
 
 void    Post::call_post_func(Server &serv, Client *client)
 {
-    if(this->_post_type == 0)
-        this->normal_post(serv, client);
+    switch(this->_post_type)
+    {
+        case 0:
+            this->normal_post(serv, client);
+    }
 }
 
 std::string Post::check_hexa(std::string buff)
