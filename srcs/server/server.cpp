@@ -128,7 +128,9 @@ void    Server::serve_clients()
                             this->seperate_header((*iter));
                             (*iter)->post.call_post_func(*this, (*iter));
                         }
-                        std::cout<<"calling methods"<<std::endl;
+                        else if (req.method == "DELETE")
+                            (*iter)->del.erase((*iter), *this);
+                        // std::cout<<"calling methods"<<std::endl;
                     }
                 }
                 else // this else is for just post becouse post containe the body.

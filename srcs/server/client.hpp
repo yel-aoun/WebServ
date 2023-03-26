@@ -10,6 +10,7 @@
 
 #include "../request/post.hpp"
 #include "../parsing/location.hpp"
+#include "../request/delete.hpp"
 typedef struct sockaddr_storage sock_storage;
 
 class Client
@@ -31,6 +32,7 @@ class Client
         std::string     http;
         location location_match;
         Post            post;
+        Delete          del;
         socklen_t       _address_length;
         sock_storage    _address;
         std::string     _request;
