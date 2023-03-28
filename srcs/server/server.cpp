@@ -14,6 +14,7 @@ Server::Server(parce_server &server_data, std::map<std::string, std::string> &fi
     Socket socket(this->_port);
     this->_server_socket = socket.get_socket();
     this->file_extensions = file_extensions;
+    std::map<std::string, std::string>::iterator iter;
 }
 
 std::list<location> Server::get_locations() const
@@ -43,9 +44,7 @@ void    Server::wait_on_clients()
     this->init_sockfds();
     restrict.tv_sec = 1;
     restrict.tv_usec = 0;
-    int x = select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict);
-    std::cout << x << std::endl;
-    if (x < 0)
+    if (select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict) < 0)
     {
         std::cerr << "select() failed" << std::endl;
         exit(EXIT_FAILURE);
@@ -103,11 +102,13 @@ void    Server::serve_clients()
                 continue;
             }
             (*iter)->set_received_data(this->_request_size);
+            (*iter)->_request_size += this->_request_size;
+            for(int i = 0; i < MAX_REQUEST_SIZE; i++)
+                (*iter)->_request.push_back(this->_request_buff[i]);
             if(!(*iter)->_request_type)
             {
-                (*iter)->_request.append(this->_request_buff);
-                if(std::strstr((*iter)->_request.c_str() , "\r\n\r\n"))
-                { 
+                if((*iter)->_request.find("\r\n\r\n") != std::string::npos)
+                {
                     Request req((*iter)->_request, iter);
                     Check_path path(iter);
                     if (path.skip == 1)
@@ -118,27 +119,31 @@ void    Server::serve_clients()
                     }
                     else
                     {
+
                         if(req.method == "POST")
                         {
                             (*iter)->init_post_data();
                             (*iter)->_request_type = true;
-                            this->seperate_header((*iter));
+                            this->seperate_header(*iter);
                             (*iter)->post.call_post_func(*this, (*iter));
                         }
                     }
+                    (*iter)->_request.clear();
+                    (*iter)->_request_size = 0;
                 }
             }
             else // this else is for just post becouse post containe the body.
+            {
                 (*iter)->post.call_post_func(*this, *iter);
+                (*iter)->_request.clear();
+                (*iter)->_request_size = 0;
+            }
         }
         else
         {
             if((*iter)->method == "POST")
-            {
-                std::cout << "clinet number = " << (*iter)->get_sockfd() - 3 << " is Done" << std::endl;
                 (*iter)->file.close();
-            }
-            //drop_client(iter);
+            drop_client(iter);
         }
     }
 }
@@ -161,9 +166,13 @@ Server::~Server() {}
 
 void Server::seperate_header(Client *client)
 {
-    char *body = strstr(this->_request_buff , "\r\n\r\n");
-    int x = body - this->_request_buff + 4;
-    this->_request_size -= x;
-    client->_received_data -= x;
-    std::memcpy(this->_request_buff, body + 4, this->_request_size);
+    std::string body;
+    size_t i = 4;
+    size_t pos = client->_request.find("\r\n\r\n");
+    if(client->post._post_type == 2)
+        i = 2;
+    int x = pos + i;
+    client->_request_size -= x;
+    body.assign(client->_request, x, client->_request_size);
+    client->_request = body;
 }

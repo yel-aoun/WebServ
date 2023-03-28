@@ -18,6 +18,7 @@ class Client
         
     public:
 
+        int                                                 _request_size;
         int                                                 content_type;
         int                                                 _request_type;
         Post                                                post;

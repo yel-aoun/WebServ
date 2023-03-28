@@ -12,7 +12,7 @@ class location;
 
 #define SOCKET              int
 #define PORT                int
-#define MAX_REQUEST_SIZE    2048
+#define MAX_REQUEST_SIZE    1024
 
 class Server
 {
@@ -38,11 +38,11 @@ class Server
 
     public:
 
-        int                     _request_size;
-        fd_set                  _reads;
-        char                    _request_buff[MAX_REQUEST_SIZE + 1];
-        std::list<location>     get_locations() const;
-        std::map<std::string,   std::string> file_extensions;
+        int                                     _request_size;
+        fd_set                                  _reads;
+        char                                    _request_buff[MAX_REQUEST_SIZE + 1];
+        std::list<location>                     get_locations() const;
+        std::map<std::string,   std::string>    file_extensions;
 
         Server();
         ~Server();

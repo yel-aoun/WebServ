@@ -21,6 +21,8 @@ void    Post::normal_post(Server &serv, Client *client)
                     mkdir(it->get_upload_pass().c_str(), 0777);
                 if(access(const_cast<char *>(client->file_path.c_str()), F_OK))
                     client->file.open(client->file_path, std::ios::binary | std::ios::app);
+                // i have to write byte by byte because i have to check for content_length.
+                // if i change the content_length to some number not <calculated when request is sent> ?
                 client->file.write(serv._request_buff, serv._request_size);
             }
         }

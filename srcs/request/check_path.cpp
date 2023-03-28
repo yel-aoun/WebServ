@@ -75,6 +75,7 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter)
         }
     }
     check_uri(iter);
+    
     return ;
 }
 
