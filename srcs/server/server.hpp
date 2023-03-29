@@ -38,11 +38,12 @@ class Server
 
     public:
 
-        int                                     _request_size;
-        fd_set                                  _reads;
-        char                                    _request[MAX_REQUEST_SIZE + 1];
-        std::list<location>                     get_locations() const;
-        std::map<std::string,   std::string>    file_extensions;
+        int                     _request_size;
+        char                    _request[MAX_REQUEST_SIZE + 1];
+        fd_set                  _reads;
+        std::list<location>     get_locations() const;
+        int get_max_client_body_size() const {return (_max_client_body_size);}
+        std::map<std::string,   std::string> file_extensions;
 
         Server();
         ~Server();

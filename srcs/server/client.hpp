@@ -8,6 +8,9 @@
 #define SOCKET  int
 #define DATA    int
 
+#include "../request/post.hpp"
+#include "../parsing/location.hpp"
+#include "../request/delete.hpp"
 typedef struct sockaddr_storage sock_storage;
 
 class Client
@@ -17,23 +20,25 @@ class Client
         SOCKET  _sockfd;
         
     public:
-
-        int                                                 _request_size;
-        int                                                 content_type;
-        int                                                 _request_type;
-        Post                                                post;
-        DATA                                                _received_data;
-        socklen_t                                           _address_length;
-        std::string                                         method;
-        std::string                                         boundary;
-        std::string                                         path;
-        std::string                                         query;
-        std::string                                         http;
+        int             _request_size;
+        int             _request_type;
+        int             content_type;
+        DATA            _received_data;
+        std::map<std::string, std::vector<std::string> >  request_pack;
+        std::string     method;
+        std::string     boundary;
+        std::string     path;
+        std::string     loc_path;
+        std::string     query;
+        std::string     http;
+        location location_match;
+        Post            post;
+        Delete          del;
+        socklen_t       _address_length;
+        sock_storage    _address;
+        std::string     _request;
+        std::ofstream   file;
         std::string                                         file_path;
-        sock_storage                                        _address;
-        std::ofstream                                       file;
-        std::map<std::string, std::vector<std::string> >    request_pack;
-    
         Client();
         ~Client();
         Client(const Client& rhs);

@@ -1,11 +1,11 @@
 #include "location.hpp"
 //DON'T FORGET TO SET THE DEFAULT VALUES OF SOME PARAMETERS
-std::vector<std::string> splitString(const std::string& str)
+std::vector<std::string> splitString(const std::string& str,const char splet)
 {
     std::vector<std::string> tokens;
     std::istringstream tokenStream(str);
     std::string token;
-    while (std::getline(tokenStream, token, ' '))
+    while (std::getline(tokenStream, token, splet))
     {
         if (!token.empty())
             tokens.push_back(token);
@@ -34,7 +34,7 @@ std::string location::trim_directory(int slash)
 void location::FillLocation(std::string prompt)
 {
 
-    std::vector<std::string> substring = splitString(prompt);
+    std::vector<std::string> substring = splitString(prompt, ' ');
 
     if (substring.size() != 3)
     {
@@ -65,7 +65,7 @@ void location::FillLocation(std::string prompt)
 void location::FillAllow_methods(std::string prompt)
 {
 
-    std::vector<std::string> substring = splitString(prompt);
+    std::vector<std::string> substring = splitString(prompt, ' ');
     if (substring.size() < 2 || substring.size() > 4)
         return;
     allow_methods.clear();
@@ -83,7 +83,7 @@ void location::FillAllow_methods(std::string prompt)
 
 void location::FillIndex(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt);
+    std::vector<std::string> substring = splitString(prompt, ' ');
     // if (substring.size() < 2)
     // {
         // std::cout << "Error! there's something wrong with the index parameter" << std::endl;
@@ -99,7 +99,7 @@ void location::FillIndex(std::string prompt)
 
 void location::FillRedirect(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt);
+    std::vector<std::string> substring = splitString(prompt, ' ');
     if (substring.size() != 2)
     {
         // std::cout << "Error! there's something wrong with the redirect parameter" << std::endl;
@@ -112,11 +112,11 @@ void location::FillRedirect(std::string prompt)
 
 void location::FillRoot(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt);
+    std::vector<std::string> substring = splitString(prompt, ' ');
     if (substring.size() != 2)
     {
-        // std::cout << "Error! there's something wrong with the root parameter" << std::endl;
-        // exit (1);
+         std::cout << "Error! there's something wrong with the root parameter" << std::endl;
+         exit (1);
         return;
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
@@ -125,7 +125,7 @@ void location::FillRoot(std::string prompt)
 
 void location::FillCgi_pass(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt);
+    std::vector<std::string> substring = splitString(prompt, ' ');
     if (substring.size() != 2)
     {
          std::cout << "Error! there's something wrong with the cgi_pass parameter" << std::endl;
@@ -133,12 +133,19 @@ void location::FillCgi_pass(std::string prompt)
         //return ;
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
-    this->cgi_pass = *it;
+    std::vector<std::string> substring2 = splitString(*it, ':');
+    if (substring2.size() != 2)
+    {
+         std::cout << "Error! there's something wrong with the cgi_pass parameter" << std::endl;
+         exit (1);
+        //return ;
+    }
+    this->cgi_pass.insert(std::make_pair(*(substring2.begin()), *(substring2.end() - 1)));
 }
 
 void location::FillUpload_pass(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt);
+    std::vector<std::string> substring = splitString(prompt, ' ');
     if (substring.size() != 2)
     {
         std::cout << "Error! there's something wrong with the upload_pass parameter" << std::endl;
@@ -150,7 +157,7 @@ void location::FillUpload_pass(std::string prompt)
 
 void location::FillAuto_index(std::string prompt)
 {
-    std::vector<std::string> substring = splitString(prompt);
+    std::vector<std::string> substring = splitString(prompt, ' ');
     if (substring.size() != 2)
         return;
     std::vector<std::string>::iterator it = substring.begin() + 1;
@@ -163,13 +170,12 @@ void location::initialize()
     allow_methods.push_back("POST");
     allow_methods.push_back("DELETE");
     redirect.clear();
-    auto_index = "404";
+    auto_index = "off";
     root = "/var/www/html/";
     index.push_back("index.html");
     index.push_back("index.htm");
     index.push_back("index.php");
     redirect = "404";
-    cgi_pass = "404";
 }
 
 location::location(const std::list<std::string> &config, int j)

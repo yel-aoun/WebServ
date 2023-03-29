@@ -10,7 +10,7 @@ class location
     std::list<std::string> allow_methods;
     std::string redirect;
     std::list<std::string> index;
-    std::string cgi_pass;
+    std::map<std::string, std::string> cgi_pass;
     std::string upload_pass;
     std::string auto_index;
     public:
@@ -40,7 +40,7 @@ class location
     {
         return (this->index);
     }
-    std::string get_cgi_pass() const
+    std::map<std::string, std::string> get_cgi_pass() const
     {
         return (this->cgi_pass);
     }

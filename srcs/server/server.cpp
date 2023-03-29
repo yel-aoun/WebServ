@@ -107,7 +107,7 @@ void    Server::serve_clients()
                 if(memmem(_request, _request_size, "\r\n\r\n", 4))
                 {
                     Request req(_request, iter);
-                    Check_path path(iter);
+                    Check_path path(iter, *this);
                     if (path.skip == 1)
                     {
                         drop_client(iter);
@@ -116,6 +116,7 @@ void    Server::serve_clients()
                     }
                     else
                     {
+                        // std::cout<<"path : "<<(*iter)->location_match.get_locations()<<std::endl;
                         if(req.method == "POST")
                         {
                             (*iter)->init_post_data();
@@ -123,6 +124,9 @@ void    Server::serve_clients()
                             this->seperate_header(*iter);
                             (*iter)->post.call_post_func(*this, (*iter));
                         }
+                        else if (req.method == "DELETE")
+                            (*iter)->del.erase((*iter), *this);
+                        // std::cout<<"calling methods"<<std::endl;
                     }
                 }
                 else
