@@ -25,6 +25,6 @@ class Request
         std::map<std::string, std::vector<std::string> >    request;
 
         Request();
-        Request(std::string &buffer, std::list<Client *>::iterator   iter);
+        Request(char *buffer, std::list<Client *>::iterator   iter);
 };
 #endif

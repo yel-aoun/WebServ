@@ -93,23 +93,20 @@ void    Server::serve_clients()
     {
         if(FD_ISSET((*iter)->get_sockfd(), &this->_reads))
         {
-            memset(this->_request_buff, 0, MAX_REQUEST_SIZE + 1);
-            this->_request_size = recv((*iter)->get_sockfd(), this->_request_buff, MAX_REQUEST_SIZE, 0);
+            memset(this->_request, 0, MAX_REQUEST_SIZE + 1);
+            this->_request_size = recv((*iter)->get_sockfd(), this->_request, MAX_REQUEST_SIZE, 0);
             if (this->_request_size < 1)
             {
                 std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
                 drop_client(iter);
-                continue;
+                continue ;
             }
             (*iter)->set_received_data(this->_request_size);
-            (*iter)->_request_size += this->_request_size;
-            for(int i = 0; i < MAX_REQUEST_SIZE; i++)
-                (*iter)->_request.push_back(this->_request_buff[i]);
             if(!(*iter)->_request_type)
             {
-                if((*iter)->_request.find("\r\n\r\n") != std::string::npos)
+                if(memmem(_request, _request_size, "\r\n\r\n", 4))
                 {
-                    Request req((*iter)->_request, iter);
+                    Request req(_request, iter);
                     Check_path path(iter);
                     if (path.skip == 1)
                     {
@@ -119,7 +116,6 @@ void    Server::serve_clients()
                     }
                     else
                     {
-
                         if(req.method == "POST")
                         {
                             (*iter)->init_post_data();
@@ -128,22 +124,12 @@ void    Server::serve_clients()
                             (*iter)->post.call_post_func(*this, (*iter));
                         }
                     }
-                    (*iter)->_request.clear();
-                    (*iter)->_request_size = 0;
                 }
+                else
+                    std::cout << "Your header is large" << std::endl;
             }
             else // this else is for just post becouse post containe the body.
-            {
                 (*iter)->post.call_post_func(*this, *iter);
-                (*iter)->_request.clear();
-                (*iter)->_request_size = 0;
-            }
-        }
-        else
-        {
-            if((*iter)->method == "POST")
-                (*iter)->file.close();
-            drop_client(iter);
         }
     }
 }
@@ -162,17 +148,17 @@ void    Server::drop_client(std::list<Client *>::iterator client)
     std::cerr << "Drop Client not found !" << std::endl;
 }
 
-Server::~Server() {}
-
 void Server::seperate_header(Client *client)
 {
-    std::string body;
-    size_t i = 4;
-    size_t pos = client->_request.find("\r\n\r\n");
+    int x = 4;
+    int pos = (char *) memmem(_request, _request_size, "\r\n\r\n", 4) - _request;
+
     if(client->post._post_type == 2)
-        i = 2;
-    int x = pos + i;
-    client->_request_size -= x;
-    body.assign(client->_request, x, client->_request_size);
-    client->_request = body;
+        x = 2;
+    this->_request_size -= (pos + x);
+    for(int i = (pos + x); i < MAX_REQUEST_SIZE; i++)
+        _request[i - (pos + x)] = _request[i];
+    memset(_request + (MAX_REQUEST_SIZE - (pos + x)), 0, x);
 }
+
+Server::~Server() {}

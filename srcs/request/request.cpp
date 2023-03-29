@@ -1,7 +1,8 @@
 # include "request.hpp"
 
-Request::Request(std::string &buffer, std::list<Client *>::iterator   iter): content_type(0)
+Request::Request(char *buff, std::list<Client *>::iterator   iter): content_type(0)
 {
+    std::string buffer(buff);
     std::stringstream ss(buffer);
     std::string token;
     int i = 0;

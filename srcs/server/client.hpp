@@ -29,7 +29,6 @@ class Client
         std::string                                         path;
         std::string                                         query;
         std::string                                         http;
-        std::string                                         _request;
         std::string                                         file_path;
         sock_storage                                        _address;
         std::ofstream                                       file;

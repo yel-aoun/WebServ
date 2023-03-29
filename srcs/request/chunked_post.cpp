@@ -31,32 +31,30 @@ void    Post::chunked_post(Server &serv, Client *client)
     this->_hex_ready = false;
     if(access("video.mp4", F_OK))
         client->file.open("video.mp4", std::ios::binary | std::ios::app);
-    while(buff_read < client->_request_size)
+    while(buff_read < serv._request_size)
     {
         if(!this->_chunk_len)
         {
-
-            while((this->_hex_len < 10) && (buff_read < MAX_REQUEST_SIZE))
+            while(this->_hex_len < 10 && buff_read < MAX_REQUEST_SIZE)
             {
-                this->_hex[this->_hex_len++] = client->_request[buff_read++];
+                this->_hex[this->_hex_len++] = serv._request[buff_read++];
                 if(check_hex())
                     break ;
             }
             if(!this->_hex_ready)
-                break;
+                break ;
             this->_chunk_len = std::stoi(this->_hex, nullptr, 16);
             this->_hex_len = 0;
             memset(this->_hex, 0, 20);
             if(!this->_chunk_len)
             {
                 client->file.close();
-                exit(0);
-                break;
+                break ;
             }
-        };
-        while((buff_read < client->_request_size) && this->_chunk_len)
+        }
+        while(buff_read < serv._request_size && this->_chunk_len)
         {
-            client->file.write(client->_request.c_str() + buff_read, 1);
+            client->file.write(serv._request + buff_read, 1);
             this->_chunk_len--;
             buff_read++;
         }

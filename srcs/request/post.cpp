@@ -61,7 +61,7 @@ void    Post::call_post_func(Server &serv, Client *client)
 //     //                 file.open(it->get_upload_pass() + "/testing");
 //     //             if (file.is_open())
 //     //             {
-//     //                 if(!file.write(serv._request_buff, std::strlen(serv._request_buff)))
+//     //                 if(!file.write(serv._request, std::strlen(serv._request)))
 //     //                     file.close();
 //     //             }
 //     //        }
