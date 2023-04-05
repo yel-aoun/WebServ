@@ -1,0 +1,17 @@
+cgi-body : 
+heeeefffffeer
+HTTP/1.1 200 OK
+Content-Length: 0
+
+
+heeeefffffeer
+buf : cgi-body : 
+heeeefffffeer
+HTTP/1.1 200 OK
+Content-Length: 0
+
+
+heeeefffffeer
+79
+heeeefffffeer
+finish reading ...

@@ -8,7 +8,7 @@ Request::Request(char *buff, std::list<Client *>::iterator   iter): _content_typ
     int i = 0;
     while (std::getline(ss, token))
     {
-        fill_map_request(token);
+        fill_map_request(token, i);
         i++;
     }
     (*iter)->request_pack = this->request;
@@ -18,17 +18,15 @@ Request::Request(char *buff, std::list<Client *>::iterator   iter): _content_typ
     (*iter)->http = this->http;
     (*iter)->_content_type = this->_content_type;
     (*iter)->boundary = this->boundary;
-    (*iter)->post._end_boundary = "--";
-    (*iter)->post._end_boundary.append(this->boundary);
-    (*iter)->post._end_boundary.append("--");
 }
 
-void    Request::fill_map_request(std::string   &buff_line)
+void    Request::fill_map_request(std::string   &buff_line, int i)
 {
     std::stringstream ss(buff_line);
     std::string token;
     ss >> token;
-    if (token == "GET" || token == "POST" || token == "DELETE")
+    //YOU SHO
+    if (i == 0)
     {
         this->method = token;
         ss >> token;

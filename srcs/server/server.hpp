@@ -42,6 +42,8 @@ class Server
         std::list<location>     get_locations() const;
         int get_max_client_body_size() const {return (_max_client_body_size);}
         std::map<std::string,   std::string>file_extensions ;
+        std::string             ft_get_extention(std::string str, std::list<Client *>::iterator iter);
+        void    respons(std::list<Client *>::iterator iter);
 
         Server(fd_set _reads ,fd_set _writes);
         Server(parce_server &server_data, std::map<std::string, std::string> &file_extensions);
