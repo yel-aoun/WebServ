@@ -22,35 +22,6 @@ std::list<location> Server::get_locations() const
     return(this->_locations);
 };
 
-void  Server::init_sockfds()
-{
-    FD_ZERO(&this->_reads);
-    FD_ZERO(&this->_writes);
-    FD_SET(this->_server_socket, &this->_reads);
-    this->_max_socket = this->_server_socket;
-    std::list<Client *>::iterator iter;
-    for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)    {
-        FD_SET((*iter)->get_sockfd(), &this->_writes);
-        FD_SET((*iter)->get_sockfd(), &this->_reads);
-        if ((*iter)->get_sockfd() > this->_max_socket)
-            this->_max_socket = (*iter)->get_sockfd();
-    }
-}
-
-void    Server::wait_on_clients()
-{
-    struct timeval restrict;
-
-    this->init_sockfds();
-    restrict.tv_sec = 1;
-    restrict.tv_usec = 0;
-    if (select(this->_max_socket + 1, &(this->_reads), NULL, NULL, &restrict) < 0)
-    {
-        std::cerr << "select() failed" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-}
-
 const char *get_client_address(Client *ci)
 {
     static char address_buffer[100];
@@ -77,9 +48,10 @@ void    Server::accept_new_client()
     this->_clients.push_back(client);
 }
 
-void    Server::run_serve()
+void    Server::run_serve(fd_set reads, fd_set writes)
 {
-    this->wait_on_clients();
+    this->_reads = reads;
+    this->_writes = writes;
     if (FD_ISSET(this->_server_socket, &this->_reads))
         this->accept_new_client();
     else
@@ -91,10 +63,11 @@ void    Server::serve_clients()
     std::list<Client *>::iterator   iter;
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
-        if(FD_ISSET((*iter)->get_sockfd(), &this->_reads))
+        if(FD_ISSET((*iter)->get_sockfd(), &this->_reads) && !(*iter)->_is_ready)
         {
             memset(this->_request, 0, MAX_REQUEST_SIZE + 1);
             this->_request_size = recv((*iter)->get_sockfd(), this->_request, MAX_REQUEST_SIZE, 0);
+            this->_request_len = _request_size;
             if (this->_request_size < 1)
             {
                 std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
@@ -116,7 +89,6 @@ void    Server::serve_clients()
                     }
                     else
                     {
-                        // std::cout<<"path : "<<(*iter)->location_match.get_locations()<<std::endl;
                         if(req.method == "POST")
                         {
                             (*iter)->init_post_data();
@@ -126,15 +98,19 @@ void    Server::serve_clients()
                         }
                         else if (req.method == "DELETE")
                             (*iter)->del.erase((*iter), *this);
-                        // std::cout<<"calling methods"<<std::endl;
                     }
                 }
-                else
-                    std::cout << "Your header is large" << std::endl;
+                // else
+                //     std::cout << "Your header is large" << std::endl;
             }
             else // this else is for just post becouse post containe the body.
                 (*iter)->post.call_post_func(*this, *iter);
         }
+        else if(FD_ISSET((*iter)->get_sockfd(), &this->_writes) && (*iter)->_is_ready)
+        {
+            // std::cout << "Hello world from ready to write" << std::endl;
+        }
+        // std::cout << "hello from outside" << std::endl;
     }
 }
 

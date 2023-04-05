@@ -16,7 +16,7 @@ class Request
 
     public:
 
-        int                                                 content_type;
+        int                                                 _content_type;
         std::string                                         method;
         std::string                                         path;
         std::string                                         query;

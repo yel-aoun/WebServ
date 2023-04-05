@@ -22,7 +22,8 @@ class Client
     public:
         int             _request_size;
         int             _request_type;
-        int             content_type;
+        int             _content_type;
+        int             _is_ready;
         DATA            _received_data;
         std::map<std::string, std::vector<std::string> >  request_pack;
         std::string     method;
@@ -38,7 +39,8 @@ class Client
         sock_storage    _address;
         std::string     _request;
         std::ofstream   file;
-        std::string                                         file_path;
+        std::string     file_path;
+    
         Client();
         ~Client();
         Client(const Client& rhs);
