@@ -32,9 +32,9 @@ const char *get_client_address(Client *ci)
     return address_buffer;
 }
 
-void    Server::accept_new_client()
+void    Server::accept_new_client(char **env)
 {
-    Client *client = new Client;
+    Client *client = new Client(env);
 
     SOCKET r = accept(this->_server_socket, \
         reinterpret_cast<struct sockaddr *>(&client->_address), \
@@ -48,12 +48,12 @@ void    Server::accept_new_client()
     this->_clients.push_back(client);
 }
 
-void    Server::run_serve(fd_set reads, fd_set writes)
+void    Server::run_serve(fd_set reads, fd_set writes, char **env)
 {
     this->_reads = reads;
     this->_writes = writes;
     if (FD_ISSET(this->_server_socket, &this->_reads))
-        this->accept_new_client();
+        this->accept_new_client(env);
     else
         this->serve_clients();
 }
@@ -91,16 +91,11 @@ void    Server::serve_clients()
                     {
                         if(req.method == "POST")
                         {
-                            // (*iter)->init_post_data();
-                            // (*iter)->_request_type = true;
-                            // if ((*iter)->post.check_post((*iter)) == 1)
-                            // {
-                            //     this->seperate_header(*iter);
-                            //     (*iter)->post.call_post_func(*this, (*iter));
-                            // }
-                            // else
-                            //     (*iter)->post.Treat_Post((*iter), *this);
-                            std::cout<<"this is post"<<std::endl;
+                            (*iter)->init_post_data();
+                            (*iter)->_request_type = true;
+                            this->seperate_header(*iter);
+                            (*iter)->post.check_post((*iter));
+                            (*iter)->post.call_post_func(*this, (*iter));
                         }
                         else if (req.method == "DELETE")
                             (*iter)->del.erase((*iter), *this);
@@ -122,7 +117,6 @@ void    Server::serve_clients()
         }
         else if(FD_ISSET((*iter)->get_sockfd(), &this->_writes) && (*iter)->_is_ready)
         {
-            std::cout<<"heeeefffffeer"<<std::endl;
             if ((*iter)->header == 0)
             {
                 this->respons(iter);

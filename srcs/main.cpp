@@ -6,7 +6,7 @@ void handleSIGPIPE(int signal) {
     // Do nothing, simply ignore the signal
 }
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **env)
 {
     if (argc != 2)
     {
@@ -14,5 +14,5 @@ int main(int argc, char **argv)
         exit(1);
     }
     signal(SIGPIPE, handleSIGPIPE); // Ignore the SIGPIPE signal
-    Webserv web(argv[1]);
+    Webserv web(argv[1], env);
 }

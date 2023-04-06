@@ -26,7 +26,7 @@ class Server
         std::vector<std::string>    _error_page;
 
         void    new_connection();
-        void    accept_new_client();
+        void    accept_new_client(char **env);
         void    drop_client(std::list<Client *>::iterator client);
         void    serve_clients();
         void    seperate_header(Client *client);
@@ -49,7 +49,7 @@ class Server
         Server(parce_server &server_data, std::map<std::string, std::string> &file_extensions);
         ~Server();
 
-        void    run_serve(fd_set reads, fd_set writes);
+        void    run_serve(fd_set reads, fd_set writes, char **env);
         // const char *get_client_address(Client *);
         // void    serve_resource(Client client, const char *path);
 };

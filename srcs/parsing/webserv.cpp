@@ -5,11 +5,11 @@
 
 Webserv::~Webserv() {}
 
-Webserv::Webserv(std::string conf_file)
+Webserv::Webserv(std::string conf_file, char **env)
 {
     this->generate_extensions();
 	parce_config_file(conf_file);
-	run_webservs();
+	run_webservs(env);
 }
 
 void Webserv::parce_config_file(std::string &conf_file)
@@ -119,7 +119,7 @@ void    Webserv::wait_on_clients()
     }
 }
 
-void Webserv::run_webservs()
+void Webserv::run_webservs(char **env)
 {
 	this->init_servers();
 	while (1)
@@ -127,7 +127,7 @@ void Webserv::run_webservs()
 		std::list<Server *>::iterator iter;
         this->wait_on_clients();
 		for(iter = this->servers.begin(); iter != this->servers.end(); iter++)
-			(*iter)->run_serve(this->_reads, this->_writes);
+			(*iter)->run_serve(this->_reads, this->_writes, env);
 	}
 }
 
