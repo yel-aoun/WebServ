@@ -55,7 +55,12 @@ class Client
         std::istringstream buffer;
         int             header_flag;
         std::string     cgi_header;
+        char            **env;
+        int             pid;
+        bool            isCgiDone;
+        int             fd;
         Client();
+        Client(char **env);
         ~Client();
         Client(const Client& rhs);
 
@@ -68,5 +73,8 @@ class Client
         void    generate_extensions_2();
         DATA    get_received_data(void);
 };
-
+int	ft_strlenc(char **c);
+void free_str_array(char **str, int size);
+char	**ft_strdupc(char **env);
+std::string create_temp_file(Client *ctl);
 #endif

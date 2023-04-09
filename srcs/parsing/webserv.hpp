@@ -26,13 +26,13 @@ class Webserv
 
     public:
 
-        Webserv(std::string conf_file);
+        Webserv(std::string conf_file, char **env);
         ~Webserv();
 
         std::map<std::string, std::string> file_extensions;
     
         void init_servers();
-        void run_webservs();
+        void run_webservs(char **env);
         void generate_extensions(void);
         void init_sockfds();
         void wait_on_clients();

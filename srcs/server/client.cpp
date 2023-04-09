@@ -9,7 +9,58 @@ Client::Client(): _received_data(0)
     this->_is_ready = 0;
     this->header = 0;
     this->file_is_open = 0;
+    isCgiDone = false;
 }
+
+int	ft_strlenc(char **c)
+{
+	int	i;
+
+	i = 0;
+	if (c == NULL)
+		return (0);
+	while (c[i])
+		i++;
+	return (i);
+}
+
+char	**ft_strdupc(char **env)
+{
+	int		i;
+	int		lendoub;
+	char	**str;
+
+	i = 0;
+	if (env == NULL)
+		return (NULL);
+	lendoub = ft_strlenc(env);
+	str = new char* [lendoub + 1];
+	if (str == 0)
+	{
+		free(str);
+		return (NULL);
+	}
+	while (i < lendoub)
+	{
+		str[i] = strdup(env[i]);
+		i++;
+	}
+	str[i] = 0;
+	return (str);
+}
+
+Client::Client(char **env): _received_data(0)
+{
+    this->_address_length = sizeof(this->_address);
+    this->_request_type = false;
+    this->_request_size = 0;
+    _content_type = 0;
+    this->_is_ready = 0;
+    this->header = 0;
+    this->file_is_open = 0;
+    this->env = ft_strdupc(env);
+}
+
 
 Client::Client(const Client& rhs)
 {
@@ -95,4 +146,11 @@ void Client::generate_extensions_2()
     }
 }
 
-Client::~Client() {}
+void free_str_array(char **str, int size) {
+    for (int i = 0; i < size; i++) {
+        delete[] str[i];
+    }
+    delete[] str;
+}
+
+Client::~Client() {free_str_array(env, ft_strlenc(env));}
