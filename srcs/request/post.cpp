@@ -59,8 +59,8 @@ char	**ft_add_var(char **env, char *cmd)
 		newenv[i] = strdup(env[i]);
 		i++;
 	}
-	newenv[i] = strdup(cmd);
-	newenv[++i] = 0;
+	newenv[i++] = strdup(cmd);
+	newenv[i] = 0;
     i = 0;
 	free_str_array(env, ft_strlenc(env));
 	return (newenv);
@@ -79,6 +79,47 @@ std::string create_temp_file(Client *ctl)
         std::exit(EXIT_FAILURE);
     }
     return (filename);
+}
+
+std::string Post::getHeaderCgi(std::string header)
+{
+    std::string cgiHeader(header);
+    for (int i = 0; i < header.length(); i++)
+    {
+        if (header[i] == '-')
+            cgiHeader[i] = '_';
+        else if (islower(header[i]))
+            cgiHeader[i] = toupper(header[i]);
+    }
+    return ("HTTP_" + cgiHeader);
+}
+
+void Post::addCgiHeaders(Client *ctl)
+{
+    if (ctl == nullptr)
+    {
+        printf("equal nulll  \n");
+        return ;
+    }
+    std::map<std::string, std::vector<std::string> >::iterator it = ctl->request_pack.begin();
+    while (it != ctl->request_pack.end())
+    {
+        if (!it ->first.empty())
+        {
+            std::string cgiHeader = getHeaderCgi(it->first);
+    
+            std::vector<std::string> v = it ->second;
+            std::string cgiValue;
+            for (int i = 0; i < v.size() - 1;i++)
+                cgiValue += v[i] + " ";
+            cgiValue += v[v.size() - 1];
+            std::string currEnvVal =  cgiHeader + "="+ cgiValue;
+            //std::cout << "currVaal ====== " << currEnvVal << std::endl;
+            ctl->env = ft_add_var(ctl->env, const_cast<char *>(currEnvVal.c_str()));
+        }
+
+        it++;
+    }
 }
 
 void Post::Add_Necessary_Env(Client *ctl)
@@ -114,6 +155,7 @@ void Post::Add_Necessary_Env(Client *ctl)
     ctl->env = ft_add_var(ctl->env, const_cast<char *>(test10.c_str()));
     std::string test9 = "GATEWAY_INTERFACE=CGI/1.1";
     ctl->env = ft_add_var(ctl->env, const_cast<char *>(test9.c_str()));
+    addCgiHeaders(ctl);
     ctl->env[ft_strlenc(ctl->env)] = NULL;
 }
 
@@ -131,8 +173,8 @@ void Post::Handle_exec(Client *ctl)
     }
     std::string filename = create_temp_file(ctl);
     std::cout << "filename ====== " << filename << std::endl;
-    int fd = open(filename.c_str(), 1);
-    if (fd < 0)
+    ctl->fd = open(filename.c_str(), 1);
+    if (ctl->fd < 0)
     {
         std::cout << "Hey i'm here " << std::endl;
         ctl->status_code = 403;
@@ -140,10 +182,11 @@ void Post::Handle_exec(Client *ctl)
         ctl->loc_path = "./default_error_pages/403.html";
         return ;
     }
-    if (fork() == 0)
+    ctl->pid = fork();
+    if (ctl->pid == 0)
     {
-        dup2(fd, STDOUT_FILENO);
-        close(fd);
+        dup2(ctl->fd, STDOUT_FILENO);
+        close(ctl->fd);
         int ok = open(path.c_str(), O_RDWR);
         std::ifstream o(path);
         std::stringstream bf;
@@ -161,39 +204,9 @@ void Post::Handle_exec(Client *ctl)
         execve(arg[0], arg, ctl->env);
         perror("EXEC: ");
     }
-    wait(NULL);
-    close(fd);
-    ctl->file.close();
-    std::ifstream if_file("./cgi-bin/cgi-file", std::ios::in);
-    std::string cgi_string;
-    char buffer[1025];
-    memset(buffer, 0 , 1025);
-    if_file.read(buffer, 1024);
-    int s_z = if_file.gcount();
-    while(s_z)
-    {
-        cgi_string += buffer;
-        memset(buffer, 0 , 1025);
-        if_file.read(buffer, 1024);
-        s_z = if_file.gcount();
-    }
-    int pos = cgi_string.find("\r\n\r\n");
-    std::string cgi_body = &cgi_string[pos + 4];
-    // std::cout<<"cgi_body ====> "<<cgi_body<<std::endl;
-    if_file.close();
-    std::ofstream of_file("./cgi-bin/cgi-file", std::ios::out | std::ios::binary | std::ios::trunc);
-    // std::cout<<"cgi-body : "<<cgi_body<<std::endl;
-    of_file<<cgi_body;
-    if_file.close();
-    // std::cout<<"cgi_string ===> "<<cgi_string<<std::endl;
-
-    ctl->cgi_header = cgi_string.substr(0, pos);
-    // (*iter)->resp.append("\r\nContent-Length: ");
-    // (*iter)->resp.append(std::to_string(cgi_body.size()));
-    // (*iter)->resp.append("\r\n\r\n");
-    // std::cout<<"lolololo / : "<<(*iter)->resp<<std::endl;
+    // ctl->file.close();
     ctl->header_flag = 1;
-    ctl->loc_path = "./cgi-bin/cgi-file";
+    ctl->loc_path = filename;
     ctl->status_code = 200;
     ctl->status = "OK";
 }

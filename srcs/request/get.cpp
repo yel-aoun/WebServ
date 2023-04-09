@@ -176,69 +176,114 @@ void    Get::is_dir_has_index_files(std::list<Client *>::iterator iter)
         check_for_auto_index(iter);
 }
 
+std::string Get::getHeaderCgi(std::string header)
+{
+    std::string cgiHeader(header);
+    for (int i = 0; i < header.length(); i++)
+    {
+        if (header[i] == '-')
+            cgiHeader[i] = '_';
+        else if (islower(header[i]))
+            cgiHeader[i] = toupper(header[i]);
+    }
+    return ("HTTP_" + cgiHeader);
+}
+
+void Get::addCgiHeaders(std::list<Client *>::iterator iter)
+{
+    Client *client  = *iter;
+    if (client == nullptr)
+    {
+        printf("equal nulll  \n");
+        return ;
+    }
+    std::map<std::string, std::vector<std::string> >::iterator it = (*iter)->request_pack.begin();
+
+    while (it != (*iter)->request_pack.end())
+    {
+        if (!it ->first.empty())
+        {
+            std::string cgiHeader = getHeaderCgi(it->first);
+    
+            std::vector<std::string> v = it ->second;
+            std::string cgiValue;
+            for (int i = 0; i < v.size() - 1;i++)
+                cgiValue += v[i] + " ";
+            cgiValue += v[v.size() - 1];
+            std::string currEnvVal =  cgiHeader + "="+ cgiValue;
+            //std::cout << "currVaal ====== " << currEnvVal << std::endl;
+            (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(currEnvVal.c_str()));
+        }
+
+        it++;
+    }
+}
+
 void    Get::if_location_has_cgi(std::list<Client *>::iterator iter)
 {
     // if cgi exist
     //run it && return code depend on it
     //else
+    // std::cout<<"path : "<< (*iter)->loc_path<<std::endl;
+    int dot = (*iter)->loc_path.rfind('.');
+    std::string extention = &(*iter)->loc_path[dot + 1];
     std::map<std::string, std::string> cgi = (*iter)->location_match.get_cgi_pass();
-    std::map<std::string, std::string>::iterator it = cgi.find("php");
-    std::string str = it->second;
-    // std::ofstream outfile("./cgi-bin/cgi-file");
-    int fd = open("./cgi-bin/cgi-file", 1 | O_TRUNC);
-    if (fd < 0)
+    std::map<std::string, std::string>::iterator it = cgi.find(extention);
+    if (it != cgi.end())
     {
-        (*iter)->status_code = 403;
-        (*iter)->status = "Forbidden";
-        (*iter)->loc_path = "./default_error_pages/403.html";
-        this->state = 1;
-        return ;
+        std::string str = it->second;
+        // std::cout<<"exucutable : "<<(*iter)->loc_path<<std::endl;
+        if (access(str.c_str(), X_OK) == 0)
+        {
+            std::string filename = create_temp_file((*iter));
+            (*iter)->fd = open(filename.c_str(), O_CREAT | O_RDWR | O_TRUNC);
+            if ((*iter)->fd < 0)
+            {
+                (*iter)->status_code = 403;
+                (*iter)->status = "Forbidden";
+                (*iter)->loc_path = "./default_error_pages/403.html";
+                this->state = 1;
+                return ;
+            }
+            std::string pathInfo = "PATH_INFO=" + (*iter)->loc_path;
+            (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(pathInfo.c_str()));
+            std::string queryString = "QUERY_STRING=" + (*iter)->query;
+            (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(queryString.c_str()));
+            addCgiHeaders(iter);
+            int i = 0 ;
+            // while ( (*iter)->env[i])
+            // {
+            //     std::cout << (*iter)->env[i] << std::endl;
+            //     i++;
+            // }
+            (*iter)->pid = fork();
+            if ((*iter)->pid == 0)
+            {
+                dup2((*iter)->fd, STDOUT_FILENO);
+                char *arg[3];
+                arg[0] = strdup(str.c_str());
+                arg[1] = strdup((*iter)->loc_path.c_str());
+                arg[2] = NULL;
+                execve(arg[0], arg, (*iter)->env);
+            }
+            (*iter)->header_flag = 1;
+            (*iter)->loc_path = filename;
+            (*iter)->status_code = 200;
+            (*iter)->status = "OK";
+        }
+        else
+        {
+            (*iter)->header_flag = 0;
+            (*iter)->status_code = 200;
+            (*iter)->status = "OK";
+        }
     }
-    if (fork() == 0)
+    else
     {
-        dup2(fd, STDOUT_FILENO);
-        close(fd);
-        char *arg[3];
-        std::cout<<"pop : " <<str<<std::endl;
-        std::cout<<"cgi_string : "<<std::endl;
-        arg[0] = strdup(str.c_str());
-        arg[1] = strdup((*iter)->loc_path.c_str());
-        arg[2] = NULL;
-        execve(arg[0], arg, NULL);
+        (*iter)->header_flag = 0;
+        (*iter)->status_code = 200;
+        (*iter)->status = "OK";
     }
-    wait(NULL);
-    close(fd);
-    std::ifstream if_file("./cgi-bin/cgi-file", std::ios::in);
-    std::string cgi_string;
-    char buffer[1025];
-    memset(buffer, 0 , 1025);
-    if_file.read(buffer, 1024);
-    int s_z = if_file.gcount();
-    while(s_z)
-    {
-        cgi_string += buffer;
-        memset(buffer, 0 , 1025);
-        if_file.read(buffer, 1024);
-        s_z = if_file.gcount();
-    }
-    int pos = cgi_string.find("\r\n\r\n");
-    std::string cgi_body = &cgi_string[pos + 4];
-    // std::cout<<"cgi_body ====> "<<cgi_body<<std::endl;
-    if_file.close();
-    std::ofstream of_file("./cgi-bin/cgi-file", std::ios::out | std::ios::binary | std::ios::trunc);
-    of_file<<cgi_body;
-    if_file.close();
-    // std::cout<<"cgi_string ===> "<<cgi_string<<std::endl;
-
-    (*iter)->cgi_header = cgi_string.substr(0, pos);
-    // (*iter)->resp.append("\r\nContent-Length: ");
-    // (*iter)->resp.append(std::to_string(cgi_body.size()));
-    // (*iter)->resp.append("\r\n\r\n");
-    // std::cout<<"lolololo / : "<<(*iter)->resp<<std::endl;
-    (*iter)->header_flag = 1;
-    (*iter)->loc_path = "./cgi-bin/cgi-file";
-    (*iter)->status_code = 200;
-    (*iter)->status = "OK";
     return ;
 }
 

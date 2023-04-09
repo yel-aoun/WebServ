@@ -13,6 +13,7 @@ class location;
 #define SOCKET              int
 #define PORT                int
 #define MAX_REQUEST_SIZE    8200
+#define FINISHED            true
 
 class Server
 {
@@ -44,12 +45,15 @@ class Server
         std::map<std::string,   std::string>file_extensions ;
         std::string             ft_get_extention(std::string str, std::list<Client *>::iterator iter);
         void    respons(std::list<Client *>::iterator iter);
+        void    respons_cgi(std::list<Client *>::iterator iter);
 
         Server(fd_set _reads ,fd_set _writes);
         Server(parce_server &server_data, std::map<std::string, std::string> &file_extensions);
         ~Server();
 
         void    run_serve(fd_set reads, fd_set writes, char **env);
+        bool    serveBody(std::list<Client *>::iterator   iter);
+        int     sizeBodyCgi(std::string buffer, int filesize);
         // const char *get_client_address(Client *);
         // void    serve_resource(Client client, const char *path);
 };

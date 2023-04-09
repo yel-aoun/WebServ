@@ -9,7 +9,7 @@ Client::Client(): _received_data(0)
     this->_is_ready = 0;
     this->header = 0;
     this->file_is_open = 0;
-    
+    isCgiDone = false;
 }
 
 int	ft_strlenc(char **c)

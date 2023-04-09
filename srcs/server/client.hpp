@@ -57,6 +57,9 @@ class Client
         int             header_flag;
         std::string     cgi_header;
         char            **env;
+        int             pid;
+        bool            isCgiDone;
+        int             fd;
         Client();
         Client(char **env);
         ~Client();
