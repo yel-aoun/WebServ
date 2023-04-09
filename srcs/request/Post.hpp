@@ -2,6 +2,7 @@
 #define POST_HPP
 
 #include "../headers_cpp.hpp"
+
 class Server;
 class Client;
 class Post

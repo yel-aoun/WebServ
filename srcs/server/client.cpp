@@ -9,6 +9,7 @@ Client::Client(): _received_data(0)
     this->_is_ready = 0;
     this->header = 0;
     this->file_is_open = 0;
+    
 }
 
 int	ft_strlenc(char **c)
@@ -104,6 +105,10 @@ void    Client::init_post_data()
 {
     this->post.boundary = this->boundary;
     this->post._post_type = this->_content_type;
+    std::map<std::string, std::vector<std::string> >::iterator iter;
+    iter = request_pack.find("Content-Length");
+    if(iter != request_pack.end())
+        this->_content_len = std::atoi((*((*iter).second.begin())).c_str());
 }
 
 void    Client::generate_file_name( std::string &mime_type, std::map<std::string,\

@@ -14,7 +14,6 @@ Server::Server(parce_server &server_data, std::map<std::string, std::string> &fi
     Socket socket(this->_port);
     this->_server_socket = socket.get_socket();
     this->file_extensions = file_extensions;
-    std::map<std::string, std::string>::iterator iter;
 }
 
 std::list<location> Server::get_locations() const
@@ -74,6 +73,7 @@ void    Server::serve_clients()
                 drop_client(iter);
                 continue ;
             }
+            // std::cout << this->_request << std::endl;
             (*iter)->set_received_data(this->_request_size);
             if(!(*iter)->_request_type)
             {
@@ -101,11 +101,8 @@ void    Server::serve_clients()
                             (*iter)->del.erase((*iter), *this);
                         else if(req.method == "GET")
                         {
-                            std::cout<<"holaaaaaaaa"<<std::endl;
                             (*iter)->get.get_requested_resource(iter);
                             (*iter)->_is_ready = true;
-                            std::cout<<"jjjjjjjjjjjja"<<std::endl;
-
                         }
                     }
                 }
@@ -120,7 +117,7 @@ void    Server::serve_clients()
             if ((*iter)->header == 0)
             {
                 this->respons(iter);
-                std::cout << (*iter)->resp<<std::endl;
+                // std::cout << (*iter)->resp<<std::endl;
                 write ((*iter)->get_sockfd(), (*iter)->resp.c_str(), (*iter)->resp.size());
                 (*iter)->header = 1;
             }
@@ -138,14 +135,12 @@ void    Server::serve_clients()
                 int szReaded = (*iter)->filein.gcount();
                 if (szReaded <= 0)
                 {
-                    std::cout<<"finish reading ..."<<std::endl;
                     (*iter)->filein.close();
                     drop_client(iter);
                     if (this->_clients.size() == 0)
                         break ;
                 }
                 // std::cout<<SIGPIPE<<std::endl;
-                std::cout<<"buf : "<<buffer<<strlen(buffer)<<std::endl;
                 write ((*iter)->get_sockfd(), buffer, szReaded);
             }
         }

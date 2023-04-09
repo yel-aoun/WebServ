@@ -181,61 +181,62 @@ void    Get::if_location_has_cgi(std::list<Client *>::iterator iter)
     // if cgi exist
     //run it && return code depend on it
     //else
-    // std::map<std::string, std::string> cgi = (*iter)->location_match.get_cgi_pass();
-    // std::map<std::string, std::string>::iterator it = cgi.find("php");
-    // std::string str = it->second;
-    // // std::ofstream outfile("./cgi-bin/cgi-file");
-    // int fd = open("./cgi-bin/cgi-file", 1 | O_TRUNC);
-    // if (fd < 0)
-    // {
-    //     (*iter)->status_code = 403;
-    //     (*iter)->status = "Forbidden";
-    //     (*iter)->loc_path = "./default_error_pages/403.html";
-    //     this->state = 1;
-    //     return ;
-    // }
-    // if (fork() == 0)
-    // {
-    //     dup2(fd, STDOUT_FILENO);
-    //     char *arg[3];
-    //     arg[0] = strdup(str.c_str());
-    //     arg[1] = strdup((*iter)->loc_path.c_str());
-    //     arg[2] = NULL;
-    //     std::cerr<<arg[1]<<std::endl;
-    //     execve(arg[0], arg, NULL);
-    // }
-    // wait(NULL);
-    // close(fd);
-    // std::ifstream if_file("./cgi-bin/cgi-file", std::ios::in);
-    // std::string cgi_string;
-    // char buffer[1025];
-    // memset(buffer, 0 , 1025);
-    // if_file.read(buffer, 1024);
-    // int s_z = if_file.gcount();
-    // while(s_z)
-    // {
-    //     cgi_string += buffer;
-    //     memset(buffer, 0 , 1025);
-    //     if_file.read(buffer, 1024);
-    //     s_z = if_file.gcount();
-    // }
-    // int pos = cgi_string.find("\r\n\r\n");
-    // std::string cgi_body = &cgi_string[pos + 4];
-    // // std::cout<<"cgi_body ====> "<<cgi_body<<std::endl;
-    // if_file.close();
-    // std::ofstream of_file("./cgi-bin/cgi-file", std::ios::out | std::ios::binary | std::ios::trunc);
-    // std::cout<<"cgi-body : "<<cgi_body<<std::endl;
-    // of_file<<cgi_body;
-    // if_file.close();
-    // // std::cout<<"cgi_string ===> "<<cgi_string<<std::endl;
+    std::map<std::string, std::string> cgi = (*iter)->location_match.get_cgi_pass();
+    std::map<std::string, std::string>::iterator it = cgi.find("php");
+    std::string str = it->second;
+    // std::ofstream outfile("./cgi-bin/cgi-file");
+    int fd = open("./cgi-bin/cgi-file", 1 | O_TRUNC);
+    if (fd < 0)
+    {
+        (*iter)->status_code = 403;
+        (*iter)->status = "Forbidden";
+        (*iter)->loc_path = "./default_error_pages/403.html";
+        this->state = 1;
+        return ;
+    }
+    if (fork() == 0)
+    {
+        dup2(fd, STDOUT_FILENO);
+        close(fd);
+        char *arg[3];
+        std::cout<<"pop : " <<str<<std::endl;
+        std::cout<<"cgi_string : "<<std::endl;
+        arg[0] = strdup(str.c_str());
+        arg[1] = strdup((*iter)->loc_path.c_str());
+        arg[2] = NULL;
+        execve(arg[0], arg, NULL);
+    }
+    wait(NULL);
+    close(fd);
+    std::ifstream if_file("./cgi-bin/cgi-file", std::ios::in);
+    std::string cgi_string;
+    char buffer[1025];
+    memset(buffer, 0 , 1025);
+    if_file.read(buffer, 1024);
+    int s_z = if_file.gcount();
+    while(s_z)
+    {
+        cgi_string += buffer;
+        memset(buffer, 0 , 1025);
+        if_file.read(buffer, 1024);
+        s_z = if_file.gcount();
+    }
+    int pos = cgi_string.find("\r\n\r\n");
+    std::string cgi_body = &cgi_string[pos + 4];
+    // std::cout<<"cgi_body ====> "<<cgi_body<<std::endl;
+    if_file.close();
+    std::ofstream of_file("./cgi-bin/cgi-file", std::ios::out | std::ios::binary | std::ios::trunc);
+    of_file<<cgi_body;
+    if_file.close();
+    // std::cout<<"cgi_string ===> "<<cgi_string<<std::endl;
 
-    // (*iter)->cgi_header = cgi_string.substr(0, pos);
-    // // (*iter)->resp.append("\r\nContent-Length: ");
-    // // (*iter)->resp.append(std::to_string(cgi_body.size()));
-    // // (*iter)->resp.append("\r\n\r\n");
-    // // std::cout<<"lolololo / : "<<(*iter)->resp<<std::endl;
-    // (*iter)->header_flag = 1;
-    // (*iter)->loc_path = "./cgi-bin/cgi-file";
+    (*iter)->cgi_header = cgi_string.substr(0, pos);
+    // (*iter)->resp.append("\r\nContent-Length: ");
+    // (*iter)->resp.append(std::to_string(cgi_body.size()));
+    // (*iter)->resp.append("\r\n\r\n");
+    // std::cout<<"lolololo / : "<<(*iter)->resp<<std::endl;
+    (*iter)->header_flag = 1;
+    (*iter)->loc_path = "./cgi-bin/cgi-file";
     (*iter)->status_code = 200;
     (*iter)->status = "OK";
     return ;

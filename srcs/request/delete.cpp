@@ -1,7 +1,7 @@
 #include "delete.hpp"
 #include "../server/client.hpp"
 #include "../server/server.hpp"
-#include <dirent.h>
+#include "../headers_cpp.hpp"
 
 
 Delete::Delete()
@@ -62,34 +62,42 @@ int deleteFolder(const char* folderPath) {
     return status;
 }
 
-
 void Delete::delete_directory(Client *ctl, Server &serv)
 {
     if (!deleteFolder(ctl->loc_path.c_str()))
-        std::cout << "SHOULD RETURN 204 NO CONTENT" << std::endl;
+    {
+        ctl->status_code = 204;
+        ctl->status = "No Content";
+        ctl->loc_path = "./default_error_pages/204.html";
+        return ;
+    }
     else
     {
         if (access(ctl->loc_path.c_str(), W_OK) == 0)
-            std::cout << "SHOULD RETURN 500 INTERNAL SERVER ERROR" << std::endl;
+        {
+            ctl->status_code = 500;
+            ctl->status = "Internal Server Error";
+            ctl->loc_path = "./default_error_pages/500.html";
+            return ;
+        }
         else
-            std::cout << "SHOULD RETURN 403 FORBIDDEN" << std::endl; 
+        {
+            ctl->status_code = 403;
+            ctl->status = "Forbidden";
+            ctl->loc_path = "./default_error_pages/403.html";
+            return ;
+        }
     }
 }
 
 void Delete::Treat_directory(Client *ctl, Server &serv)
 {
-    if (ctl->location_match.get_cgi_pass().empty())
-        this->delete_directory(ctl, serv);
-    else
-        std::cout << "Directory Has CGI" << std::endl;
+    this->delete_directory(ctl, serv);
 }
 
 void Delete::Treat_File(Client *ctl, Server &serv)
 {
-    if (ctl->location_match.get_cgi_pass().empty())
-        remove(ctl->loc_path.c_str());
-    else
-        std::cout << "File has CGI" << std::endl;
+    remove(ctl->loc_path.c_str());
 }
 
 void Delete::erase(Client *ctl, Server &serv)
@@ -97,16 +105,21 @@ void Delete::erase(Client *ctl, Server &serv)
     DIR* dir = opendir(ctl->loc_path.c_str());
     if (dir != NULL)
     {
-        std::cout << "The client requested a directory" << std::endl;
+        // std::cout << "The client requested a directory" << std::endl;
         this->Treat_directory(ctl, serv);
     }
     else if (fopen(ctl->loc_path.c_str(), "r") != NULL)
     {
-        std::cout << "The client requested a file" << std::endl;
+        // std::cout << "The client requested a file" << std::endl;
         this->Treat_File(ctl, serv);
-    }
+    } 
     else
-        std::cout << "errrrrrrrrrrrr" << std::endl;
+    {
+        ctl->status_code = 404;
+        ctl->status = "No Found";
+        ctl->loc_path = "./default_error_pages/404.html";
+        return ;
+    }
 }
 Delete::~Delete()
 {
