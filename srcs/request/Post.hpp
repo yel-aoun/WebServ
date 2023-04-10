@@ -2,6 +2,7 @@
 #define POST_HPP
 
 #include "../headers_cpp.hpp"
+
 class Server;
 class Client;
 class Post
@@ -38,12 +39,14 @@ class Post
         void        generate_tmp_file(Client *client);
         bool        check_hex();
         void        Treat_Post(Client *ctl, Server &serv);
+        std::string getHeaderCgi(std::string header);
         void        check_post(Client *clt);
         void        Treat_directory(Client *ctl, Server &serv);
         void        Treat_file(Client *ctl, Server &serv);
         void        Treat_Cgi(Client *ctl, Server &serv);
         void        Add_Necessary_Env(Client *ctl);
         void        Handle_exec(Client *ctl);
+        void        addCgiHeaders(Client *ctl);
         // void        exec_head(std::string buff, Server &serv, std::string &path);
         // void        exec_body(std::string buff, Server &serv, std::string &path);
         // int         skip_hex(std::string body);

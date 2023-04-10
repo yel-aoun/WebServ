@@ -14,7 +14,6 @@ Server::Server(parce_server &server_data, std::map<std::string, std::string> &fi
     Socket socket(this->_port);
     this->_server_socket = socket.get_socket();
     this->file_extensions = file_extensions;
-    std::map<std::string, std::string>::iterator iter;
 }
 
 std::list<location> Server::get_locations() const
@@ -78,6 +77,7 @@ void    Server::serve_clients()
                 //     return ;
                 continue ;
             }
+            // std::cout << this->_request << std::endl;
             (*iter)->set_received_data(this->_request_size);
             if(!(*iter)->_request_type)
             {
@@ -173,7 +173,7 @@ void    Server::drop_client(std::list<Client *>::iterator client)
 {
     CLOSESOCKET((*client)->get_sockfd());
     std::list<Client *>::iterator iter;
-    std::cout << "droping client\n\n";
+    std::cout << "dropping client\n\n";
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
         if((*client)->get_sockfd() == (*iter)->get_sockfd())

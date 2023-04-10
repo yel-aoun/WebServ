@@ -21,6 +21,7 @@ class Client
         SOCKET  _sockfd;
         
     public:
+        size_t          _content_len;
         int             _request_size;
         int             _request_type;
         int             _content_type;

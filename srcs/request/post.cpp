@@ -81,6 +81,47 @@ std::string create_temp_file(Client *ctl)
     return (filename);
 }
 
+std::string Post::getHeaderCgi(std::string header)
+{
+    std::string cgiHeader(header);
+    for (int i = 0; i < header.length(); i++)
+    {
+        if (header[i] == '-')
+            cgiHeader[i] = '_';
+        else if (islower(header[i]))
+            cgiHeader[i] = toupper(header[i]);
+    }
+    return ("HTTP_" + cgiHeader);
+}
+
+void Post::addCgiHeaders(Client *ctl)
+{
+    if (ctl == nullptr)
+    {
+        printf("equal nulll  \n");
+        return ;
+    }
+    std::map<std::string, std::vector<std::string> >::iterator it = ctl->request_pack.begin();
+    while (it != ctl->request_pack.end())
+    {
+        if (!it ->first.empty())
+        {
+            std::string cgiHeader = getHeaderCgi(it->first);
+    
+            std::vector<std::string> v = it ->second;
+            std::string cgiValue;
+            for (int i = 0; i < v.size() - 1;i++)
+                cgiValue += v[i] + " ";
+            cgiValue += v[v.size() - 1];
+            std::string currEnvVal =  cgiHeader + "="+ cgiValue;
+            //std::cout << "currVaal ====== " << currEnvVal << std::endl;
+            ctl->env = ft_add_var(ctl->env, const_cast<char *>(currEnvVal.c_str()));
+        }
+
+        it++;
+    }
+}
+
 void Post::Add_Necessary_Env(Client *ctl)
 {
     // ctl->file.flush(); 
@@ -94,16 +135,27 @@ void Post::Add_Necessary_Env(Client *ctl)
     // iter = ctl->request_pack.find("Content-Type");
     // std::cout << "==== " << iter.first() << std::endl;
     std::cout << "INFO ===== " << ctl->loc_path << std::endl;
-    std::string test = "PATH_INFO=" + ctl->loc_path + "index.php" ; 
+    std::string test = "PATH_INFO=" + ctl->loc_path; 
     ctl->env = ft_add_var(ctl->env, const_cast<char *>(test.data()));
     std::string test2 = "QUERY_STRING=" + ctl->query;
     ctl->env = ft_add_var(ctl->env, const_cast<char *>(test2.data()));
-    std::string test3 = "CONTENT_LENGTH=98350";
+    std::string test3 = "REQUEST_METHOD=POST";
     ctl->env = ft_add_var(ctl->env, const_cast<char *>(test3.data()));
-    std::string test4 = "CONTENT_TYPE=image/png";
+    std::string test4 = "REDIRECT_STATUS=201";
     ctl->env = ft_add_var(ctl->env, const_cast<char *>(test4.data()));
-    std::string test5 = "SCRIPT_FILENAME=/Users/zouazahr/Desktop/Mainweb/test/index.php";
+    std::string test5 = "CONTENT_LENGTH=98350";
     ctl->env = ft_add_var(ctl->env, const_cast<char *>(test5.data()));
+    std::string test6 = "CONTENT_TYPE=image/png";
+    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test6.data()));
+    std::string test7 = "SCRIPT_FILENAME=/Users/zouazahr/Desktop/Mainweb/test/test.php";
+    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test7.data()));
+    std::string test8 = "SERVER_PROTOCOL=HTTP/1.1";
+    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test8.c_str()));
+    std::string test10 = "SCRIPT_NAME=test/test.php";
+    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test10.c_str()));
+    std::string test9 = "GATEWAY_INTERFACE=CGI/1.1";
+    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test9.c_str()));
+    addCgiHeaders(ctl);
     ctl->env[ft_strlenc(ctl->env)] = NULL;
 }
 
@@ -121,8 +173,8 @@ void Post::Handle_exec(Client *ctl)
     }
     std::string filename = create_temp_file(ctl);
     std::cout << "filename ====== " << filename << std::endl;
-    int fd = open(filename.c_str(), 1);
-    if (fd < 0)
+    ctl->fd = open(filename.c_str(), 1);
+    if (ctl->fd < 0)
     {
         std::cout << "Hey i'm here " << std::endl;
         ctl->status_code = 403;
@@ -130,32 +182,33 @@ void Post::Handle_exec(Client *ctl)
         ctl->loc_path = "./default_error_pages/403.html";
         return ;
     }
-    if (fork() == 0)
+    ctl->pid = fork();
+    if (ctl->pid == 0)
     {
-        dup2(fd, STDOUT_FILENO);
-        close(fd);
+        dup2(ctl->fd, STDOUT_FILENO);
+        close(ctl->fd);
         int ok = open(path.c_str(), O_RDWR);
+        std::ifstream o(path);
+        std::stringstream bf;
+        bf << o.rdbuf();
+        std::cerr<<"================================ "<<bf.str()<<" =============================="<<std::endl;
         dup2(ok, 0);
         close(ok);
         char *arg[3];
         int i = 0;
-            while (i < ft_strlenc(ctl->env))
-        {
-            std::cerr << "=====> " << ctl->env[i] << std::endl;
-            i++;
-        }
         arg[0] = strdup("/Users/zouazahr/Desktop/webserv/cgi-bin/php-cgi");
-        std::cerr << "0-0-0-0-0-0> " << str << std::endl;
-        arg[1] = strdup((ctl->loc_path + "index.php").c_str());
+        std::cerr << "LOC PATH ==== " <<  ctl->loc_path << std::endl;
+        arg[1] = strdup((ctl->loc_path).c_str());
         arg[2] = NULL;
         std::cerr<<arg[1]<<std::endl;
         execve(arg[0], arg, ctl->env);
+        perror("EXEC: ");
     }
-    wait(NULL);
-    close(fd);
-     ctl->loc_path = "./default_error_pages/200.html";
-     ctl->status_code = 200;
-     ctl->status = "OK";
+    // ctl->file.close();
+    ctl->header_flag = 1;
+    ctl->loc_path = filename;
+    ctl->status_code = 200;
+    ctl->status = "OK";
 }
 
 void Post::Treat_Cgi(Client *ctl, Server &serv)
@@ -174,6 +227,8 @@ void Post::Treat_Cgi(Client *ctl, Server &serv)
         std::cout << "HERE" << std::endl;
         is_created = true;
         _is_matched = 1;
+        if (this->_post_type == 1)
+            this->_post_type = 0;
         call_post_func(serv, ctl);
         Add_Necessary_Env(ctl);
         Handle_exec(ctl);
