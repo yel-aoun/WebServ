@@ -51,7 +51,6 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
                     (*iter)->status_code = 501;
                     (*iter)->status = "Not Implemented";
                     (*iter)->loc_path = "./default_error_pages/501.html";
-                    std::cout<<"heeeer"<<std::endl;
                     this->skip = 1;
                     return ;
                 }
@@ -73,7 +72,40 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
             }
         }
     }
-    if (((*iter)->_content_type == 0 || (*iter)->_content_type == 1) && ((*iter)->method == "POST"))
+    if (((*iter)->_content_type == 2) && ((*iter)->method == "POST"))
+    {
+        std::map<std::string, std::vector<std::string> > map_req = (*iter)->request_pack;
+        std::map<std::string, std::vector<std::string> >::iterator m_ap = map_req.find("Content-Length");
+        if (m_ap != map_req.end())
+        {
+            // std::string str = *itt;
+            // for (int i = 0; i < str.length(); i++)
+            // {
+            //     if (!isdigit(str[i]))
+            //     {
+            //         (*iter)->status_code = 400;
+            //         (*iter)->status = "Bad Request";
+            //         (*iter)->loc_path = "./default_error_pages/400.html";
+            //         this->skip = 1;
+            //         return ;
+            //     }
+            // }
+            // std::stringstream ss(str);
+            // int num = 0;
+            // ss >> num;
+            // if (num == 0)
+            // {
+                // std::cout<<"co_len : "<<*itt<<std::endl;
+            std::cout<< "Content-Length eequale 0 /400 bad request"<<std::endl;
+            (*iter)->status_code = 400;
+            (*iter)->status = "Bad Request";
+            (*iter)->loc_path = "./default_error_pages/400.html";
+            this->skip = 1;
+            return ;
+            // }
+        }
+    }
+    else if ((*iter)->_content_type != 2 && ((*iter)->method == "POST"))
     {
         std::map<std::string, std::vector<std::string> > map_req = (*iter)->request_pack;
         std::map<std::string, std::vector<std::string> >::iterator m_ap = map_req.find("Content-Length");
@@ -81,26 +113,11 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
         {
             std::vector<std::string> vec = m_ap->second;
             std::vector<std::string>::iterator itt = vec.begin();
-            if (itt == vec.end())
+            std::string str = *itt;
+            for (int i = 0; i < str.length(); i++)
             {
-                std::cout<< "Content-Length exist with no value error /400 bad request"<<std::endl;
-                (*iter)->status_code = 400;
-                (*iter)->status = "Bad Request";
-                (*iter)->loc_path = "./default_error_pages/400.html";
-                // drop_client(iter);
-                this->skip = 1;
-                return ;
-            }
-            else
-            {
-                std::string str = *itt;
-                std::stringstream ss(str);
-                int num = 0;
-                ss >> num;
-                if (num == 0)
+                if (!isdigit(str[i]))
                 {
-                    // std::cout<<"co_len : "<<*itt<<std::endl;
-                    std::cout<< "Content-Length eequale 0 /400 bad request"<<std::endl;
                     (*iter)->status_code = 400;
                     (*iter)->status = "Bad Request";
                     (*iter)->loc_path = "./default_error_pages/400.html";
@@ -108,14 +125,20 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
                     return ;
                 }
             }
+            // std::stringstream ss(str);
+            // int num = 0;
+            // ss >> num;
+            // if (num == 0)
+            // {
+                // std::cout<<"co_len : "<<*itt<<std::endl;
+            // std::cout<< "Content-Length eequale 0 /400 bad request"<<std::endl;
+            // }
         }
         else
         {
-            std::cout<< "Content-Length not exist error /400 bad request"<<std::endl;
             (*iter)->status_code = 400;
             (*iter)->status = "Bad Request";
             (*iter)->loc_path = "./default_error_pages/400.html";
-            // drop_client(iter);
             this->skip = 1;
             return ;
         }
@@ -177,6 +200,8 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     int signe = 0;
     for(it = loc.begin(); it != loc.end(); it++)
     { 
+        std::cout<<"path : "<<(*it).get_locations()<<std::endl;
+        std::cout<<"size : "<<(*it).get_locations().size()<<std::endl;
         if ((*iter)->path.find((*it).get_locations()) != std::string::npos)
         {
             int i = (*it).get_locations().length();
@@ -195,6 +220,8 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     if (signe == 0)
     {
         // std::cout<<"location not found"<<std::endl;
+        std::cout<<"loc_has_redddddddddir"<<std::endl;
+        std::cout<<"path : "<<(*iter)->path<<"size : "<<(*iter)->path.size()<<std::endl;
         (*iter)->status_code = 404;
         (*iter)->status = "Not Found";
         (*iter)->loc_path = "./default_error_pages/404.html";
@@ -203,6 +230,7 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     }
     else
     {
+        std::cout<<"loc_has_redir"<<std::endl;
         (*iter)->location_match = this->location_match;
         // std::string str = (*iter)->path.substr(loc_path.length(), (*iter)->path.length());
         this->loc_path = this->location_match.root + &(*iter)->path[loc_path.length()];
@@ -214,7 +242,33 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
 void    Check_path::is_location_has_redirection(std::list<Client *>::iterator iter, Server &serv)
 {
     // std::cout<<this->location_match.get_re
-    is_method_allowed_in_location(iter);
+    std::vector<std::string> redirect = (this)->location_match.get_redirect();
+    std::cout<<"size : "<<(this)->location_match.root<<std::endl;;
+    std::cout<<"size : "<<redirect.size()<<std::endl;
+    std::cout<<"path : "<<(*iter)->path<<std::endl;
+    if (redirect.empty())
+    {
+        std::cout<<"hooola"<<std::endl;
+        is_method_allowed_in_location(iter);
+    }
+    else
+    {
+        std::string status = redirect[0];
+        for(int i = 0; status[i]; i++)
+        {
+            if (!isdigit(status[i]))
+            {
+                std::cout<<"redirect must have a digit in first parameter"<<std::endl;
+                exit(0);
+            }
+        }
+        (*iter)->status_code = 301;
+        (*iter)->status = "Moved Permanently";
+        (*iter)->redirect_301 = redirect[1];
+        this->skip = 1;
+        std::cout<<"heeer"<<std::endl;
+        return ;
+    }
 }
 
 void    Check_path::is_method_allowed_in_location(std::list<Client *>::iterator iter)

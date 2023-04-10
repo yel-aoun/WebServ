@@ -207,9 +207,11 @@ void Get::addCgiHeaders(std::list<Client *>::iterator iter)
     
             std::vector<std::string> v = it ->second;
             std::string cgiValue;
-            for (int i = 0; i < v.size() - 1;i++)
+            std::cout<<"size : "<<v.size()<<std::endl;
+            for (int i = 0; i < (int)v.size() - 1;i++)
                 cgiValue += v[i] + " ";
-            cgiValue += v[v.size() - 1];
+            if (!v.empty())
+                cgiValue += v[v.size() - 1];
             std::string currEnvVal =  cgiHeader + "="+ cgiValue;
             //std::cout << "currVaal ====== " << currEnvVal << std::endl;
             (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(currEnvVal.c_str()));
