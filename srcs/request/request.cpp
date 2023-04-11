@@ -54,8 +54,8 @@ void    Request::fill_map_request(std::string   &buff_line, int i)
             value.push_back(token);
             if (ss >> token)
             {
-                value.push_back(token);
                 this->_content_type = 1;
+                value.push_back(token);
                 this->boundary = &token[9];
             }   
         }

@@ -248,9 +248,12 @@ void    Server::respons(std::list<Client *>::iterator iter)
         (*iter)->resp.append("\r\n\r\n");
         return ;
     }
+        std::cout << "=-=-=-=-=-=-> " << std::endl;
     (*iter)->resp +="Content-Type: ";
     (*iter)->generate_extensions_2();
     std::string type = ft_get_extention(&(*iter)->loc_path[(*iter)->loc_path.rfind('.')], iter);
+
+    std::cout << "=-=-=-=-=-=- > " << type << std::endl;
     (*iter)->resp += type;
     (*iter)->resp += "\r\n";
     (*iter)->resp.append("Content-Length: ");
