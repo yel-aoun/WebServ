@@ -10,11 +10,10 @@ std::vector<std::string> split(const std::string &str)
         return (tokens);
 }
 
-std::vector<int> set_port(std::vector<std::string> &tokens)
+int set_port(std::vector<std::string> &tokens)
 {
     std::vector<std::string>::iterator it = tokens.begin();
     int num;
-    std::vector<int> ports;
     if (++it == tokens.end())
     {
         std::cout<<"you must set a value for the port"<<std::endl;
@@ -22,8 +21,9 @@ std::vector<int> set_port(std::vector<std::string> &tokens)
     }
     else
     {
-        for(;it != tokens.end(); it++)
-        {
+        // std::vector<int> ports;
+        // for(;it != tokens.end(); it++)
+        // {
             std::string str = *it;
             std::string::const_iterator iter = str.begin();
             if (iter != str.end())
@@ -36,6 +36,11 @@ std::vector<int> set_port(std::vector<std::string> &tokens)
                         exit (1);
                     }
                 }
+                if (++it != tokens.end())
+                {
+                    std::cout<<"just one value needed by port"<<std::endl;
+                    exit (1);
+                }
                 std::stringstream ss(str);
                 ss >> num;
                 if (str.length() != 4)
@@ -43,12 +48,13 @@ std::vector<int> set_port(std::vector<std::string> &tokens)
                     std::cout<<"your port must have 4 numbers"<<std::endl;
                     exit(1);
                 }
-                ports.push_back(num);
+            //     ports.push_back(num);
             }
-        }
+            return (num);
+        // }
     }
-
-    return (ports);
+    std::cout<<"you must set a value for the port"<<std::endl;
+    exit (1);
 }
 
 std::string set_host_name(std::vector<std::string> &tokens)

@@ -11,7 +11,7 @@ class parce_server;
 class location;
 
 #define SOCKET              int
-#define PORT                std::vector<int> 
+#define PORT                int 
 #define MAX_REQUEST_SIZE    8200
 #define FINISHED            true
 
