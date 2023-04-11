@@ -78,8 +78,8 @@ void    Server::serve_clients()
                 continue ;
             }
             (*iter)->set_received_data(this->_request_size);
-            // for (int i = 0; i < this->_request_size; i++)
-                // printf("%c", this->_request[i]);
+            for (int i = 0; i < this->_request_size; i++)
+                printf("%c", this->_request[i]);
             // std::cout << this->_request << std::endl;
             if(!(*iter)->_request_type)
             {
