@@ -6,7 +6,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 
-Get::Get(): state(0)
+Get::Get(): state(0), index_exist(0)
 {
 }
 

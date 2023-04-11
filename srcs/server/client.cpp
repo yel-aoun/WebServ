@@ -131,7 +131,7 @@ void Client::generate_extensions_2()
 {
     std::ifstream file;
     std::string str;
-    file.open("/Users/yel-aoun/Desktop/webserv/srcs/server/message.txt");
+    file.open("./srcs/server/message.txt");
     if (file)
     {
         while (file.good())
