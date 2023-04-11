@@ -26,6 +26,7 @@ class Post
         std::string     tmp_file_path;
         std::string     _end_boundary;
         std::string     path;
+        int             cgi_done;
         int             _is_matched;
         int             _is_cgi;
         Post();

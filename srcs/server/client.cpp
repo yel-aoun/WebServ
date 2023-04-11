@@ -10,6 +10,9 @@ Client::Client(): _received_data(0)
     this->header = 0;
     this->file_is_open = 0;
     isCgiDone = false;
+    this->env = NULL;
+    length = 0;
+    is_done = 0;
 }
 
 int	ft_strlenc(char **c)
@@ -19,7 +22,7 @@ int	ft_strlenc(char **c)
 	i = 0;
 	if (c == NULL)
 		return (0);
-	while (c[i])
+    while (c[i])
 		i++;
 	return (i);
 }
@@ -59,6 +62,7 @@ Client::Client(char **env): _received_data(0)
     this->header = 0;
     this->file_is_open = 0;
     this->env = ft_strdupc(env);
+    length = 0;
 }
 
 
@@ -108,7 +112,10 @@ void    Client::init_post_data()
     std::map<std::string, std::vector<std::string> >::iterator iter;
     iter = request_pack.find("Content-Length");
     if(iter != request_pack.end())
+    {
         this->_content_len = std::atoi((*((*iter).second.begin())).c_str());
+        this->length = this->_content_len;
+    }
 }
 
 void    Client::generate_file_name( std::string &mime_type, std::map<std::string,\
