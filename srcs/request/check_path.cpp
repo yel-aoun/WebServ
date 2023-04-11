@@ -22,22 +22,6 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
             (*iter)->status_code = 501;
             (*iter)->status = "Not Implemented";
             (*iter)->loc_path = "./default_error_pages/501.html";
-            // std::vector<std::string> error = (*iter)->error_pages;
-            // std::vector<std::string>::iterator it = error.begin();
-            // if (it != error.end())
-            // {
-            //     int num;
-            //     std::stringstream ss(*it);
-            //     ss >> num;
-            //     if (num != (*iter)->status_code)
-            //         (*iter)->loc_path = "./default_error_pages/501.html";
-            //     else
-            //     {
-            //         (*iter)->loc_path = ""
-            //     }
-            // }
-            // else
-            //     (*iter)->loc_path = "./default_error_pages/501.html";
             this->skip = 1;
             return ;
         }
@@ -199,9 +183,7 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     std::list<location>::iterator it;
     int signe = 0;
     for(it = loc.begin(); it != loc.end(); it++)
-    { 
-        std::cout<<"path : "<<(*it).get_locations()<<std::endl;
-        std::cout<<"size : "<<(*it).get_locations().size()<<std::endl;
+    {
         if ((*iter)->path.find((*it).get_locations()) != std::string::npos)
         {
             int i = (*it).get_locations().length();
@@ -230,7 +212,6 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     }
     else
     {
-        std::cout<<"loc_has_redir"<<std::endl;
         (*iter)->location_match = this->location_match;
         // std::string str = (*iter)->path.substr(loc_path.length(), (*iter)->path.length());
         this->loc_path = this->location_match.root + &(*iter)->path[loc_path.length()];
@@ -243,14 +224,8 @@ void    Check_path::is_location_has_redirection(std::list<Client *>::iterator it
 {
     // std::cout<<this->location_match.get_re
     std::vector<std::string> redirect = (this)->location_match.get_redirect();
-    std::cout<<"size : "<<(this)->location_match.root<<std::endl;;
-    std::cout<<"size : "<<redirect.size()<<std::endl;
-    std::cout<<"path : "<<(*iter)->path<<std::endl;
     if (redirect.empty())
-    {
-        std::cout<<"hooola"<<std::endl;
         is_method_allowed_in_location(iter);
-    }
     else
     {
         std::string status = redirect[0];
@@ -266,7 +241,6 @@ void    Check_path::is_location_has_redirection(std::list<Client *>::iterator it
         (*iter)->status = "Moved Permanently";
         (*iter)->redirect_301 = redirect[1];
         this->skip = 1;
-        std::cout<<"heeer"<<std::endl;
         return ;
     }
 }

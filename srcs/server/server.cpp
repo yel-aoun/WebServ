@@ -33,7 +33,7 @@ const char *get_client_address(Client *ci)
 
 void    Server::accept_new_client(char **env)
 {
-    Client *client = new Client(env);
+    Client *client = new Client();
 
     SOCKET r = accept(this->_server_socket, \
         reinterpret_cast<struct sockaddr *>(&client->_address), \
@@ -77,7 +77,6 @@ void    Server::serve_clients()
                 //     return ;
                 continue ;
             }
-            // std::cout << this->_request << std::endl;
             (*iter)->set_received_data(this->_request_size);
             if(!(*iter)->_request_type)
             {
@@ -114,25 +113,32 @@ void    Server::serve_clients()
                 //     std::cout << "Your header is large" << std::endl;
             }
             else // this else is for just post becouse post containe the body.
+            {
+                std::cout << "=-=-=-=-= > Heloo Bottome" << std::endl;
                 (*iter)->post.call_post_func(*this, *iter);
+            }
         }
         else if(FD_ISSET((*iter)->get_sockfd(), &this->_writes) && (*iter)->_is_ready)
         {
+        //             std::cout<<"hellofromcgi__________header_response"<<(*iter)->header_flag<<std::endl;
+        //             std::cout<<"size : "<<this->_clients.size()<<std::endl;
+
             if ((*iter) ->header_flag == 1)
             {
                 if ((*iter)->isCgiDone == false)
                 {
-                    int stat;
                     int pid = waitpid((*iter)->pid, NULL, WNOHANG);
                     // wait(NULL);
-                    close ((*iter)->fd);
                     if (pid == 0)
                     {
                         iter++;
                         continue ;
                     }
                     else
+                    {
                         (*iter)->isCgiDone = true;
+                        close ((*iter)->fd);
+                    }
                 }
                 if ((*iter)->isCgiDone)
                 {
@@ -256,6 +262,7 @@ void    Server::respons(std::list<Client *>::iterator iter)
 
 void    Server::respons_cgi(std::list<Client *>::iterator iter)
 {
+    std::cout<<"hello from cgi_response"<<std::endl;
     std::ifstream filein;
     filein.open((*iter)->loc_path,std::ios::binary);
     if (!filein.is_open())

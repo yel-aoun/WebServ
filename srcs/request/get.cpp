@@ -207,7 +207,6 @@ void Get::addCgiHeaders(std::list<Client *>::iterator iter)
     
             std::vector<std::string> v = it ->second;
             std::string cgiValue;
-            std::cout<<"size : "<<v.size()<<std::endl;
             for (int i = 0; i < (int)v.size() - 1;i++)
                 cgiValue += v[i] + " ";
             if (!v.empty())

@@ -19,6 +19,8 @@ void Post::check_post(Client *clt)
         _is_matched = 1;
 }
 
+
+
 void    Post::call_post_func(Server &serv, Client *client)
 {
     if (_is_matched == 1)
@@ -28,10 +30,8 @@ void    Post::call_post_func(Server &serv, Client *client)
         switch(this->_post_type)
         {
             case 0:
-                this->normal_post(serv, client);
-                break;
             case 1:
-                this->boundary_post(serv, client);
+                this->normal_post(serv, client);
                 break;
             case 2:
                 this->chunked_post(serv, client);
@@ -40,6 +40,12 @@ void    Post::call_post_func(Server &serv, Client *client)
     }
     else
         Treat_Post(client, serv);
+    if (client->is_done == 1 && _is_matched == 0)
+    {
+        Add_Necessary_Env(client);
+        Handle_exec(client);
+    }
+    //MIGHT HAVE A PROBLEM HERE
 }
 
 char	**ft_add_var(char **env, char *cmd)
@@ -54,11 +60,14 @@ char	**ft_add_var(char **env, char *cmd)
 		free(newenv);
 		return (NULL);
 	}
-	while (env[i] != 0)
-	{
-		newenv[i] = strdup(env[i]);
-		i++;
-	}
+    if (env)
+    {
+	    while (env[i] != 0)
+	    {
+		    newenv[i] = strdup(env[i]);
+		    i++;
+	    }
+    }
 	newenv[i++] = strdup(cmd);
 	newenv[i] = 0;
     i = 0;
@@ -107,14 +116,15 @@ void Post::addCgiHeaders(Client *ctl)
         if (!it ->first.empty())
         {
             std::string cgiHeader = getHeaderCgi(it->first);
-    
             std::vector<std::string> v = it ->second;
             std::string cgiValue;
-            for (int i = 0; i < v.size() - 1;i++)
+            for (int i = 0; i < (int)v.size() - 1;i++)
                 cgiValue += v[i] + " ";
-            cgiValue += v[v.size() - 1];
+            if (!v.empty())
+                cgiValue += v[v.size() - 1];
             std::string currEnvVal =  cgiHeader + "="+ cgiValue;
-            //std::cout << "currVaal ====== " << currEnvVal << std::endl;
+            if (cgiHeader.find("HTTP_CONTENT_TYPE") != -1)
+                ctl->cont_type = cgiValue;
             ctl->env = ft_add_var(ctl->env, const_cast<char *>(currEnvVal.c_str()));
         }
 
@@ -124,55 +134,31 @@ void Post::addCgiHeaders(Client *ctl)
 
 void Post::Add_Necessary_Env(Client *ctl)
 {
-    // ctl->file.flush(); 
-    // ctl->file.seekp(0, std::ios::end);
-    // unsigned int l = static_cast<unsigned int>(ctl->file.tellp());
-    // ctl->file.seekp(0, std::ios::beg);
-    // std::string ct = "CONTENT_LENGTH=" + std::to_string(l);
-    // ctl->env = ft_add_var(ctl->env, const_cast<char *>(ct.data()));
-    // std::cout << "*****************" << std::endl;
-    // std::map<std::string, std::vector<std::string> >::iterator iter;
-    // iter = ctl->request_pack.find("Content-Type");
-    // std::cout << "==== " << iter.first() << std::endl;
-    std::cout << "INFO ===== " << ctl->loc_path << std::endl;
-    std::string test = "PATH_INFO=" + ctl->loc_path; 
-    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test.data()));
-    std::string test2 = "QUERY_STRING=" + ctl->query;
-    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test2.data()));
-    std::string test3 = "REQUEST_METHOD=POST";
-    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test3.data()));
-    std::string test4 = "REDIRECT_STATUS=201";
-    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test4.data()));
-    std::string test5 = "CONTENT_LENGTH=98350";
-    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test5.data()));
-    std::string test6 = "CONTENT_TYPE=image/png";
-    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test6.data()));
-    std::string test7 = "SCRIPT_FILENAME=/Users/zouazahr/Desktop/Mainweb/test/test.php";
-    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test7.data()));
-    std::string test8 = "SERVER_PROTOCOL=HTTP/1.1";
-    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test8.c_str()));
-    std::string test10 = "SCRIPT_NAME=test/test.php";
-    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test10.c_str()));
-    std::string test9 = "GATEWAY_INTERFACE=CGI/1.1";
-    ctl->env = ft_add_var(ctl->env, const_cast<char *>(test9.c_str()));
+    ctl->is_done = 0;
+    std::string test[10];
+    test[0] = "PATH_INFO="+ ctl->loc_path; 
+    test[1] = "QUERY_STRING=" + ctl->query;
+    std::cout << "QUERy ======== " << ctl->query << std::endl;;
+    test[2] = "REQUEST_METHOD=POST";
+    test[3] = "REDIRECT_STATUS=200";
+    std::stringstream file(ctl->length);
+    test[4] = "CONTENT_LENGTH=" + std::to_string(ctl->length);
+    test[5] = "SCRIPT_FILENAME="+ctl->loc_path;
+    test[6] = "SERVER_PROTOCOL=HTTP/1.1";
+    test[7] = "SCRIPT_NAME="+ ctl->loc_path;
+    test[8] = "GATEWAY_INTERFACE=CGI/1.1";
     addCgiHeaders(ctl);
+    test[9] = "CONTENT_TYPE=" + ctl->cont_type;
+    for (int i = 0; i < 10; i++)
+        ctl->env = ft_add_var(ctl->env, const_cast<char *>(test[i].data()));
     ctl->env[ft_strlenc(ctl->env)] = NULL;
 }
 
+
 void Post::Handle_exec(Client *ctl)
 {
-    std::map<std::string, std::string> cgi = ctl->location_match.get_cgi_pass();
-    std::map<std::string, std::string>::iterator it = cgi.find("php");
-    std::string str;
-    if (it != cgi.end())
-        str = it->second;
-    else
-    {
-        std::cout << "YA done goofed" << std::endl;
-        exit(0);
-    }
+    ctl->filein.close();
     std::string filename = create_temp_file(ctl);
-    std::cout << "filename ====== " << filename << std::endl;
     ctl->fd = open(filename.c_str(), 1);
     if (ctl->fd < 0)
     {
@@ -182,40 +168,35 @@ void Post::Handle_exec(Client *ctl)
         ctl->loc_path = "./default_error_pages/403.html";
         return ;
     }
+    int i = 0;
     ctl->pid = fork();
     if (ctl->pid == 0)
     {
         dup2(ctl->fd, STDOUT_FILENO);
         close(ctl->fd);
         int ok = open(path.c_str(), O_RDWR);
-        std::ifstream o(path);
-        std::stringstream bf;
-        bf << o.rdbuf();
-        std::cerr<<"================================ "<<bf.str()<<" =============================="<<std::endl;
         dup2(ok, 0);
         close(ok);
         char *arg[3];
         int i = 0;
-        arg[0] = strdup("/Users/zouazahr/Desktop/webserv/cgi-bin/php-cgi");
-        std::cerr << "LOC PATH ==== " <<  ctl->loc_path << std::endl;
-        arg[1] = strdup((ctl->loc_path).c_str());
+        arg[0] = strdup(ctl->exec_path.c_str());
+        arg[1] = strdup(ctl->loc_path.c_str());
         arg[2] = NULL;
-        std::cerr<<arg[1]<<std::endl;
+        int x = 0;
         execve(arg[0], arg, ctl->env);
         perror("EXEC: ");
     }
-    // ctl->file.close();
     ctl->header_flag = 1;
     ctl->loc_path = filename;
     ctl->status_code = 200;
     ctl->status = "OK";
+    ctl->_is_ready = true;
 }
 
 void Post::Treat_Cgi(Client *ctl, Server &serv)
 {
     std::string filename = create_temp_file(ctl);
     ctl->file.open(filename.c_str(), std::ios::out | std::ios::binary);
-    std::cout << "OG path : " << filename << std::endl;
     path = filename;
     if (!ctl->file.is_open())
     {
@@ -224,55 +205,111 @@ void Post::Treat_Cgi(Client *ctl, Server &serv)
     }
     else
     {
-        std::cout << "HERE" << std::endl;
         is_created = true;
         _is_matched = 1;
         if (this->_post_type == 1)
             this->_post_type = 0;
         call_post_func(serv, ctl);
-        Add_Necessary_Env(ctl);
-        Handle_exec(ctl);
     }
+}
+
+int    is_dir_has_index_files(Client *ctl)
+{
+    location loc = ctl->location_match;
+    std::list<std::string> index = loc.get_index();
+    std::list<std::string>::iterator it;
+    struct stat file_stat;
+    for(it = index.begin(); it != index.end(); it++)
+    {
+        std::string path = ctl->loc_path + (*it);
+        if (stat(path.c_str(), &file_stat) == 0)
+        {
+            if (S_ISREG(file_stat.st_mode))
+            {
+                ctl->loc_path.append((*it));
+                return (1);
+            }
+        }
+    }
+    return(0);
 }
 
 void Post::Treat_directory(Client *ctl, Server &serv)
 {
-    if (ctl->location_match.get_index().empty())
+    if (!is_dir_has_index_files(ctl))
     {
         ctl->status_code = 403;
         ctl->status = "Forbidden";
         ctl->loc_path = "./default_error_pages/403.html";
         return ;
+    //PUT HEAD_FLAG = 0 ON EVERY ERROR AND REMIND YOUSSEF
     }
     else
     {
-        if (ctl->location_match.get_cgi_pass().empty())
+        int dot = ctl->loc_path.rfind('.');
+        std::string extention = &ctl->loc_path[dot + 1];
+        std::map<std::string, std::string> cgi = ctl->location_match.get_cgi_pass();
+        std::map<std::string, std::string>::iterator it = cgi.find(extention);
+        if (it != cgi.end())
+        {
+            std::string str = it->second;
+            if (access(str.c_str(), X_OK) == 0)
+            {
+                ctl->exec_path = str;
+                Treat_Cgi(ctl, serv);
+            }
+            else
+            {
+                ctl->status_code = 403;
+                ctl->status = "Forbidden";
+                ctl->loc_path = "./default_error_pages/403.html";
+                return ;
+            }
+        }
+        else
         {
             ctl->status_code = 403;
             ctl->status = "Forbidden";
             ctl->loc_path = "./default_error_pages/403.html";
             return ;
         }
-        else
-            Treat_Cgi(ctl, serv);
     }
 }
 
 void Post::Treat_file(Client *ctl, Server &serv)
 {
-    if (ctl->location_match.get_cgi_pass().empty())
-    {   
+    int dot = ctl->loc_path.rfind('.');
+    std::string extention = &ctl->loc_path[dot + 1];
+    std::map<std::string, std::string> cgi = ctl->location_match.get_cgi_pass();
+    std::map<std::string, std::string>::iterator it = cgi.find(extention);
+    if (it != cgi.end())
+    {
+
+        std::string str = it->second;
+        if (access(str.c_str(), X_OK) == 0)
+        {
+            ctl->exec_path = str;
+            Treat_Cgi(ctl, serv);
+        }
+        else
+        {
+            ctl->status_code = 403;
+            ctl->status = "Forbidden";
+            ctl->loc_path = "./default_error_pages/403.html";
+            return ;
+        }
+    }
+    else
+    {
         ctl->status_code = 403;
         ctl->status = "Forbidden";
         ctl->loc_path = "./default_error_pages/403.html";
         return ;
     }
-    else
-        Treat_Cgi(ctl, serv);
 }
 
 void Post::Treat_Post(Client *ctl, Server &serv)
-{      
+{   
     DIR* dir = opendir(ctl->loc_path.c_str());
     if (dir != NULL)
     {

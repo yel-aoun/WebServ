@@ -25,6 +25,9 @@ class Client
         int             _request_size;
         int             _request_type;
         int             _content_type;
+        int             length;
+        std::string     cont_type;
+        int             is_done;
         int             _is_ready;
         DATA            _received_data;
         std::map<std::string, std::vector<std::string> >  request_pack;
@@ -60,6 +63,7 @@ class Client
         int             pid;
         bool            isCgiDone;
         int             fd;
+        std::string     exec_path;
         Client();
         Client(char **env);
         ~Client();
