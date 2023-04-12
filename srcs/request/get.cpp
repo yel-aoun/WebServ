@@ -23,9 +23,7 @@ void    Get::get_requested_resource(std::list<Client *>::iterator iter)
     if (stat(path.c_str(), &file_stat) == 0)
     {
         if (S_ISDIR(file_stat.st_mode))
-        {
             check_the_end_of_uri(iter);
-        }
         else if (S_ISREG(file_stat.st_mode))
             if_location_has_cgi(iter);
         else
@@ -129,9 +127,12 @@ void    Get::get_requested_resource(std::list<Client *>::iterator iter)
 
 void    Get::check_the_end_of_uri(std::list<Client *>::iterator iter)
 {
+    // (*iter)->loc_path.append("/");
     std::string path = (*iter)->loc_path; 
+    std::cout<<"hoooola : "<<path[path.length() - 1]<<std::endl;
     if (path[path.length() - 1] != '/')
     {
+        std::cout<<"llllllllla"<<std::endl;
         (*iter)->redirect_301.append("/");
         (*iter)->status_code = 301;
         (*iter)->status = "Moved Permanently";

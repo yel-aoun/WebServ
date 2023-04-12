@@ -148,7 +148,7 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
             if ((*iter)->path[i] == '/' || (*iter)->path.length() == i)
             {
                 signe  = 1;
-                // std::cout<<"location found"<<std::endl;
+                std::cout<<"location found"<<std::endl;
                 if (this->loc_path.length() < (*it).get_locations().length())
                 {
                     this->loc_path = (*it).get_locations();
@@ -167,8 +167,14 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     {
         (*iter)->location_match = this->location_match;
         // std::string str = (*iter)->path.substr(loc_path.length(), (*iter)->path.length());
-        this->loc_path = this->location_match.root + &(*iter)->path[loc_path.length()];
+        std::cout<<&(*iter)->path[loc_path.length() - 1]<<std::endl;
+        if (loc_path.length() == 1)
+            this->loc_path = this->location_match.root + (*iter)->path;
+        else
+            this->loc_path = this->location_match.root + &(*iter)->path[loc_path.length()];
         (*iter)->loc_path = this->loc_path;
+        std::cout<<(*iter)->loc_path<<std::endl;
+
         is_location_has_redirection(iter, serv);
     }
 }

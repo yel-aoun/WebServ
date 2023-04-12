@@ -242,7 +242,12 @@ void    Server::respons(std::list<Client *>::iterator iter)
     }
     (*iter)->resp +="Content-Type: ";
     (*iter)->generate_extensions_2();
-    std::string type = ft_get_extention(&(*iter)->loc_path[(*iter)->loc_path.rfind('.')], iter);
+    std::string type;
+    int pos = (*iter)->loc_path.rfind('.');
+    if (pos == -1)
+        type = "text/plain";
+    else
+        type = ft_get_extention(&(*iter)->loc_path[(*iter)->loc_path.rfind('.')], iter);
     (*iter)->resp += type;
     (*iter)->resp += "\r\n";
     (*iter)->resp.append("Content-Length: ");
@@ -296,8 +301,11 @@ std::string Server::ft_get_extention(std::string str, std::list<Client *>::itera
 {
     std::map<std::string,   std::string>::iterator it = (*iter)->file_extensions_get.find(str);
     if (it != (*iter)->file_extensions_get.end())
+    {
         return (it->second);
+    }
     else
+    {}
         return str;
 }
 
