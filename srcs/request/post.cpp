@@ -164,6 +164,7 @@ void Post::Handle_exec(Client *ctl)
         ctl->status_code = 403;
         ctl->status = "Forbidden";
         ctl->loc_path = "./default_error_pages/403.html";
+        ctl->_is_ready = 1;
         return ;
     }
     int i = 0;
@@ -188,6 +189,7 @@ void Post::Handle_exec(Client *ctl)
     ctl->loc_path = filename;
     ctl->status_code = 200;
     ctl->status = "OK";
+    ctl->_is_ready = 1;
     ctl->_is_ready = true;
 }
 
@@ -239,6 +241,7 @@ void Post::Treat_directory(Client *ctl, Server &serv)
         ctl->status_code = 403;
         ctl->status = "Forbidden";
         ctl->loc_path = "./default_error_pages/403.html";
+        ctl->_is_ready = 1;
         return ;
     //PUT HEAD_FLAG = 0 ON EVERY ERROR AND REMIND YOUSSEF
     }
@@ -261,6 +264,7 @@ void Post::Treat_directory(Client *ctl, Server &serv)
                 ctl->status_code = 403;
                 ctl->status = "Forbidden";
                 ctl->loc_path = "./default_error_pages/403.html";
+                ctl->_is_ready = 1;
                 return ;
             }
         }
@@ -269,6 +273,7 @@ void Post::Treat_directory(Client *ctl, Server &serv)
             ctl->status_code = 403;
             ctl->status = "Forbidden";
             ctl->loc_path = "./default_error_pages/403.html";
+            ctl->_is_ready = 1;
             return ;
         }
     }
@@ -282,7 +287,6 @@ void Post::Treat_file(Client *ctl, Server &serv)
     std::map<std::string, std::string>::iterator it = cgi.find(extention);
     if (it != cgi.end())
     {
-
         std::string str = it->second;
         if (access(str.c_str(), X_OK) == 0)
         {
@@ -294,6 +298,7 @@ void Post::Treat_file(Client *ctl, Server &serv)
             ctl->status_code = 403;
             ctl->status = "Forbidden";
             ctl->loc_path = "./default_error_pages/403.html";
+            ctl->_is_ready = 1;
             return ;
         }
     }
@@ -302,6 +307,7 @@ void Post::Treat_file(Client *ctl, Server &serv)
         ctl->status_code = 403;
         ctl->status = "Forbidden";
         ctl->loc_path = "./default_error_pages/403.html";
+        ctl->_is_ready = 1;
         return ;
     }
 }
@@ -311,7 +317,6 @@ void Post::Treat_Post(Client *ctl, Server &serv)
     DIR* dir = opendir(ctl->loc_path.c_str());
     if (dir != NULL)
     {
-        std::cout << "The client requested a directory" << std::endl;
         if (ctl->loc_path[ctl->loc_path.size() - 1] == '/')
             Treat_directory(ctl, serv);
         else
@@ -321,15 +326,13 @@ void Post::Treat_Post(Client *ctl, Server &serv)
         }
     }
     else if (fopen(ctl->loc_path.c_str(), "r") != NULL)
-    {
-        std::cout << "The client requested a file" << std::endl;
         this->Treat_file(ctl, serv);
-    }
     else
     {
         ctl->status_code = 404;
         ctl->status = "Not Found";
         ctl->loc_path = "./default_error_pages/404.html";
+        ctl->_is_ready = 1;
         return ;
     }
 }

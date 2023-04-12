@@ -144,14 +144,11 @@ void Client::generate_extensions_2()
         while (file.good())
         {
             getline(file, str);
-            // std::cout<<str<<std::endl;
             std::stringstream ss(str);
             std::string key;
             std::string value;
             ss >> value;
             ss >> key;
-            // std::cout<<key<<std::endl;
-            // std::cout<<value<<std::endl;
             file_extensions_get.insert(std::make_pair(key,value));
         }
     }

@@ -117,15 +117,11 @@ void    Server::serve_clients()
         }
         else if(FD_ISSET((*iter)->get_sockfd(), &this->_writes) && (*iter)->_is_ready)
         {
-        //             std::cout<<"hellofromcgi__________header_response"<<(*iter)->header_flag<<std::endl;
-        //             std::cout<<"size : "<<this->_clients.size()<<std::endl;
-
             if ((*iter) ->header_flag == 1)
             {
                 if ((*iter)->isCgiDone == false)
                 {
                     int pid = waitpid((*iter)->pid, NULL, WNOHANG);
-                    // wait(NULL);
                     if (pid == 0)
                     {
                         iter++;
@@ -168,7 +164,6 @@ void    Server::serve_clients()
                 }
             }
         }
-        // std::cout << "hello from outside" << std::endl;
     }
 }
 
@@ -217,12 +212,9 @@ bool Server::serveBody(std::list<Client *>::iterator   iter)
     {
         std::cout<<"finish reading ..."<<std::endl;
         (*iter)->filein.close();
-        // printf("siaaze == %d\n",this->_clients.size());
         drop_client(iter);
         return (FINISHED);
-        // printf("size == %d\n",this->_clients.size());
     }
-    // std::cout<<SIGPIPE<<std::endl;
     write ((*iter)->get_sockfd(), buffer, szReaded);
      return (!FINISHED);
 }
@@ -259,7 +251,6 @@ void    Server::respons(std::list<Client *>::iterator iter)
 
 void    Server::respons_cgi(std::list<Client *>::iterator iter)
 {
-    std::cout<<"hello from cgi_response"<<std::endl;
     std::ifstream filein;
     filein.open((*iter)->loc_path,std::ios::binary);
     if (!filein.is_open())
@@ -281,7 +272,6 @@ void    Server::respons_cgi(std::list<Client *>::iterator iter)
     (*iter)->filein.read(buffer, 1024);
     std::string buff = buffer;
     (*iter)->file_is_open = 1;
-    // std::cout<<"lolo : "<<buffer<<std::endl;
     int pos = buff.find("\r\n\r\n");
     int body_size = file_size - (pos + 4);
     std::string lenth = "\r\nContent-Length: " + std::to_string(body_size);
@@ -294,14 +284,6 @@ void    Server::respons_cgi(std::list<Client *>::iterator iter)
     (*iter)->resp.append("\r\n");
     (*iter)->resp.append(buff);
 }
-
-// int Server::sizeBodyCgi(std::string buffer, int file_size)
-// {
-//     int pos = buffer.find("\r\n\r\n");
-//     std::cout<<"pos : "<<buffer<<std::endl;
-//     int body_size = file_size - (pos + 4);
-//     return (body_size);
-// }
 
 std::string Server::ft_get_extention(std::string str, std::list<Client *>::iterator iter)
 {

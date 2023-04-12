@@ -69,6 +69,7 @@ void Delete::delete_directory(Client *ctl, Server &serv)
         ctl->status_code = 204;
         ctl->status = "No Content";
         ctl->loc_path = "./default_error_pages/204.html";
+        ctl->_is_ready = 1;
         return ;
     }
     else
@@ -78,6 +79,7 @@ void Delete::delete_directory(Client *ctl, Server &serv)
             ctl->status_code = 500;
             ctl->status = "Internal Server Error";
             ctl->loc_path = "./default_error_pages/500.html";
+            ctl->_is_ready = 1;
             return ;
         }
         else
@@ -85,6 +87,7 @@ void Delete::delete_directory(Client *ctl, Server &serv)
             ctl->status_code = 403;
             ctl->status = "Forbidden";
             ctl->loc_path = "./default_error_pages/403.html";
+            ctl->_is_ready = 1;
             return ;
         }
     }
@@ -118,6 +121,7 @@ void Delete::erase(Client *ctl, Server &serv)
         ctl->status_code = 404;
         ctl->status = "No Found";
         ctl->loc_path = "./default_error_pages/404.html";
+        ctl->_is_ready = 1;
         return ;
     }
 }

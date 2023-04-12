@@ -40,10 +40,8 @@ void    Get::get_requested_resource(std::list<Client *>::iterator iter)
                 int num;
                 std::stringstream ss(*it);
                 ss >> num;
-                std::cout<<"num : "<<num<<" (*it) : "<< (*it)<<std::endl;
                 if (num == (*iter)->status_code)
                 {
-                    std::cout<<"forbiden"<<std::endl;
                     std::string path = "." + (*++it);
                     struct stat file_stat;
                     if (stat(path.c_str(), &file_stat) == 0)
@@ -137,7 +135,6 @@ void    Get::check_the_end_of_uri(std::list<Client *>::iterator iter)
     if (path[path.length() - 1] != '/')
     {
         (*iter)->redirect_301.append("/");
-        std::cout<<"error / 301 Moved Permanently"<<std::endl;
         (*iter)->status_code = 301;
         (*iter)->status = "Moved Permanently";
         this->state = 1;
@@ -161,7 +158,6 @@ void    Get::is_dir_has_index_files(std::list<Client *>::iterator iter)
             if (S_ISREG(file_stat.st_mode))
             {
                 this->index_exist = 1;
-                // std::cout<<"is file "<<std::endl;
                 break ;
             }
         }
@@ -169,7 +165,6 @@ void    Get::is_dir_has_index_files(std::list<Client *>::iterator iter)
     if (this->index_exist == 1)
     {
         (*iter)->loc_path.append((*it));
-        // std::cout<<"heer: "<<(*iter)->loc_path<<std::endl;
         if_location_has_cgi(iter);
     }
     else
@@ -212,7 +207,6 @@ void Get::addCgiHeaders(std::list<Client *>::iterator iter)
             if (!v.empty())
                 cgiValue += v[v.size() - 1];
             std::string currEnvVal =  cgiHeader + "="+ cgiValue;
-            //std::cout << "currVaal ====== " << currEnvVal << std::endl;
             (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(currEnvVal.c_str()));
         }
 
@@ -222,19 +216,13 @@ void Get::addCgiHeaders(std::list<Client *>::iterator iter)
 
 void    Get::if_location_has_cgi(std::list<Client *>::iterator iter)
 {
-    // if cgi exist
-    //run it && return code depend on it
-    //else
-    // std::cout<<"path : "<< (*iter)->loc_path<<std::endl;
     int dot = (*iter)->loc_path.rfind('.');
     std::string extention = &(*iter)->loc_path[dot + 1];
-    std::cout << "EXTENTION ===== " << extention << std::endl;
     std::map<std::string, std::string> cgi = (*iter)->location_match.get_cgi_pass();
     std::map<std::string, std::string>::iterator it = cgi.find(extention);
     if (it != cgi.end())
     {
         std::string str = it->second;
-        // std::cout<<"exucutable : "<<(*iter)->loc_path<<std::endl;
         if (access(str.c_str(), X_OK) == 0)
         {
             std::string filename = create_temp_file((*iter));
@@ -252,12 +240,6 @@ void    Get::if_location_has_cgi(std::list<Client *>::iterator iter)
             std::string queryString = "QUERY_STRING=" + (*iter)->query;
             (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(queryString.c_str()));
             addCgiHeaders(iter);
-            int i = 0 ;
-            // while ( (*iter)->env[i])
-            // {
-            //     std::cout << (*iter)->env[i] << std::endl;
-            //     i++;
-            // }
             (*iter)->pid = fork();
             if ((*iter)->pid == 0)
             {
@@ -314,7 +296,6 @@ void    Get::check_for_auto_index(std::list<Client *>::iterator iter)
         }
         struct dirent *entity;
         entity = readdir(dir);
-        std::cout<<(*iter)->redirect_301<<std::endl;
         outfile<<"<html><head><title>Listing directories</title></head><body><h1>listing files : </h1>";
         while (entity != NULL)
         {

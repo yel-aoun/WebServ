@@ -17,7 +17,6 @@ void    Post::generate_tmp_file(Client *client)
     this->tmp_file_path.append(std::to_string(now));
     this->tmp_file_path.push_back('_');
     this->tmp_file_path.append(std::to_string(id++));
-    std::cout << this->tmp_file_path << std::endl;
     this->tmp_file.open(this->tmp_file_path, std::ios::binary | std::ios::app);
     this->is_created = true;
 }

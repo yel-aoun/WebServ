@@ -5,14 +5,10 @@
 
 void    Post::normal_post(Server &serv, Client *client)
 {
-    // for (int i = 0; i < serv._request_size; i++)
-    //     printf("%c",serv._request[i]);
     // i have to write byte by byte because i have to check for content_length.
     // if i change the content_length to some number not <calculated when request is sent> ?
     client->file.write(serv._request, serv._request_size);
     client->_content_len -= serv._request_size;
-    // std::cout << serv._request << std::endl;
-    // std::cout << "LENGTH=== " << client->_content_len << std::endl;
     if(!client->_content_len)
     {
         if (!client->exec_path.empty())
@@ -22,9 +18,8 @@ void    Post::normal_post(Server &serv, Client *client)
             client->status_code = 201;
             client->status = "Created";
             client->loc_path = "./default_error_pages/201.html";
+            client->_is_ready = true;
         }
         client->file.close();
     }
-    //  std::cout << serv._request << std::endl;
-        // client->file.close();
 }
