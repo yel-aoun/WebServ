@@ -48,6 +48,7 @@ class Post
         void        Add_Necessary_Env(Client *ctl);
         void        Handle_exec(Client *ctl);
         void        addCgiHeaders(Client *ctl);
+        void        upload(Server &serv, Client *client);
         // void        exec_head(std::string buff, Server &serv, std::string &path);
         // void        exec_body(std::string buff, Server &serv, std::string &path);
         // int         skip_hex(std::string body);

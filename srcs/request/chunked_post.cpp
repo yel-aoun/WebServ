@@ -48,12 +48,17 @@ void    Post::chunked_post(Server &serv, Client *client)
             {
                 client->file.close();
                 if (!client->exec_path.empty())
+                {
                     _is_matched = 0;
-                client->is_done = 1;
-                client->_is_ready = 1;
-                client->status_code = 201;
-                client->status = "Created";
-                client->loc_path = "./default_error_pages/201.html";
+                    client->is_done = 1;
+                }
+                else
+                {
+                    client->_is_ready = 1;
+                    client->status_code = 201;
+                    client->status = "Created";
+                    client->loc_path = "./default_error_pages/201.html";
+                }
                 break ;
             }
         }

@@ -161,4 +161,4 @@ void free_str_array(char **str, int size) {
     delete[] str;
 }
 
-Client::~Client() {free_str_array(env, ft_strlenc(env));}
+Client::~Client() {if(this->env)free_str_array(env, ft_strlenc(env));}

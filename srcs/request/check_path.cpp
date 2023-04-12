@@ -157,7 +157,6 @@ void    Check_path::check_uri(std::list<Client *>::iterator iter, Server &serv)
     int len = uri.length();
     if (len > 2048)
     {
-        std::cout<<"request-URI- too long error /414"<<std::endl;
         (*iter)->status_code = 414;
         (*iter)->status = "URI-Too-Long";
         (*iter)->loc_path = "./default_error_pages/414.html";
@@ -166,7 +165,6 @@ void    Check_path::check_uri(std::list<Client *>::iterator iter, Server &serv)
         return ;
     }
     if (!isURIValid(uri, len)) {
-        std::cout << "URI have invalid characters error /400 bad request" << std::endl;
         (*iter)->status_code = 400;
         (*iter)->status = "Bad Request";
         (*iter)->loc_path = "./default_error_pages/400.html";

@@ -160,7 +160,6 @@ void    Server::serve_clients()
                 {
                     if  (serveBody(iter) == FINISHED)
                         iter = this->_clients.begin();
-            
                 }
             }
         }

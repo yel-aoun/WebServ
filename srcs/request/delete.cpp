@@ -107,15 +107,9 @@ void Delete::erase(Client *ctl, Server &serv)
 {
     DIR* dir = opendir(ctl->loc_path.c_str());
     if (dir != NULL)
-    {
-        // std::cout << "The client requested a directory" << std::endl;
         this->Treat_directory(ctl, serv);
-    }
     else if (fopen(ctl->loc_path.c_str(), "r") != NULL)
-    {
-        // std::cout << "The client requested a file" << std::endl;
         this->Treat_File(ctl, serv);
-    } 
     else
     {
         ctl->status_code = 404;

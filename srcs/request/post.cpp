@@ -19,25 +19,26 @@ void Post::check_post(Client *clt)
         _is_matched = 1;
 }
 
-
+void Post::upload(Server &serv, Client *client)
+{
+   if(!is_created && this->_post_type != 1)
+        this->create_file(serv, client);
+    switch(this->_post_type)
+    {
+        case 0:
+        case 1:
+            this->normal_post(serv, client);
+            break;
+        case 2:
+            this->chunked_post(serv, client);
+            break;
+    }
+}
 
 void    Post::call_post_func(Server &serv, Client *client)
 {
     if (_is_matched == 1)
-    {
-        if(!is_created && this->_post_type != 1)
-            this->create_file(serv, client);
-        switch(this->_post_type)
-        {
-            case 0:
-            case 1:
-                this->normal_post(serv, client);
-                break;
-            case 2:
-                this->chunked_post(serv, client);
-                break;
-        }
-    }
+        upload(serv, client);
     else
         Treat_Post(client, serv);
     if (client->is_done == 1 && _is_matched == 0)
@@ -134,7 +135,6 @@ void Post::addCgiHeaders(Client *ctl)
 
 void Post::Add_Necessary_Env(Client *ctl)
 {
-    ctl->is_done = 0;
     std::string test[10];
     test[0] = "PATH_INFO="+ ctl->loc_path; 
     test[1] = "QUERY_STRING=" + ctl->query;
@@ -190,7 +190,6 @@ void Post::Handle_exec(Client *ctl)
     ctl->status_code = 200;
     ctl->status = "OK";
     ctl->_is_ready = 1;
-    ctl->_is_ready = true;
 }
 
 void Post::Treat_Cgi(Client *ctl, Server &serv)
@@ -209,7 +208,7 @@ void Post::Treat_Cgi(Client *ctl, Server &serv)
         _is_matched = 1;
         if (this->_post_type == 1)
             this->_post_type = 0;
-        call_post_func(serv, ctl);
+        upload(serv, ctl);
     }
 }
 

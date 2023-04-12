@@ -38,28 +38,11 @@ void location::FillLocation(std::string prompt)
 
     if (substring.size() != 3)
     {
-        for (std::vector<std::string>::iterator it = substring.begin(); it != substring.end(); ++it)
-            std::cout << "********" << *it << std::endl;
         std::cout << "Error! the location block should start like this: Location 'your desired location' {" << std::endl;
         exit (1);
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
     this->locations = *it;
-    // LET YOUSSEF USE IT FOR GET
-    //int slash = count_slash(this->locations);
-    //std::string tmp;
-    /*while (slash)
-    {
-        if (access(tmp.c_str(), F_OK) == 0)
-            break;
-        else
-        {
-            this->locations = trim_directory(slash);
-            tmp = this->locations + "/";
-        }
-        slash--;
-    }
-    this->locations = tmp;*/
 }
 
 void location::FillAllow_methods(std::string prompt)
@@ -112,7 +95,6 @@ void location::FillRoot(std::string prompt)
     {
         std::cout << "Error! there's something wrong with the root parameter" << std::endl;
         exit (1);
-        return;
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
     this->root = *it;
@@ -125,7 +107,6 @@ void location::FillCgi_pass(std::string prompt)
     {
          std::cout << "Error! there's something wrong with the cgi_pass parameter" << std::endl;
          exit (1);
-        //return ;
     }
     std::vector<std::string>::iterator it = substring.begin() + 1;
     std::vector<std::string> substring2 = splitString(*it, ':');
@@ -133,7 +114,6 @@ void location::FillCgi_pass(std::string prompt)
     {
          std::cout << "Error! there's something wrong with the cgi_pass parameter" << std::endl;
          exit (1);
-        //return ;
     }
     this->cgi_pass.insert(std::make_pair(*(substring2.begin()), *(substring2.end() - 1)));
 }
