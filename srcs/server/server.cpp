@@ -84,6 +84,13 @@ void    Server::serve_clients()
                 {
                     (*iter)->error_pages = this->_error_page;
                     Request req(_request, iter);
+                    // std::map<std::string, std::vector<std::string> >::iterator it;
+                    // it = (*iter)->request_pack.find("Content-Length");
+                    // if(it != (*iter)->request_pack.end())
+                    // {
+                    //     if(std::atoi((*((*it).second.begin())).c_str()) > this->_max_client_body_size)
+                    //         // throw exception 413
+                    // }
                     Check_path path(iter, *this);
                     if (path.skip == 1)
                     {
@@ -274,7 +281,8 @@ void    Server::respons_cgi(std::list<Client *>::iterator iter)
     int pos = buff.find("\r\n\r\n");
     int body_size = file_size - (pos + 4);
     std::string lenth = "\r\nContent-Length: " + std::to_string(body_size);
-    buff.insert(pos, lenth);
+    if (buff.find("Location:") != -1)
+        (*iter)->status_code = 301;
     (*iter)->resp.append((*iter)->http);
     (*iter)->resp.append(" ");
     (*iter)->resp.append(std::to_string((*iter)->status_code));

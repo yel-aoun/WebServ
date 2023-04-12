@@ -239,6 +239,12 @@ void    Get::if_location_has_cgi(std::list<Client *>::iterator iter)
             (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(pathInfo.c_str()));
             std::string queryString = "QUERY_STRING=" + (*iter)->query;
             (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(queryString.c_str()));
+            std::string requestMethod = "REQUEST_METHOD=GET";
+            (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(requestMethod.c_str()));
+            std::string redirectStatus = "REDIRECT_STATUS=200";
+            (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(redirectStatus.c_str()));
+            std::string scriptFile = "SCRIPT_FILENAME="+(*iter)->loc_path;
+            (*iter)->env = ft_add_var((*iter)->env, const_cast<char *>(scriptFile.c_str()));
             addCgiHeaders(iter);
             (*iter)->pid = fork();
             if ((*iter)->pid == 0)
