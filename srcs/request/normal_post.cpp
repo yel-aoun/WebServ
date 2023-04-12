@@ -19,6 +19,9 @@ void    Post::normal_post(Server &serv, Client *client)
         {
             client->is_done = 1 ;
             _is_matched = 0;
+            client->status_code = 201;
+            client->status = "Created";
+            client->loc_path = "./default_error_pages/201.html";
         }
         client->file.close();
     }

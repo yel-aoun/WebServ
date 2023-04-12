@@ -138,7 +138,6 @@ void Post::Add_Necessary_Env(Client *ctl)
     std::string test[10];
     test[0] = "PATH_INFO="+ ctl->loc_path; 
     test[1] = "QUERY_STRING=" + ctl->query;
-    std::cout << "QUERy ======== " << ctl->query << std::endl;;
     test[2] = "REQUEST_METHOD=POST";
     test[3] = "REDIRECT_STATUS=200";
     std::stringstream file(ctl->length);
@@ -162,7 +161,6 @@ void Post::Handle_exec(Client *ctl)
     ctl->fd = open(filename.c_str(), 1);
     if (ctl->fd < 0)
     {
-        std::cout << "Hey i'm here " << std::endl;
         ctl->status_code = 403;
         ctl->status = "Forbidden";
         ctl->loc_path = "./default_error_pages/403.html";

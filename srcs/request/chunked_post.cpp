@@ -49,7 +49,6 @@ void    Post::chunked_post(Server &serv, Client *client)
                 client->file.close();
                 if (!client->exec_path.empty())
                     _is_matched = 0;
-                std::cout << "Done" << std::endl;
                 client->is_done = 1;
                 client->_is_ready = 1;
                 client->status_code = 201;

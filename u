@@ -1,359 +1,175 @@
 accepted
+GET /location/test/test.php HTTP/1.1
+Host: localhost:3099
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+
+
+HERE
+THERE
 hello from cgi_response
 finish reading ...
 dropping client
 
 accepted
+GET /favicon.ico HTTP/1.1
+Host: localhost:3099
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3099/location/test/test.php
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+
+
+loc_has_redddddddddir
+path : /favicon.icosize : 12
 finish reading ...
 dropping client
 
 accepted
+POST /location/test/test.php HTTP/1.1
+Host: localhost:3099
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Content-Type: multipart/form-data; boundary=---------------------------399416734539801036722578573507
+Content-Length: 20947
+Origin: http://localhost:3099
+Connection: keep-alive
+Referer: http://localhost:3099/location/test/test.php
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+
+-----------------------------399416734539801036722578573507
+Content-Disposition: form-data; name="name"
+
+vvv
+-----------------------------399416734539801036722578573507
+Content-Disposition: form-data; name="email"
+
+v
+-----------------------------399416734539801036722578573507
+Content-Disposition: form-data; name="avatar"; filename="bruh.jpeg"
+Content-Type: image/jpeg
+
+ÿØÿà
 The client requested a file
-OG path : /tmp/file16812037806lFD1V
-increment=hello from cgi_response
+†
+ýÕ?áÃìGùW‘üV­_kW÷µ?‰?·/æ~a_Ð?õý
+QUERy ======== 
+hello from cgi_response
 finish reading ...
 dropping client
 
 accepted
+GET /location/test/uploads/64367fa01fc561.26124161.jpeg HTTP/1.1
+Host: localhost:3099
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3099/location/test/test.php
+Cookie: name=vvv; email=v; avatar=uploads%2F64367fa01fc561.26124161.jpeg
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+
+
+HERE
 finish reading ...
 dropping client
 
 accepted
-The client requested a file
-OG path : /tmp/file1681203781Vy8gct
-increment=hello from cgi_response
+GET /favicon.ico HTTP/1.1
+Host: localhost:3099
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3099/location/test/test.php
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+
+
+loc_has_redddddddddir
+path : /favicon.icosize : 12
 finish reading ...
 dropping client
 
 accepted
+GET /location/test/test.php HTTP/1.1
+Host: localhost:3099
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cookie: name=vvv; email=v; avatar=uploads%2F64367fa01fc561.26124161.jpeg
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+
+
+HERE
+THERE
+hello from cgi_response
 finish reading ...
 dropping client
 
 accepted
-The client requested a file
-OG path : /tmp/file1681203784J0gpk5
-increment=hello from cgi_response
+GET /location/test/uploads/64367fa01fc561.26124161.jpeg HTTP/1.1
+Host: localhost:3099
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3099/location/test/test.php
+Cookie: name=vvv; email=v; avatar=uploads%2F64367fa01fc561.26124161.jpeg
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+
+
+HERE
 finish reading ...
 dropping client
 
 accepted
-finish reading ...
-dropping client
+GET /favicon.ico HTTP/1.1
+Host: localhost:3099
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3099/location/test/test.php
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
 
-accepted
-The client requested a file
-OG path : /tmp/file16812037858z4RgD
-increment=hello from cgi_response
-finish reading ...
-dropping client
 
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file168120378527zVIY
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file16812037860iYUwc
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203787FxbFPe
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203787yFMnDJ
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203788I5LxHg
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203789XTFWRu
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203789C6Vmwi
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203790rlQOQl
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203790yudozW
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203790b8D0X8
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203791Nlp3Dm
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file16812037920TEu0n
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203792xZy4gm
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203822bXy7SE
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203823ktSYzg
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203824i7nFGc
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203824Ce2zyc
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203825EzVPEh
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203825sT5khm
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203825o4Rb0v
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203826P8wl71
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203826L3AYSE
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203827JgWGsW
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203827jH7Weo
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203827jIOccg
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203828al8RN2
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203830olxCUS
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
-finish reading ...
-dropping client
-
-accepted
-The client requested a file
-OG path : /tmp/file1681203831qAwBJ3
-increment=hello from cgi_response
-finish reading ...
-dropping client
-
-accepted
+loc_has_redddddddddir
+path : /favicon.icosize : 12
 finish reading ...

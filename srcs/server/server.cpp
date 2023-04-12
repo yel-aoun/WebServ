@@ -78,9 +78,6 @@ void    Server::serve_clients()
                 continue ;
             }
             (*iter)->set_received_data(this->_request_size);
-            // for (int i = 0; i < this->_request_size; i++)
-            //     printf("%c", this->_request[i]);
-            // std::cout << this->_request << std::endl;
             if(!(*iter)->_request_type)
             {
                 if(memmem(_request, _request_size, "\r\n\r\n", 4))
@@ -245,12 +242,9 @@ void    Server::respons(std::list<Client *>::iterator iter)
         (*iter)->resp.append("\r\n\r\n");
         return ;
     }
-        std::cout << "=-=-=-=-=-=-> " << std::endl;
     (*iter)->resp +="Content-Type: ";
     (*iter)->generate_extensions_2();
     std::string type = ft_get_extention(&(*iter)->loc_path[(*iter)->loc_path.rfind('.')], iter);
-
-    std::cout << "=-=-=-=-=-=- > " << type << std::endl;
     (*iter)->resp += type;
     (*iter)->resp += "\r\n";
     (*iter)->resp.append("Content-Length: ");

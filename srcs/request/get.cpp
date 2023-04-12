@@ -207,7 +207,6 @@ void Get::addCgiHeaders(std::list<Client *>::iterator iter)
     
             std::vector<std::string> v = it ->second;
             std::string cgiValue;
-            std::cout<<"size : "<<v.size()<<std::endl;
             for (int i = 0; i < (int)v.size() - 1;i++)
                 cgiValue += v[i] + " ";
             if (!v.empty())
@@ -229,12 +228,11 @@ void    Get::if_location_has_cgi(std::list<Client *>::iterator iter)
     // std::cout<<"path : "<< (*iter)->loc_path<<std::endl;
     int dot = (*iter)->loc_path.rfind('.');
     std::string extention = &(*iter)->loc_path[dot + 1];
+    std::cout << "EXTENTION ===== " << extention << std::endl;
     std::map<std::string, std::string> cgi = (*iter)->location_match.get_cgi_pass();
     std::map<std::string, std::string>::iterator it = cgi.find(extention);
-    std::cout << "HERE" << std::endl;
     if (it != cgi.end())
     {
-    std::cout << "THERE" << std::endl;
         std::string str = it->second;
         // std::cout<<"exucutable : "<<(*iter)->loc_path<<std::endl;
         if (access(str.c_str(), X_OK) == 0)
