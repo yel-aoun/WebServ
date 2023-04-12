@@ -18,6 +18,7 @@ void    Post::normal_post(Server &serv, Client *client)
         }
         else
         {
+            std::cout << "fefefefe" << std::endl;
             client->status_code = 201;
             client->status = "Created";
             client->loc_path = "./default_error_pages/201.html";

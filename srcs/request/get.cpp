@@ -16,6 +16,7 @@ Get::~Get()
 
 void    Get::get_requested_resource(std::list<Client *>::iterator iter)
 {
+    std::cout << "grgrgr" << std::endl;
     this->state = 0;
     this->read = 0;
     std::string path = (*iter)->loc_path; 
