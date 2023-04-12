@@ -78,8 +78,8 @@ void    Server::serve_clients()
                 continue ;
             }
             (*iter)->set_received_data(this->_request_size);
-            for (int i = 0; i < this->_request_size; i++)
-                printf("%c", this->_request[i]);
+            // for (int i = 0; i < this->_request_size; i++)
+            //     printf("%c", this->_request[i]);
             // std::cout << this->_request << std::endl;
             if(!(*iter)->_request_type)
             {
@@ -116,10 +116,7 @@ void    Server::serve_clients()
                 //     std::cout << "Your header is large" << std::endl;
             }
             else // this else is for just post becouse post containe the body.
-            {
-                std::cout << "=-=-=-=-= > Heloo Bottome" << std::endl;
                 (*iter)->post.call_post_func(*this, *iter);
-            }
         }
         else if(FD_ISSET((*iter)->get_sockfd(), &this->_writes) && (*iter)->_is_ready)
         {

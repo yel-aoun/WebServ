@@ -231,8 +231,10 @@ void    Get::if_location_has_cgi(std::list<Client *>::iterator iter)
     std::string extention = &(*iter)->loc_path[dot + 1];
     std::map<std::string, std::string> cgi = (*iter)->location_match.get_cgi_pass();
     std::map<std::string, std::string>::iterator it = cgi.find(extention);
+    std::cout << "HERE" << std::endl;
     if (it != cgi.end())
     {
+    std::cout << "THERE" << std::endl;
         std::string str = it->second;
         // std::cout<<"exucutable : "<<(*iter)->loc_path<<std::endl;
         if (access(str.c_str(), X_OK) == 0)
