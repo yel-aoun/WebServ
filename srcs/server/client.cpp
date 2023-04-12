@@ -110,7 +110,7 @@ void    Client::init_post_data()
     this->post.boundary = this->boundary;
     this->post._post_type = this->_content_type;
     std::map<std::string, std::vector<std::string> >::iterator iter;
-    iter = request_pack.find("Content-Length");
+    iter = ç.find("Content-Length");
     if(iter != request_pack.end())
     {
         this->_content_len = std::atoi((*((*iter).second.begin())).c_str());
