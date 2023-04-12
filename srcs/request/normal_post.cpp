@@ -17,13 +17,7 @@ void    Post::normal_post(Server &serv, Client *client)
             _is_matched = 0;
         }
         else
-        {
-            std::cout << "fefefefe" << std::endl;
-            client->status_code = 201;
-            client->status = "Created";
-            client->loc_path = "./default_error_pages/201.html";
-            client->_is_ready = true;
-        }
+            client->Fill_response_data(201, "Created", "./default_error_pages/201.html");
         client->file.close();
     }
 }

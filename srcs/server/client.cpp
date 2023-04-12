@@ -161,4 +161,12 @@ void free_str_array(char **str, int size) {
     delete[] str;
 }
 
+void    Client::Fill_response_data(int status_code, std::string status, std::string path)
+{
+    this->status_code = status_code;
+    this->status = status;
+    this->loc_path = path;
+    this->_is_ready = 1;
+}
+
 Client::~Client() {if(this->env)free_str_array(env, ft_strlenc(env));}

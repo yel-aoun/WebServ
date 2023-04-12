@@ -66,28 +66,73 @@ void Delete::delete_directory(Client *ctl, Server &serv)
 {
     if (!deleteFolder(ctl->loc_path.c_str()))
     {
-        ctl->status_code = 204;
-        ctl->status = "No Content";
-        ctl->loc_path = "./default_error_pages/204.html";
-        ctl->_is_ready = 1;
+        std::vector<std::string> error = ctl->error_pages;
+        std::vector<std::string>::iterator it = error.begin();
+        if (it != error.end())
+        {
+           int num;
+           std::stringstream ss(*it);
+           ss >> num;
+           if (num == 204)
+           {
+               std::string path = "." + (*++it);
+               if (fopen(path.c_str(), "r"))
+               {
+                    ctl->loc_path = path;
+                    ctl->Fill_response_data(204, "No Content", path);
+                    return ;
+               }
+           }
+        }
+        ctl->Fill_response_data(204, "No Content", "./default_error_pages/204.html");
         return ;
     }
     else
     {
         if (access(ctl->loc_path.c_str(), W_OK) == 0)
         {
-            ctl->status_code = 500;
-            ctl->status = "Internal Server Error";
-            ctl->loc_path = "./default_error_pages/500.html";
-            ctl->_is_ready = 1;
+            std::vector<std::string> error = ctl->error_pages;
+            std::vector<std::string>::iterator it = error.begin();
+            if (it != error.end())
+            {
+               int num;
+               std::stringstream ss(*it);
+               ss >> num;
+               if (num == 500)
+               {
+                   std::string path = "." + (*++it);
+                   if (fopen(path.c_str(), "r"))
+                   {
+                        ctl->loc_path = path;
+                        ctl->Fill_response_data(500, "Internal Server Error", path);
+                        return ;
+                   }
+               }
+            }
+            ctl->Fill_response_data(500, "Internal Server Error", "./default_error_pages/500.html");
             return ;
         }
         else
         {
-            ctl->status_code = 403;
-            ctl->status = "Forbidden";
-            ctl->loc_path = "./default_error_pages/403.html";
-            ctl->_is_ready = 1;
+            std::vector<std::string> error = ctl->error_pages;
+            std::vector<std::string>::iterator it = error.begin();
+            if (it != error.end())
+            {
+               int num;
+               std::stringstream ss(*it);
+               ss >> num;
+               if (num == 403)
+               {
+                   std::string path = "." + (*++it);
+                   if (fopen(path.c_str(), "r"))
+                   {
+                        ctl->loc_path = path;
+                        ctl->Fill_response_data(403, "Forbidden", path);
+                        return ;
+                   }
+               }
+            }
+            ctl->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
             return ;
         }
     }
@@ -112,10 +157,25 @@ void Delete::erase(Client *ctl, Server &serv)
         this->Treat_File(ctl, serv);
     else
     {
-        ctl->status_code = 404;
-        ctl->status = "No Found";
-        ctl->loc_path = "./default_error_pages/404.html";
-        ctl->_is_ready = 1;
+        std::vector<std::string> error = ctl->error_pages;
+        std::vector<std::string>::iterator it = error.begin();
+        if (it != error.end())
+        {
+           int num;
+           std::stringstream ss(*it);
+           ss >> num;
+           if (num == 404)
+           {
+               std::string path = "." + (*++it);
+               if (fopen(path.c_str(), "r"))
+               {
+                    ctl->loc_path = path;
+                    ctl->Fill_response_data(404, "Not Found", path);
+                    return ;
+               }
+           }
+        }
+        ctl->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
         return ;
     }
 }

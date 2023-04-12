@@ -16,7 +16,6 @@ Get::~Get()
 
 void    Get::get_requested_resource(std::list<Client *>::iterator iter)
 {
-    std::cout << "grgrgr" << std::endl;
     this->state = 0;
     this->read = 0;
     std::string path = (*iter)->loc_path; 
@@ -31,9 +30,8 @@ void    Get::get_requested_resource(std::list<Client *>::iterator iter)
             if_location_has_cgi(iter);
         else
         {
-            this->state = 1;
             (*iter)->status_code = 404;
-            (*iter)->status = "Not Found";
+            this->state = 1;
             std::vector<std::string> error = (*iter)->error_pages;
             std::vector<std::string>::iterator it = error.begin();
             if (it != error.end())
@@ -49,41 +47,40 @@ void    Get::get_requested_resource(std::list<Client *>::iterator iter)
                     {
                         if (S_ISREG(file_stat.st_mode))
                         {
-                            (*iter)->loc_path = path;
+                            (*iter)->Fill_response_data(404, "Not Found", path);
                             this->state = 1;
                             return ;
                         }
                         else
                         {
-                            (*iter)->loc_path = "./default_error_pages/404.html";
+                            (*iter)->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
                             this->state = 1;
                             return ;
                         }
                     }
                     else
                     {
-                        (*iter)->loc_path = "./default_error_pages/404.html";
+                        (*iter)->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
                         this->state = 1;
                         return ;
                     }
                 }
                 else
                 {
-                    (*iter)->loc_path = "./default_error_pages/404.html";
+                    (*iter)->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
                     this->state = 1;
                     return ;
                 }
             }
             else
-                (*iter)->loc_path = "./default_error_pages/404.html";
+                (*iter)->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
             return ;
         }
     }
     else
     {
-        this->state = 1;
         (*iter)->status_code = 404;
-        (*iter)->status = "Not Found";
+        this->state = 1;
         std::vector<std::string> error = (*iter)->error_pages;
         std::vector<std::string>::iterator it = error.begin();
         if (it != error.end())
@@ -99,33 +96,33 @@ void    Get::get_requested_resource(std::list<Client *>::iterator iter)
                 {
                     if (S_ISREG(file_stat.st_mode))
                     {
-                        (*iter)->loc_path = path;
+                        (*iter)->Fill_response_data(404, "Not Found", path);
                         this->state = 1;
                         return ;
                     }
                     else
                     {
-                        (*iter)->loc_path = "./default_error_pages/404.html";
+                        (*iter)->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
                         this->state = 1;
                         return ;
                     }
                 }
                 else
                 {
-                    (*iter)->loc_path = "./default_error_pages/404.html";
+                    (*iter)->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
                     this->state = 1;
                     return ;
                 }
             }
             else
             {
-                (*iter)->loc_path = "./default_error_pages/404.html";
+                (*iter)->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
                 this->state = 1;
                 return ;
             }
         }
         else
-            (*iter)->loc_path = "./default_error_pages/404.html";
+            (*iter)->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
         return ;
     }
 }
@@ -230,9 +227,7 @@ void    Get::if_location_has_cgi(std::list<Client *>::iterator iter)
             (*iter)->fd = open(filename.c_str(), O_CREAT | O_RDWR | O_TRUNC);
             if ((*iter)->fd < 0)
             {
-                (*iter)->status_code = 403;
-                (*iter)->status = "Forbidden";
-                (*iter)->loc_path = "./default_error_pages/403.html";
+                (*iter)->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
                 this->state = 1;
                 return ;
             }
@@ -252,9 +247,8 @@ void    Get::if_location_has_cgi(std::list<Client *>::iterator iter)
                 execve(arg[0], arg, (*iter)->env);
             }
             (*iter)->header_flag = 1;
-            (*iter)->loc_path = filename;
-            (*iter)->status_code = 200;
-            (*iter)->status = "OK";
+            (*iter)->Fill_response_data(200, "OK", filename);
+            
         }
         else
         {
@@ -280,18 +274,14 @@ void    Get::check_for_auto_index(std::list<Client *>::iterator iter)
         DIR *dir = opendir((*iter)->loc_path.c_str());
         if (dir == NULL)
         {
-            (*iter)->status_code = 403;
-            (*iter)->status = "Forbidden";
-            (*iter)->loc_path = "./default_error_pages/403.html";
+            (*iter)->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
             this->state = 1;
             return ;
         }
         std::ofstream outfile("./default_error_pages/auto_index.html");
         if (!outfile.is_open())
         {
-            (*iter)->status_code = 403;
-            (*iter)->status = "Forbidden";
-            (*iter)->loc_path = "./default_error_pages/403.html";
+            (*iter)->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
             this->state = 1;
             return ;
         }
@@ -309,16 +299,12 @@ void    Get::check_for_auto_index(std::list<Client *>::iterator iter)
         }
         outfile<<"</body></html>"<<std::endl;
         closedir(dir);
-        this->state = 1;
-        (*iter)->status_code = 200;
-        (*iter)->status = "OK";
-        (*iter)->loc_path = "./default_error_pages/auto_index.html";
+        (*iter)->Fill_response_data(200, "OK", "./default_error_pages/auto_index.html");
         this->state = 1;
     }
     else
     {
         (*iter)->status_code = 403;
-        (*iter)->status = "Forbidden";
         std::vector<std::string> error = (*iter)->error_pages;
         std::vector<std::string>::iterator it = error.begin();
         if (it != error.end())
@@ -334,34 +320,36 @@ void    Get::check_for_auto_index(std::list<Client *>::iterator iter)
                 {
                     if (S_ISREG(file_stat.st_mode))
                     {
-                        (*iter)->loc_path = path;
+                        (*iter)->Fill_response_data(403, "Forbidden", path);
                         this->state = 1;
                         return ;
                     }
                     else
                     {
-                        (*iter)->loc_path = "./default_error_pages/403.html";
+                        (*iter)->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
                         this->state = 1;
                         return ;
                     }
                 }
                 else
                 {
-                    (*iter)->loc_path = "./default_error_pages/403.html";
+                    (*iter)->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
                     this->state = 1;
                     return ;
                 }
             }
             else
             {
-                (*iter)->loc_path = "./default_error_pages/403.html";
+                (*iter)->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
                 this->state = 1;
                 return ;
             }
         }
-        else
-            (*iter)->loc_path = "./default_error_pages/403.html";
-        this->state = 1;
+        else{
+            (*iter)->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
+            this->state = 1;
+        }
+        
         return ;
     }
 }

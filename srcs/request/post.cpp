@@ -161,10 +161,7 @@ void Post::Handle_exec(Client *ctl)
     ctl->fd = open(filename.c_str(), 1);
     if (ctl->fd < 0)
     {
-        ctl->status_code = 403;
-        ctl->status = "Forbidden";
-        ctl->loc_path = "./default_error_pages/403.html";
-        ctl->_is_ready = 1;
+        ctl->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
         return ;
     }
     int i = 0;
@@ -237,10 +234,7 @@ void Post::Treat_directory(Client *ctl, Server &serv)
 {
     if (!is_dir_has_index_files(ctl))
     {
-        ctl->status_code = 403;
-        ctl->status = "Forbidden";
-        ctl->loc_path = "./default_error_pages/403.html";
-        ctl->_is_ready = 1;
+        ctl->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
         return ;
     //PUT HEAD_FLAG = 0 ON EVERY ERROR AND REMIND YOUSSEF
     }
@@ -260,19 +254,31 @@ void Post::Treat_directory(Client *ctl, Server &serv)
             }
             else
             {
-                ctl->status_code = 403;
-                ctl->status = "Forbidden";
-                ctl->loc_path = "./default_error_pages/403.html";
-                ctl->_is_ready = 1;
+                std::vector<std::string> error = ctl->error_pages;
+                std::vector<std::string>::iterator it = error.begin();
+                if (it != error.end())
+                {
+                   int num;
+                   std::stringstream ss(*it);
+                   ss >> num;
+                   if (num == 403)
+                   {
+                       std::string path = "." + (*++it);
+                       if (fopen(path.c_str(), "r"))
+                       {
+                            ctl->loc_path = path;
+                            ctl->Fill_response_data(403, "Forbidden", path);
+                            return ;
+                       }
+                   }
+                }
+                ctl->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
                 return ;
             }
         }
         else
         {
-            ctl->status_code = 403;
-            ctl->status = "Forbidden";
-            ctl->loc_path = "./default_error_pages/403.html";
-            ctl->_is_ready = 1;
+            ctl->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
             return ;
         }
     }
@@ -294,19 +300,31 @@ void Post::Treat_file(Client *ctl, Server &serv)
         }
         else
         {
-            ctl->status_code = 403;
-            ctl->status = "Forbidden";
-            ctl->loc_path = "./default_error_pages/403.html";
-            ctl->_is_ready = 1;
+            std::vector<std::string> error = ctl->error_pages;
+            std::vector<std::string>::iterator it = error.begin();
+            if (it != error.end())
+            {
+               int num;
+               std::stringstream ss(*it);
+               ss >> num;
+               if (num == 403)
+               {
+                   std::string path = "." + (*++it);
+                   if (fopen(path.c_str(), "r"))
+                   {
+                        ctl->loc_path = path;
+                        ctl->Fill_response_data(403, "Forbidden", path);
+                        return ;
+                   }
+               }
+            }
+            ctl->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
             return ;
         }
     }
     else
     {
-        ctl->status_code = 403;
-        ctl->status = "Forbidden";
-        ctl->loc_path = "./default_error_pages/403.html";
-        ctl->_is_ready = 1;
+        ctl->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
         return ;
     }
 }
@@ -328,10 +346,25 @@ void Post::Treat_Post(Client *ctl, Server &serv)
         this->Treat_file(ctl, serv);
     else
     {
-        ctl->status_code = 404;
-        ctl->status = "Not Found";
-        ctl->loc_path = "./default_error_pages/404.html";
-        ctl->_is_ready = 1;
+        std::vector<std::string> error = ctl->error_pages;
+        std::vector<std::string>::iterator it = error.begin();
+        if (it != error.end())
+        {
+           int num;
+           std::stringstream ss(*it);
+           ss >> num;
+           if (num == 404)
+           {
+               std::string path = "." + (*++it);
+               if (fopen(path.c_str(), "r"))
+               {
+                    ctl->loc_path = path;
+                    ctl->Fill_response_data(404, "Not Found", path);
+                    return ;
+               }
+           }
+        }
+        ctl->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
         return ;
     }
 }

@@ -18,10 +18,7 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
         std::vector<std::string>::iterator itt = vec.begin();
         if (itt == vec.end())
         {
-            std::cout<< "Transfer-Encoding with empty value error /501 not implemented"<<std::endl;
-            (*iter)->status_code = 501;
-            (*iter)->status = "Not Implemented";
-            (*iter)->loc_path = "./default_error_pages/501.html";
+            (*iter)->Fill_response_data(501, "Not Implemented", "./default_error_pages/501.html");
             this->skip = 1;
             return ;
         }
@@ -31,10 +28,7 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
             {
                 if ((*itt) != "chunked")
                 {
-                    // std::cout<< "Transfer-Encoding not a match error /501 not implemented"<<std::endl;
-                    (*iter)->status_code = 501;
-                    (*iter)->status = "Not Implemented";
-                    (*iter)->loc_path = "./default_error_pages/501.html";
+                    (*iter)->Fill_response_data(501, "Not Implemented", "./default_error_pages/501.html");
                     this->skip = 1;
                     return ;
                 }
@@ -42,11 +36,7 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
                 {
                     if ((*iter)->_content_type == 1)
                     {
-                        // std::cout<<"Transfer-Encoding(chunked) and boundry error not implemented"<<std::endl;
-                        (*iter)->status_code = 501;
-                        (*iter)->status = "Not Implemented";
-                        (*iter)->loc_path = "./default_error_pages/501.html";
-                        //set_error page of not implemented
+                        (*iter)->Fill_response_data(501, "Not Implemented", "./default_error_pages/501.html");
                         this->skip = 1;
                         return ;
                     }
@@ -62,31 +52,10 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
         std::map<std::string, std::vector<std::string> >::iterator m_ap = map_req.find("Content-Length");
         if (m_ap != map_req.end())
         {
-            // std::string str = *itt;
-            // for (int i = 0; i < str.length(); i++)
-            // {
-            //     if (!isdigit(str[i]))
-            //     {
-            //         (*iter)->status_code = 400;
-            //         (*iter)->status = "Bad Request";
-            //         (*iter)->loc_path = "./default_error_pages/400.html";
-            //         this->skip = 1;
-            //         return ;
-            //     }
-            // }
-            // std::stringstream ss(str);
-            // int num = 0;
-            // ss >> num;
-            // if (num == 0)
-            // {
-                // std::cout<<"co_len : "<<*itt<<std::endl;
             std::cout<< "Content-Length eequale 0 /400 bad request"<<std::endl;
-            (*iter)->status_code = 400;
-            (*iter)->status = "Bad Request";
-            (*iter)->loc_path = "./default_error_pages/400.html";
+            (*iter)->Fill_response_data(400, "Bad Request", "./default_error_pages/400.html");
             this->skip = 1;
             return ;
-            // }
         }
     }
     else if ((*iter)->_content_type != 2 && ((*iter)->method == "POST"))
@@ -102,9 +71,7 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
             {
                 if (!isdigit(str[i]))
                 {
-                    (*iter)->status_code = 400;
-                    (*iter)->status = "Bad Request";
-                    (*iter)->loc_path = "./default_error_pages/400.html";
+                    (*iter)->Fill_response_data(400, "Bad Request", "./default_error_pages/400.html");
                     this->skip = 1;
                     return ;
                 }
@@ -120,9 +87,7 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
         }
         else
         {
-            (*iter)->status_code = 400;
-            (*iter)->status = "Bad Request";
-            (*iter)->loc_path = "./default_error_pages/400.html";
+            (*iter)->Fill_response_data(400, "Bad Request", "./default_error_pages/400.html");
             this->skip = 1;
             return ;
         }
@@ -157,17 +122,12 @@ void    Check_path::check_uri(std::list<Client *>::iterator iter, Server &serv)
     int len = uri.length();
     if (len > 2048)
     {
-        (*iter)->status_code = 414;
-        (*iter)->status = "URI-Too-Long";
-        (*iter)->loc_path = "./default_error_pages/414.html";
-        // drop-client;
+        (*iter)->Fill_response_data(414, "URI-Too-Long", "./default_error_pages/414.html");
         this->skip = 1;
         return ;
     }
     if (!isURIValid(uri, len)) {
-        (*iter)->status_code = 400;
-        (*iter)->status = "Bad Request";
-        (*iter)->loc_path = "./default_error_pages/400.html";
+        (*iter)->Fill_response_data(400, "Bad Request", "./default_error_pages/400.html");
         this->skip = 1;
         return ;
     }
@@ -199,12 +159,7 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     }
     if (signe == 0)
     {
-        // std::cout<<"location not found"<<std::endl;
-        std::cout<<"loc_has_redddddddddir"<<std::endl;
-        std::cout<<"path : "<<(*iter)->path<<"size : "<<(*iter)->path.size()<<std::endl;
-        (*iter)->status_code = 404;
-        (*iter)->status = "Not Found";
-        (*iter)->loc_path = "./default_error_pages/404.html";
+        (*iter)->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
         this->skip = 1;
         return ;
     }
@@ -254,18 +209,14 @@ void    Check_path::is_method_allowed_in_location(std::list<Client *>::iterator 
     }
     if (it == methodes.end())
     {
-        (*iter)->status_code = 405;
-        (*iter)->status = "Method Not Allowd";
-        (*iter)->loc_path = "./default_error_pages/405.html";
+        (*iter)->Fill_response_data(405, "Method Not Allowed", "./default_error_pages/405.html");
         this->skip = 1;
         return ;
     }
     else if ((*it) != "GET" && (*it) != "DELETE" && (*it) != "POST")
     {
         // std::cout<<"error / 405 method not allowed"<<std::endl;
-        (*iter)->status_code = 405;
-        (*iter)->status = "Method Not Allowd";
-        (*iter)->loc_path = "./default_error_pages/405.html";
+        (*iter)->Fill_response_data(405, "Method Not Allowed", "./default_error_pages/405.html");
         this->skip = 1;
         return ;
     }

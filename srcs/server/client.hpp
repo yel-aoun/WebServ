@@ -77,6 +77,7 @@ class Client
         void    generate_file_name(std::string &mime_type, std::map<std::string, std::string> &file_extensions);
         void    generate_extensions_2();
         DATA    get_received_data(void);
+        void    Fill_response_data(int status_code, std::string status, std::string path);
 };
 int	ft_strlenc(char **c);
 void free_str_array(char **str, int size);
