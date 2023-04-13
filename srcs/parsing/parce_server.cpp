@@ -156,6 +156,7 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
     int m = 0;
     int e = 0;
     int h = 0;
+    int s = 0;
     for(; it != conf.end(); it++)
     {
         if ((*it).empty())
@@ -175,6 +176,15 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
         // WE SHOULD REPLACE THE WHITESPACES WITH NORMAL SPACES FIRST THEN SPLIT BY SPACE WHICH MEANS THAT WE DON'T NEED TO TRIM THE TAB ANYMORE
         std::vector<std::string> tokens = split(input);
         std::vector<std::string>::iterator tt = tokens.begin();
+        if (*tt == "server")
+        {
+            s++;
+            if (s != 1)
+            {
+                std::cout<<"you can' t have a server inside a server"<<std::endl;
+                exit(1);
+            }
+        }
         if (*tt == "host_name")
         {
             h++;
