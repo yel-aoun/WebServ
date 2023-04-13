@@ -32,6 +32,7 @@ void    Request::fill_map_request(std::string   &buff_line, int i)
     {
         this->method = token;
         ss >> token;
+        std::cout<<"dlkfokfokg"<<token<<std::endl;
         std::vector<std::string> path_query;
         std::stringstream str(token);
         std::string splt;

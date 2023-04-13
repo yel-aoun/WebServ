@@ -82,6 +82,7 @@ void    Server::serve_clients()
             {
                 if(memmem(_request, _request_size, "\r\n\r\n", 4))
                 {
+                    std::cout<<_request<<std::endl;
                     (*iter)->error_pages = this->_error_page;
                     Request req(_request, iter);
                     // std::map<std::string, std::vector<std::string> >::iterator it;
