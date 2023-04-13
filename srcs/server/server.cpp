@@ -83,16 +83,8 @@ void    Server::serve_clients()
             {
                 if(memmem(_request, _request_size, "\r\n\r\n", 4))
                 {
-                    std::cout<<_request<<std::endl;
                     (*iter)->error_pages = this->_error_page;
                     Request req(_request, iter);
-                    // std::map<std::string, std::vector<std::string> >::iterator it;
-                    // it = (*iter)->request_pack.find("Content-Length");
-                    // if(it != (*iter)->request_pack.end())
-                    // {
-                    //     if(std::atoi((*((*it).second.begin())).c_str()) > this->_max_client_body_size)
-                    //         // throw exception 413
-                    // }
                     Check_path path(iter, *this);
                     if (path.skip == 1)
                     {
