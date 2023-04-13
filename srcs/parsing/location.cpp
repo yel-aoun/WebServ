@@ -78,7 +78,6 @@ void location::FillRedirect(std::string prompt)
     std::vector<std::string> substring = splitString(prompt, ' ');
     if (substring.size() != 3)
     {
-        std::cout <<"== " << substring.size() << std::endl;
         std::cout << "Error! there's something wrong with the redirect parameter" << std::endl;
         exit (1);
     }

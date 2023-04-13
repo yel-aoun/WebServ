@@ -72,7 +72,7 @@ void    Server::serve_clients()
             {
                 std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
                 drop_client(iter);
-                iter = this->_clients.begin();
+                _clients.erase(iter);
                 // if (this->_clients.size() == 0)
                 //     return ;
                 continue ;
@@ -151,7 +151,7 @@ void    Server::serve_clients()
                     else
                     {
                         if  (serveBody(iter) == FINISHED)
-                            iter = this->_clients.begin();
+                            iter = this->_clients.erase(iter);
                     }
                 }
             }
@@ -166,7 +166,7 @@ void    Server::serve_clients()
                 else
                 {
                     if  (serveBody(iter) == FINISHED)
-                        iter = this->_clients.begin();
+                        iter = this->_clients.erase(iter);
                 }
             }
         }
@@ -176,17 +176,18 @@ void    Server::serve_clients()
 void    Server::drop_client(std::list<Client *>::iterator client)
 {
     CLOSESOCKET((*client)->get_sockfd());
-    std::list<Client *>::iterator iter;
-    std::cout << "dropping client\n\n";
-    for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
-    {
-        if((*client)->get_sockfd() == (*iter)->get_sockfd())
-        {
-            iter = this->_clients.erase(iter);
-            return ;
-        }
-    }
-    std::cerr << "Drop Client not found !" << std::endl;
+    delete *client;
+    // std::list<Client *>::iterator iter;
+    // std::cout << "dropping client\n\n";
+    // for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
+    // {
+    //     if((*client)->get_sockfd() == (*iter)->get_sockfd())
+    //     {
+    //         iter = this->_clients.erase(iter);
+    //         return ;
+    //     }
+    // }
+    // std::cerr << "Drop Client not found !" << std::endl;
 }
 
 void Server::seperate_header(Client *client)

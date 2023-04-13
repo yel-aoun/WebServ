@@ -4,46 +4,56 @@
 #include "../parsing/location.hpp"
 #include "../server/client.hpp"
 
-void    Post::generate_tmp_file(Client *client)
+int Post::generate_bdr_file(Server &serv, Client *client)
 {
-    time_t      now;
+    int len;
+    char *end;
+    char *content_type;
+    std::string mime_type;
 
-    this->tmp_file_path.append(client->loc_path);
-    this->tmp_file_path.append(client->location_match.get_upload_pass());
-    if (access(tmp_file_path.c_str(), F_OK))
-        mkdir(tmp_file_path.c_str(), 0777);
-    now = std::time(0);
-    this->tmp_file_path.append("/tmp_");
-    this->tmp_file_path.append(std::to_string(now));
-    this->tmp_file_path.push_back('_');
-    this->tmp_file_path.append(std::to_string(id++));
-    this->tmp_file.open(this->tmp_file_path, std::ios::binary | std::ios::app);
+    end = (char *) memmem(serv._request, serv._request_size, "\r\n\r\n", 4);
+    len = end - serv._request + 4;
+    content_type = (char *) memmem(serv._request, len, "Content-Type: ", 14);
+    if(content_type)
+    {
+        int i = 14;
+        mime_type.clear();
+        while(content_type[i] != '\r')
+            mime_type.push_back((content_type[i++]));
+    }
+    client->file_path = client->loc_path + "/" + client->location_match.get_upload_pass();
+    if (access(client->file_path.c_str(), F_OK))
+        mkdir(client->file_path.c_str(), 0777);
+    client->generate_file_name(mime_type, serv.file_extensions);
+    if(access(const_cast<char *>(client->file_path.c_str()), F_OK))
+        client->file.open(client->file_path, std::ios::binary | std::ios::app);
     this->is_created = true;
+    return (len);
 }
 
 void    Post::boundary_post (Server &serv, Client *client)
 {
-    if(!is_created)
-        this->generate_tmp_file(client);
-    if(!is_tmp_finished)
-    {
-        if(serv._request_size)
-            this->tmp_file.write(serv._request, serv._request_size);
-        if(memmem(serv._request, serv._request_size, this->_end_boundary.c_str(), this->_end_boundary.size()))
-        {
-            this->tmp_file.close();
-            this->tmp_file_read.open(this->tmp_file_path, std::ios::binary | std::ios::app);
-            is_tmp_finished = true;
-        }
-    }
-    if(is_tmp_finished)
-    {
-        std::string line;
+    int buff_read = 0;
+    int bdr_pos = serv._request_size;
+    char *bdr;
+    bool close = false;
 
-        std::cout << this->tmp_file_path << std::endl;
-        std::cout << std::getline(this->tmp_file_read, line) << std::endl;
-        std::cout << std::getline(this->tmp_file_read, line) << std::endl;
-        std::cout << "line = " << line << std::endl;
-        std::cout << "size = " << line.size() << std::endl;
+    if(!is_created)
+        buff_read = this->generate_bdr_file(serv, client);
+    bdr = (char *) memmem(serv._request + buff_read, serv._request_size - buff_read, client->boundary.c_str(), client->boundary.size());
+    if(bdr)
+    {
+        bdr_pos = bdr - serv._request - 4;
+        close = true;
+    }
+    while(buff_read < bdr_pos)
+    {
+        client->file.write(serv._request + buff_read, 1);
+        buff_read++;
+    }
+    if(close)
+    {
+        client->file.close();
+        client->Fill_response_data(201, "Created", "./default_error_pages/201.html");
     }
 }

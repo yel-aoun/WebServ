@@ -26,8 +26,10 @@ void Post::upload(Server &serv, Client *client)
     switch(this->_post_type)
     {
         case 0:
-        case 1:
             this->normal_post(serv, client);
+            break;
+        case 1:
+            this->boundary_post(serv, client);
             break;
         case 2:
             this->chunked_post(serv, client);

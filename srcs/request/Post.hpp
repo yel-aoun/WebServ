@@ -20,11 +20,6 @@ class Post
         char            _hex[20];
         size_t          _hex_len;
         bool            _hex_ready;
-        std::string     boundary;
-        std::ofstream   tmp_file;
-        std::ifstream   tmp_file_read;
-        std::string     tmp_file_path;
-        std::string     _end_boundary;
         std::string     path;
         int             cgi_done;
         int             _is_matched;
@@ -37,7 +32,7 @@ class Post
         void        normal_post(Server &server, Client *client);
         void        chunked_post(Server &server, Client *client);
         void        boundary_post(Server &server, Client *client);
-        void        generate_tmp_file(Client *client);
+        int         generate_bdr_file(Server &serv, Client *client);
         bool        check_hex();
         void        Treat_Post(Client *ctl, Server &serv);
         std::string getHeaderCgi(std::string header);

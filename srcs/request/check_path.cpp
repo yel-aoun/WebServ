@@ -148,7 +148,6 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
             if ((*iter)->path[i] == '/' || (*iter)->path.length() == i)
             {
                 signe  = 1;
-                std::cout<<"location found"<<std::endl;
                 if (this->loc_path.length() < (*it).get_locations().length())
                 {
                     this->loc_path = (*it).get_locations();

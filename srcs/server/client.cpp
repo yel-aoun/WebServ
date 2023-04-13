@@ -107,7 +107,6 @@ void    Client::set_received_data(DATA data)
 
 void    Client::init_post_data()
 {
-    this->post.boundary = this->boundary;
     this->post._post_type = this->_content_type;
     std::map<std::string, std::vector<std::string> >::iterator iter;
     iter = request_pack.find("Content-Length");

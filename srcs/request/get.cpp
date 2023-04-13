@@ -129,10 +129,8 @@ void    Get::check_the_end_of_uri(std::list<Client *>::iterator iter)
 {
     // (*iter)->loc_path.append("/");
     std::string path = (*iter)->loc_path; 
-    std::cout<<"hoooola : "<<path[path.length() - 1]<<std::endl;
     if (path[path.length() - 1] != '/')
     {
-        std::cout<<"llllllllla"<<std::endl;
         (*iter)->redirect_301.append("/");
         (*iter)->status_code = 301;
         (*iter)->status = "Moved Permanently";
