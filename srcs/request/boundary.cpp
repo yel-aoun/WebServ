@@ -39,19 +39,23 @@ void    Post::boundary_post (Server &serv, Client *client)
     bool close = false;
 
     if(!is_created)
+    {
         buff_read = this->generate_bdr_file(serv, client);
+        client->_content_len -= buff_read;
+    }
     bdr = (char *) memmem(serv._request + buff_read, serv._request_size - buff_read, client->boundary.c_str(), client->boundary.size());
     if(bdr)
     {
         bdr_pos = bdr - serv._request - 4;
         close = true;
     }
-    while(buff_read < bdr_pos)
+    while(buff_read < bdr_pos && client->_content_len)
     {
         client->file.write(serv._request + buff_read, 1);
         buff_read++;
+        client->_content_len--;
     }
-    if(close)
+    if(close || !client->_content_len)
     {
         client->file.close();
         client->Fill_response_data(201, "Created", "./default_error_pages/201.html");

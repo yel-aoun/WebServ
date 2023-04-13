@@ -52,7 +52,6 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
         std::map<std::string, std::vector<std::string> >::iterator m_ap = map_req.find("Content-Length");
         if (m_ap != map_req.end())
         {
-            std::cout<< "Content-Length eequale 0 /400 bad request"<<std::endl;
             (*iter)->Fill_response_data(400, "Bad Request", "./default_error_pages/400.html");
             this->skip = 1;
             return ;
@@ -76,14 +75,15 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
                     return ;
                 }
             }
-            // std::stringstream ss(str);
-            // int num = 0;
-            // ss >> num;
-            // if (num == 0)
-            // {
-                // std::cout<<"co_len : "<<*itt<<std::endl;
-            // std::cout<< "Content-Length eequale 0 /400 bad request"<<std::endl;
-            // }
+            std::stringstream ss(str);
+            int num = 0;
+            ss >> num;
+            if (num == 0)
+            {
+                (*iter)->Fill_response_data(400, "Bad Request", "./default_error_pages/400.html");
+                this->skip = 1;
+                return ;
+            }
         }
         else
         {

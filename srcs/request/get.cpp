@@ -350,7 +350,8 @@ void    Get::check_for_auto_index(std::list<Client *>::iterator iter)
                 return ;
             }
         }
-        else{
+        else
+        {
             (*iter)->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
             this->state = 1;
         }

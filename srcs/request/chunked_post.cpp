@@ -57,10 +57,11 @@ void    Post::chunked_post(Server &serv, Client *client)
                 break ;
             }
         }
-        while(buff_read < serv._request_size && this->_chunk_len)
+        while(buff_read < serv._request_size && this->_chunk_len && client->_content_len)
         {
             client->file.write(serv._request + buff_read, 1);
             this->_chunk_len--;
+            client->_content_len--;
             buff_read++;
         }
     }

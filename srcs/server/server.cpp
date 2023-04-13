@@ -14,6 +14,7 @@ Server::Server(parce_server &server_data, std::map<std::string, std::string> &fi
     Socket socket(this->_port);
     this->_server_socket = socket.get_socket();
     this->file_extensions = file_extensions;
+    this->_request_len = 0;
 }
 
 std::list<location> Server::get_locations() const
@@ -68,7 +69,6 @@ void    Server::serve_clients()
         {
             memset(this->_request, 0, MAX_REQUEST_SIZE + 1);
             this->_request_size = recv((*iter)->get_sockfd(), this->_request, MAX_REQUEST_SIZE, 0);
-            this->_request_len = _request_size;
             if (this->_request_size < 1)
             {
                 std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
