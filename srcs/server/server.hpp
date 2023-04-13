@@ -12,7 +12,7 @@ class location;
 
 #define SOCKET              int
 #define PORT                int 
-#define MAX_REQUEST_SIZE    8200
+#define MAX_REQUEST_SIZE    2048
 #define FINISHED            true
 
 class Server

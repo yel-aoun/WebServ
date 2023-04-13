@@ -144,15 +144,11 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     {
         if ((*iter)->path.find((*it).get_locations()) != std::string::npos)
         {
-            int i = (*it).get_locations().length();
-            if ((*iter)->path[i] == '/' || (*iter)->path.length() == i)
+            signe  = 1;
+            if (this->loc_path.length() < (*it).get_locations().length())
             {
-                signe  = 1;
-                if (this->loc_path.length() < (*it).get_locations().length())
-                {
-                    this->loc_path = (*it).get_locations();
-                    this->location_match = (*it);
-                }
+                this->loc_path = (*it).get_locations();
+                this->location_match = (*it);
             }
         }
     }
@@ -165,22 +161,17 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     else
     {
         (*iter)->location_match = this->location_match;
-        // std::string str = (*iter)->path.substr(loc_path.length(), (*iter)->path.length());
-        std::cout<<&(*iter)->path[loc_path.length() - 1]<<std::endl;
         if (loc_path.length() == 1)
             this->loc_path = this->location_match.root + (*iter)->path;
         else
             this->loc_path = this->location_match.root + &(*iter)->path[loc_path.length()];
         (*iter)->loc_path = this->loc_path;
-        std::cout<<(*iter)->loc_path<<std::endl;
-
         is_location_has_redirection(iter, serv);
     }
 }
 
 void    Check_path::is_location_has_redirection(std::list<Client *>::iterator iter, Server &serv)
 {
-    // std::cout<<this->location_match.get_re
     std::vector<std::string> redirect = (this)->location_match.get_redirect();
     if (redirect.empty())
         is_method_allowed_in_location(iter);
@@ -220,7 +211,6 @@ void    Check_path::is_method_allowed_in_location(std::list<Client *>::iterator 
     }
     else if ((*it) != "GET" && (*it) != "DELETE" && (*it) != "POST")
     {
-        // std::cout<<"error / 405 method not allowed"<<std::endl;
         (*iter)->Fill_response_data(405, "Method Not Allowed", "./default_error_pages/405.html");
         this->skip = 1;
         return ;

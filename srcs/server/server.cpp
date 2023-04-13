@@ -61,6 +61,7 @@ void    Server::run_serve(fd_set reads, fd_set writes, char **env)
 void    Server::serve_clients()
 {
     std::list<Client *>::iterator   iter;
+    int len;
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
         if(FD_ISSET((*iter)->get_sockfd(), &this->_reads) && !(*iter)->_is_ready)
@@ -84,13 +85,6 @@ void    Server::serve_clients()
                 {
                     (*iter)->error_pages = this->_error_page;
                     Request req(_request, iter);
-                    // std::map<std::string, std::vector<std::string> >::iterator it;
-                    // it = (*iter)->request_pack.find("Content-Length");
-                    // if(it != (*iter)->request_pack.end())
-                    // {
-                    //     if(std::atoi((*((*it).second.begin())).c_str()) > this->_max_client_body_size)
-                    //         // throw exception 413
-                    // }
                     Check_path path(iter, *this);
                     if (path.skip == 1)
                     {
@@ -99,19 +93,27 @@ void    Server::serve_clients()
                     }
                     else
                     {
+                        this->seperate_header(*iter);
                         if(req.method == "POST")
                         {
                             (*iter)->init_post_data();
                             (*iter)->_request_type = true;
-                            this->seperate_header(*iter);
                             (*iter)->post.check_post((*iter));
                             (*iter)->post.call_post_func(*this, (*iter));
                         }
                         else if (req.method == "DELETE")
-                            (*iter)->del.erase((*iter), *this);
+                        {
+                            if(_request_size != 0)
+                                (*iter)->Fill_response_data(400, "Bad Request", "./default_error_pages/400.html");
+                            else
+                                (*iter)->del.erase((*iter), *this);
+                        }
                         else if(req.method == "GET")
                         {
-                            (*iter)->get.get_requested_resource(iter);
+                            if(_request_size != 0)
+                                (*iter)->Fill_response_data(400, "Bad Request", "./default_error_pages/400.html");
+                            else
+                                (*iter)->get.get_requested_resource(iter);
                             (*iter)->_is_ready = true;
                         }
                     }
@@ -177,17 +179,6 @@ void    Server::drop_client(std::list<Client *>::iterator client)
 {
     CLOSESOCKET((*client)->get_sockfd());
     delete *client;
-    // std::list<Client *>::iterator iter;
-    // std::cout << "dropping client\n\n";
-    // for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
-    // {
-    //     if((*client)->get_sockfd() == (*iter)->get_sockfd())
-    //     {
-    //         iter = this->_clients.erase(iter);
-    //         return ;
-    //     }
-    // }
-    // std::cerr << "Drop Client not found !" << std::endl;
 }
 
 void Server::seperate_header(Client *client)
