@@ -129,10 +129,8 @@ void    Get::check_the_end_of_uri(std::list<Client *>::iterator iter)
 {
     // (*iter)->loc_path.append("/");
     std::string path = (*iter)->loc_path; 
-    std::cout<<"hoooola : "<<path[path.length() - 1]<<std::endl;
     if (path[path.length() - 1] != '/')
     {
-        std::cout<<"llllllllla"<<std::endl;
         (*iter)->redirect_301.append("/");
         (*iter)->status_code = 301;
         (*iter)->status = "Moved Permanently";
@@ -352,7 +350,8 @@ void    Get::check_for_auto_index(std::list<Client *>::iterator iter)
                 return ;
             }
         }
-        else{
+        else
+        {
             (*iter)->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
             this->state = 1;
         }

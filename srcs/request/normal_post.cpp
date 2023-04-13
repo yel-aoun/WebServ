@@ -7,9 +7,14 @@ void    Post::normal_post(Server &serv, Client *client)
 {
     // i have to write byte by byte because i have to check for content_length.
     // if i change the content_length to some number not <calculated when request is sent> ?
-    client->file.write(serv._request, serv._request_size);
-    client->_content_len -= serv._request_size;
-    if(!client->_content_len)
+    int i = 0;
+    while (i < serv._request_size && client->_content_len)
+    {
+        client->file.write(serv._request + i, 1);
+        i++;
+        client->_content_len--;
+    }
+    if(client->_content_len == 0)
     {
         if (!client->exec_path.empty())
         {

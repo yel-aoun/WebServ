@@ -172,7 +172,6 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
 
 void    Check_path::is_location_has_redirection(std::list<Client *>::iterator iter, Server &serv)
 {
-    // std::cout<<this->location_match.get_re
     std::vector<std::string> redirect = (this)->location_match.get_redirect();
     if (redirect.empty())
         is_method_allowed_in_location(iter);
@@ -212,7 +211,6 @@ void    Check_path::is_method_allowed_in_location(std::list<Client *>::iterator 
     }
     else if ((*it) != "GET" && (*it) != "DELETE" && (*it) != "POST")
     {
-        // std::cout<<"error / 405 method not allowed"<<std::endl;
         (*iter)->Fill_response_data(405, "Method Not Allowed", "./default_error_pages/405.html");
         this->skip = 1;
         return ;

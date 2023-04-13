@@ -21,13 +21,24 @@ void Post::check_post(Client *clt)
 
 void Post::upload(Server &serv, Client *client)
 {
+    serv._request_len += serv._request_size;
+    std::cout << serv._request_len  << " " << serv.get_max_client_body_size() << std::endl;
+    if(serv._request_len > serv.get_max_client_body_size())
+    {
+        client->Fill_response_data(413, "Request Entity Too Large", "./default_error_pages/413.html");
+        if(client->file.is_open())
+            client->file.close();
+        return ;
+    }
    if(!is_created && this->_post_type != 1)
         this->create_file(serv, client);
     switch(this->_post_type)
     {
         case 0:
-        case 1:
             this->normal_post(serv, client);
+            break;
+        case 1:
+            this->boundary_post(serv, client);
             break;
         case 2:
             this->chunked_post(serv, client);
@@ -372,13 +383,17 @@ void Post::Treat_Post(Client *ctl, Server &serv)
 void    Post::create_file(Server &serv, Client *client)
 {
     std::string merge_path;
+    std::string mimetype;
+
     if(client->file_path.empty())
     {
         std::map<std::string, std::vector<std::string> >::iterator iter;
         iter = client->request_pack.find("Content-Type");
+        if(iter != client->request_pack.end())
+            mimetype = *((*iter).second.begin());
         merge_path = client->loc_path + "/" + client->location_match.get_upload_pass();
         client->file_path = merge_path;
-        client->generate_file_name(*((*iter).second.begin()), serv.file_extensions);
+        client->generate_file_name(mimetype, serv.file_extensions);
     }
     if (access(merge_path.c_str(), F_OK))
         mkdir(merge_path.c_str(), 0777);
