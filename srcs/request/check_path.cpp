@@ -144,6 +144,7 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     {
         if ((*iter)->path.find((*it).get_locations()) != std::string::npos)
         {
+            std::cout<<"uri : "<<(*iter)->path<<" loc_bloc : "<<(*it).get_locations()<<std::endl;
             signe  = 1;
             if (this->loc_path.length() < (*it).get_locations().length())
             {
