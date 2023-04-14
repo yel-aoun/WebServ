@@ -1,5 +1,4 @@
 <?php
-while (1);
 session_start(); // start session to store the counter value
 
 if(isset($_POST['increment'])) { // check if the increment button is clicked

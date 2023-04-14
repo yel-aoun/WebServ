@@ -27,7 +27,6 @@ int count_slash(std::string location)
 
 void location::FillLocation(std::string prompt)
 {
-
     std::vector<std::string> substring = splitString(prompt, ' ');
 
     if (substring.size() != 3)
@@ -137,10 +136,16 @@ void location::initialize()
     auto_index = "off";
 }
 
-location::location(const std::list<std::string> &config, int j)
+location::location(const std::list<std::string> &config, int j, int n_serv)
 {
     std::string nextvalue;
     std::list<std::string>::const_iterator it = config.begin();
+    while (it != config.end() && n_serv != 0)
+    {
+        if (it->find("};") != std::string::npos)
+            n_serv--;
+        it++;
+    }
     while (it != config.end() && j != 0)
     {
         if (it->find("}") != std::string::npos)

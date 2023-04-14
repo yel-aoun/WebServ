@@ -61,6 +61,7 @@ int deleteFolder(const char* folderPath) {
     return status;
 }
 
+
 void Delete::delete_directory(Client *ctl)
 {
     if (!deleteFolder(ctl->loc_path.c_str()))
@@ -172,7 +173,10 @@ void Delete::erase(Client *ctl)
 {
     DIR* dir = opendir(ctl->loc_path.c_str());
     if (dir != NULL)
+    {
         this->Treat_directory(ctl);
+        closedir(dir);
+    }
     else if (fopen(ctl->loc_path.c_str(), "r") != NULL)
         this->Treat_File(ctl);
     else
@@ -198,8 +202,6 @@ void Delete::erase(Client *ctl)
         ctl->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
         return ;
     }
-    std::cout << "========> Hello world" << std::endl;
-    system("leaks webserv");
 }
 Delete::~Delete()
 {

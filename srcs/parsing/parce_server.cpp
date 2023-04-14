@@ -139,6 +139,7 @@ std::vector<std::string> set_error_page(std::vector<std::string> &tokens)
 
 parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
 {
+    int x = n_serv;
     int ind = 0;
     int count_loc = 0;
     int j = 0;
@@ -248,8 +249,9 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
             std::cout << "Error! Putting a location block inside another one doesn't work" << std::endl;
             exit (1);
         }
-		location loc(conf, j);
+		location loc(conf, j, x);
 		this->locations.push_back(loc);
 		j++;
 	}
+
 }

@@ -107,9 +107,9 @@ void    Webserv::wait_on_clients()
     struct timeval restrict;
 
     this->init_sockfds();
-    restrict.tv_sec = 10;
+    restrict.tv_sec = 1;
     restrict.tv_usec = 0;
-    if (select(this->_max_socket + 1, &(this->_reads), &(this->_writes), NULL, NULL) < 0)
+    if (select(this->_max_socket + 1, &(this->_reads), &(this->_writes), NULL, &restrict) < 0)
     {
         std::cerr << "select() failed" << std::endl;
         exit(EXIT_FAILURE);

@@ -11,7 +11,7 @@ Server::Server(parce_server &server_data, std::map<std::string, std::string> &fi
     this->_max_client_body_size = server_data.max_client_body_size;
     this->_error_page = server_data.error_page;
     this->_locations = server_data.locations;
-    Socket socket(this->_port);
+    Socket socket(this->_port, this->_host_name);
     this->_server_socket = socket.get_socket();
     this->file_extensions = file_extensions;
     this->_request_len = 0;
@@ -41,10 +41,7 @@ void    Server::accept_new_client()
         &(client->_address_length));
     client->set_sockfd(r);
     if (!ISVALIDSOCKET(client->get_sockfd()))
-    {
         std::cerr << "accept() failed." << std::endl;
-        exit(EXIT_FAILURE);
-    }
     this->_clients.push_back(client);
 }
 
@@ -128,10 +125,7 @@ void    Server::serve_clients()
                 {
                     int pid = waitpid((*iter)->pid, NULL, WNOHANG);
                     if (pid == 0)
-                    {
-                        iter = this->_clients.begin();
                         continue ;
-                    }
                     else
                     {
                         (*iter)->isCgiDone = true;
@@ -268,10 +262,7 @@ void    Server::respons_cgi(std::list<Client *>::iterator iter)
     std::ifstream filein;
     filein.open((*iter)->loc_path,std::ios::binary);
     if (!filein.is_open())
-    {
         std::cout<<"not_open"<<std::endl;
-        exit(0);
-    }
     filein.seekg(0, std::ios::end);
     size_t file_size = filein.tellg();
     std::string str;
@@ -279,10 +270,7 @@ void    Server::respons_cgi(std::list<Client *>::iterator iter)
     memset(buffer, 0 , 1025);
     (*iter)->filein.open((*iter)->loc_path,std::ios::binary);
     if (!(*iter)->filein.is_open())
-    {
         std::cout<<"not_open"<<std::endl;
-        exit(0);
-    }
     (*iter)->filein.read(buffer, 1024);
     std::string buff = buffer;
     (*iter)->file_is_open = 1;

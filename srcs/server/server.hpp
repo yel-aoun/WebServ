@@ -19,7 +19,6 @@ class Server
 {
     private:
 
-        PORT                        _port;
         fd_set                      _writes;
         std::string                 _host_name;
         unsigned int                _max_client_body_size;
@@ -36,6 +35,7 @@ class Server
 
         std::list<Client *>     _clients;
         SOCKET                  _server_socket;
+        PORT                        _port;
         int                     _request_len;
         int                     _request_size;
         char                    _request[MAX_REQUEST_SIZE + 1];
