@@ -33,6 +33,7 @@ void    Socket::bind_socket()
 
     struct addrinfo hints;
     struct addrinfo* results;
+
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;  // Use IPv4
     hints.ai_socktype = SOCK_STREAM;  // Use TCP
@@ -52,6 +53,7 @@ void    Socket::bind_socket()
         std::cerr << "bind() failed." << GETSOCKETERRNO() << std::endl;
         std::exit(EXIT_FAILURE);
     }
+    freeaddrinfo(results);
 }
 
 void    Socket::listen_socket()
