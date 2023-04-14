@@ -82,5 +82,5 @@ class Client
 int	ft_strlenc(char **c);
 void free_str_array(char **str, int size);
 char	**ft_strdupc(char **env);
-std::string create_temp_file(Client *ctl);
+std::string create_temp_file();
 #endif

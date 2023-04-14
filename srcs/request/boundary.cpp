@@ -22,8 +22,15 @@ int Post::generate_bdr_file(Server &serv, Client *client)
             mime_type.push_back((content_type[i++]));
     }
     client->file_path = client->loc_path + "/" + client->location_match.get_upload_pass();
+    std::cout << client->file_path << std::endl;
     if (access(client->file_path.c_str(), F_OK))
-        mkdir(client->file_path.c_str(), 0777);
+    {
+        if(mkdir(client->file_path.c_str(), 0777) == -1)
+        {
+            client->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
+            return (-1);
+        }
+    }
     client->generate_file_name(mime_type, serv.file_extensions);
     if(access(const_cast<char *>(client->file_path.c_str()), F_OK))
         client->file.open(client->file_path, std::ios::binary | std::ios::app);
@@ -41,6 +48,8 @@ void    Post::boundary_post (Server &serv, Client *client)
     if(!is_created)
     {
         buff_read = this->generate_bdr_file(serv, client);
+        if(buff_read == -1)
+            return ;
         client->_content_len -= buff_read;
     }
     bdr = (char *) memmem(serv._request + buff_read, serv._request_size - buff_read, client->boundary.c_str(), client->boundary.size());

@@ -45,11 +45,11 @@ int deleteFolder(const char* folderPath) {
                 status = subStatus;
             }
         }
+
     }
 
     // Close the folder
     closedir(dir);
-
     // Delete the empty folder
     if (status == 0) {
         int subStatus = rmdir(folderPath);
@@ -58,11 +58,10 @@ int deleteFolder(const char* folderPath) {
             return subStatus;
         }
     }
-
     return status;
 }
 
-void Delete::delete_directory(Client *ctl, Server &serv)
+void Delete::delete_directory(Client *ctl)
 {
     if (!deleteFolder(ctl->loc_path.c_str()))
     {
@@ -84,6 +83,7 @@ void Delete::delete_directory(Client *ctl, Server &serv)
                }
            }
         }
+
         ctl->Fill_response_data(204, "No Content", "./default_error_pages/204.html");
         return ;
     }
@@ -138,23 +138,43 @@ void Delete::delete_directory(Client *ctl, Server &serv)
     }
 }
 
-void Delete::Treat_directory(Client *ctl, Server &serv)
+void Delete::Treat_directory(Client *ctl)
 {
-    this->delete_directory(ctl, serv);
+    this->delete_directory(ctl);
 }
 
-void Delete::Treat_File(Client *ctl, Server &serv)
+void Delete::Treat_File(Client *ctl)
 {
     remove(ctl->loc_path.c_str());
+    std::vector<std::string> error = ctl->error_pages;
+        std::vector<std::string>::iterator it = error.begin();
+        if (it != error.end())
+        {
+           int num;
+           std::stringstream ss(*it);
+           ss >> num;
+           if (num == 204)
+           {
+               std::string path = "." + (*++it);
+               if (fopen(path.c_str(), "r"))
+               {
+                    ctl->loc_path = path;
+                    ctl->Fill_response_data(204, "No Content", path);
+                    return ;
+               }
+           }
+        }
+        ctl->Fill_response_data(204, "No Content", "./default_error_pages/204.html");
+        return ;
 }
 
-void Delete::erase(Client *ctl, Server &serv)
+void Delete::erase(Client *ctl)
 {
     DIR* dir = opendir(ctl->loc_path.c_str());
     if (dir != NULL)
-        this->Treat_directory(ctl, serv);
+        this->Treat_directory(ctl);
     else if (fopen(ctl->loc_path.c_str(), "r") != NULL)
-        this->Treat_File(ctl, serv);
+        this->Treat_File(ctl);
     else
     {
         std::vector<std::string> error = ctl->error_pages;
@@ -178,6 +198,8 @@ void Delete::erase(Client *ctl, Server &serv)
         ctl->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
         return ;
     }
+    std::cout << "========> Hello world" << std::endl;
+    system("leaks webserv");
 }
 Delete::~Delete()
 {

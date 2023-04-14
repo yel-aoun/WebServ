@@ -66,7 +66,7 @@ void   Check_path::check_transfer_encoding(std::list<Client *>::iterator iter, S
             std::vector<std::string> vec = m_ap->second;
             std::vector<std::string>::iterator itt = vec.begin();
             std::string str = *itt;
-            for (int i = 0; i < str.length(); i++)
+            for (size_t i = 0; i < str.length(); i++)
             {
                 if (!isdigit(str[i]))
                 {
@@ -144,7 +144,6 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
     {
         if ((*iter)->path.find((*it).get_locations()) != std::string::npos)
         {
-            std::cout<<"uri : "<<(*iter)->path<<" loc_bloc : "<<(*it).get_locations()<<std::endl;
             signe  = 1;
             if (this->loc_path.length() < (*it).get_locations().length())
             {
@@ -167,11 +166,11 @@ void    Check_path::get_matched_location_for_request_uri(std::list<Client *>::it
         else
             this->loc_path = this->location_match.root + &(*iter)->path[loc_path.length()];
         (*iter)->loc_path = this->loc_path;
-        is_location_has_redirection(iter, serv);
+        is_location_has_redirection(iter);
     }
 }
 
-void    Check_path::is_location_has_redirection(std::list<Client *>::iterator iter, Server &serv)
+void    Check_path::is_location_has_redirection(std::list<Client *>::iterator iter)
 {
     std::vector<std::string> redirect = (this)->location_match.get_redirect();
     if (redirect.empty())

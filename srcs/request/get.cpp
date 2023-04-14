@@ -171,7 +171,7 @@ void    Get::is_dir_has_index_files(std::list<Client *>::iterator iter)
 std::string Get::getHeaderCgi(std::string header)
 {
     std::string cgiHeader(header);
-    for (int i = 0; i < header.length(); i++)
+    for (size_t i = 0; i < header.length(); i++)
     {
         if (header[i] == '-')
             cgiHeader[i] = '_';
@@ -222,7 +222,7 @@ void    Get::if_location_has_cgi(std::list<Client *>::iterator iter)
         std::string str = it->second;
         if (access(str.c_str(), X_OK) == 0)
         {
-            std::string filename = create_temp_file((*iter));
+            std::string filename = create_temp_file();
             (*iter)->fd = open(filename.c_str(), O_CREAT | O_RDWR | O_TRUNC);
             if ((*iter)->fd < 0)
             {

@@ -26,7 +26,6 @@ bool Post::check_hex()
 void    Post::chunked_post(Server &serv, Client *client)
 {
     int buff_read = 0;
-    char *str;
 
     while(buff_read < serv._request_size)
     {

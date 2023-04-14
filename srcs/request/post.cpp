@@ -5,7 +5,7 @@
 #include "../parsing/webserv.hpp"
 
 
-Post::Post(): body_or_head(0), _post_type(0), _chunk_len(0), _hex_len(0), is_created(false), _buff_read(0) , _is_matched(0)
+Post::Post():  body_or_head(0), is_created(false), _post_type(0), _buff_read(0), _chunk_len(0), _hex_len(0) , _is_matched(0)
 {
     this->is_tmp_finished = 0;
     memset(this->_hex, 0, 20);
@@ -22,7 +22,6 @@ void Post::check_post(Client *clt)
 void Post::upload(Server &serv, Client *client)
 {
     serv._request_len += serv._request_size;
-    std::cout << serv._request_len  << " " << serv.get_max_client_body_size() << std::endl;
     if(serv._request_len > serv.get_max_client_body_size())
     {
         client->Fill_response_data(413, "Request Entity Too Large", "./default_error_pages/413.html");
@@ -31,7 +30,11 @@ void Post::upload(Server &serv, Client *client)
         return ;
     }
    if(!is_created && this->_post_type != 1)
+   {
         this->create_file(serv, client);
+        if(client->_is_ready == true)
+            return ;
+   }
     switch(this->_post_type)
     {
         case 0:
@@ -49,11 +52,16 @@ void Post::upload(Server &serv, Client *client)
 void    Post::call_post_func(Server &serv, Client *client)
 {
     if (_is_matched == 1)
+    {
         upload(serv, client);
+    }
     else
+    {        std::cout << "Hello from TREAT POST" << std::endl;
         Treat_Post(client, serv);
+    }
     if (client->is_done == 1 && _is_matched == 0)
     {
+        std::cout << "Hello from NEC ENV" << std::endl;
         Add_Necessary_Env(client);
         Handle_exec(client);
     }
@@ -87,7 +95,7 @@ char	**ft_add_var(char **env, char *cmd)
 	return (newenv);
 }
 
-std::string create_temp_file(Client *ctl)
+std::string create_temp_file()
 {
     std::string filename;
     time_t now;
@@ -105,7 +113,7 @@ std::string create_temp_file(Client *ctl)
 std::string Post::getHeaderCgi(std::string header)
 {
     std::string cgiHeader(header);
-    for (int i = 0; i < header.length(); i++)
+    for (size_t i = 0; i < header.length(); i++)
     {
         if (header[i] == '-')
             cgiHeader[i] = '_';
@@ -135,7 +143,7 @@ void Post::addCgiHeaders(Client *ctl)
             if (!v.empty())
                 cgiValue += v[v.size() - 1];
             std::string currEnvVal =  cgiHeader + "="+ cgiValue;
-            if (cgiHeader.find("HTTP_CONTENT_TYPE") != -1)
+            if (cgiHeader.find("HTTP_CONTENT_TYPE") != std::string::npos)
                 ctl->cont_type = cgiValue;
             ctl->env = ft_add_var(ctl->env, const_cast<char *>(currEnvVal.c_str()));
         }
@@ -168,14 +176,13 @@ void Post::Add_Necessary_Env(Client *ctl)
 void Post::Handle_exec(Client *ctl)
 {
     ctl->filein.close();
-    std::string filename = create_temp_file(ctl);
+    std::string filename = create_temp_file();
     ctl->fd = open(filename.c_str(), 1);
     if (ctl->fd < 0)
     {
         ctl->Fill_response_data(403, "Forbidden", "./default_error_pages/403.html");
         return ;
     }
-    int i = 0;
     ctl->pid = fork();
     if (ctl->pid == 0)
     {
@@ -185,11 +192,9 @@ void Post::Handle_exec(Client *ctl)
         dup2(ok, 0);
         close(ok);
         char *arg[3];
-        int i = 0;
         arg[0] = strdup(ctl->exec_path.c_str());
         arg[1] = strdup(ctl->loc_path.c_str());
         arg[2] = NULL;
-        int x = 0;
         execve(arg[0], arg, ctl->env);
         perror("EXEC: ");
     }
@@ -202,7 +207,7 @@ void Post::Handle_exec(Client *ctl)
 
 void Post::Treat_Cgi(Client *ctl, Server &serv)
 {
-    std::string filename = create_temp_file(ctl);
+    std::string filename = create_temp_file();
     ctl->file.open(filename.c_str(), std::ios::out | std::ios::binary);
     path = filename;
     if (!ctl->file.is_open())
@@ -396,7 +401,14 @@ void    Post::create_file(Server &serv, Client *client)
         client->generate_file_name(mimetype, serv.file_extensions);
     }
     if (access(merge_path.c_str(), F_OK))
-        mkdir(merge_path.c_str(), 0777);
+    {
+        
+        if(mkdir(merge_path.c_str(), 0777) == -1)
+        {
+            client->Fill_response_data(404, "Not Found", "./default_error_pages/404.html");
+            return ;
+        }
+    }
     if(access(const_cast<char *>(client->file_path.c_str()), F_OK))
         client->file.open(client->file_path, std::ios::binary | std::ios::app);
     this->is_created = true;

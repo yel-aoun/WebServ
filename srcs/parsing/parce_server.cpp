@@ -13,7 +13,7 @@ std::vector<std::string> split(const std::string &str)
 int set_port(std::vector<std::string> &tokens)
 {
     std::vector<std::string>::iterator it = tokens.begin();
-    int num;
+    int num = 0;
     if (++it == tokens.end())
     {
         std::cout<<"you must set a value for the port"<<std::endl;
@@ -161,14 +161,14 @@ parce_server::parce_server(const std::list<std::string> &conf, int n_serv)
     {
         if ((*it).empty())
             for (; (*it).empty() != 0; ++it);
-        if ((it->find("location") != -1 && it->rfind("{") != -1) && ind)
+        if ((it->find("location") != std::string::npos && it->rfind("{") != std::string::npos) && ind)
             break;
-        if (it->find("location") != -1 && it->rfind("{") != -1)
+        if (it->find("location") != std::string::npos && it->rfind("{") != std::string::npos)
         {
             count_loc++;
             ind++;
         }
-        if (it->rfind("}") != -1 && it->rfind("};") == -1)
+        if (it->rfind("}") != std::string::npos && it->rfind("};") == std::string::npos)
             ind--;
         if (it->rfind("};") != std::string::npos)
             break;

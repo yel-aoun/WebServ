@@ -27,7 +27,7 @@ class Server
         std::vector<std::string>    _error_page;
 
         void    new_connection();
-        void    accept_new_client(char **env);
+        void    accept_new_client();
         void    drop_client(std::list<Client *>::iterator client);
         void    serve_clients();
         void    seperate_header(Client *client);
@@ -51,7 +51,7 @@ class Server
         Server(parce_server &server_data, std::map<std::string, std::string> &file_extensions);
         ~Server();
 
-        void    run_serve(fd_set reads, fd_set writes, char **env);
+        void    run_serve(fd_set reads, fd_set writes);
         bool    serveBody(std::list<Client *>::iterator   iter);
         int     sizeBodyCgi(std::string buffer, int filesize);
         // const char *get_client_address(Client *);

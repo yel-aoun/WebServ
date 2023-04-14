@@ -15,7 +15,7 @@ std::vector<std::string> splitString(const std::string& str,const char splet)
 
 int count_slash(std::string location)
 {
-    int i = 0;
+    size_t i = 0;
     int x = 0;
     for (; i != location.size() ; i++)
     {
@@ -23,12 +23,6 @@ int count_slash(std::string location)
             x++;
     }
     return (x);
-}
-std::string location::trim_directory(int slash)
-{
-    int x = this->locations.rfind("/");
-    std::string sub = locations.substr(0, x);
-    return (sub);
 }
 
 void location::FillLocation(std::string prompt)
@@ -149,7 +143,7 @@ location::location(const std::list<std::string> &config, int j)
     std::list<std::string>::const_iterator it = config.begin();
     while (it != config.end() && j != 0)
     {
-        if (it->find("}") != -1)
+        if (it->find("}") != std::string::npos)
             j--;
         it++;
     }
@@ -161,26 +155,26 @@ location::location(const std::list<std::string> &config, int j)
         //std::vector<std::string> prompt = splitString(input);
         //std::vector<std::string>::iterator tt = prompt.begin();
         nextvalue = *std::next(it);
-        if ((*it).find("}") != -1)
+        if ((*it).find("}") != std::string::npos)
             break;
-        if ((*it).find("location") != -1 && (*it).find("{") != -1)
+        if ((*it).find("location") != std::string::npos && (*it).find("{") != std::string::npos)
             //TRY TO HANDLE IF THE LOCATION ISN'T SPECIFIED
             this->FillLocation(*it);
-        else if ((*it).find("allow_methods") != -1)
+        else if ((*it).find("allow_methods") != std::string::npos)
             this->FillAllow_methods(*it);
-        else if ((*it).find("redirect") != -1)
+        else if ((*it).find("redirect") != std::string::npos)
             this->FillRedirect(*it);
-        else if ((*it).find("auto_index") != -1)
+        else if ((*it).find("auto_index") != std::string::npos)
             this->FillAuto_index(*it);
-        else if ((*it).find("root") != -1)
+        else if ((*it).find("root") != std::string::npos)
             this->FillRoot(*it);
-        else if ((*it).find("index") != -1)
+        else if ((*it).find("index") != std::string::npos)
             this->FillIndex(*it);
-        else if ((*it).find("upload_pass") != -1)
+        else if ((*it).find("upload_pass") != std::string::npos)
             this->FillUpload_pass(*it);
-        else if ((*it).find("cgi_pass") != -1)
+        else if ((*it).find("cgi_pass") != std::string::npos)
             this->FillCgi_pass(*it);
-        else if (*it == "}" && (nextvalue != "};" || (nextvalue.find("location") == -1 && nextvalue.find("{") == -1)))
+        else if (*it == "}" && (nextvalue != "};" || (nextvalue.find("location") == std::string::npos && nextvalue.find("{") == std::string::npos)))
         {
             std::cout << "Please only have another location block after starting with one" << std::endl;
             exit (1);

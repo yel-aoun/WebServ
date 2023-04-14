@@ -32,7 +32,7 @@ const char *get_client_address(Client *ci)
     return address_buffer;
 }
 
-void    Server::accept_new_client(char **env)
+void    Server::accept_new_client()
 {
     Client *client = new Client();
 
@@ -46,15 +46,14 @@ void    Server::accept_new_client(char **env)
         exit(EXIT_FAILURE);
     }
     this->_clients.push_back(client);
-    printf("accepted\n");
 }
 
-void    Server::run_serve(fd_set reads, fd_set writes, char **env)
+void    Server::run_serve(fd_set reads, fd_set writes)
 {
     this->_reads = reads;
     this->_writes = writes;
     if (FD_ISSET(this->_server_socket, &this->_reads))
-        this->accept_new_client(env);
+        this->accept_new_client();
     else
         this->serve_clients();
 }
@@ -62,7 +61,6 @@ void    Server::run_serve(fd_set reads, fd_set writes, char **env)
 void    Server::serve_clients()
 {
     std::list<Client *>::iterator   iter;
-    int len;
     for(iter = this->_clients.begin(); iter != this->_clients.end(); iter++)
     {
         if(FD_ISSET((*iter)->get_sockfd(), &this->_reads) && !(*iter)->_is_ready)
@@ -74,8 +72,6 @@ void    Server::serve_clients()
                 std::cerr << "Unexpected disconnect from << " << get_client_address(*iter) << std::endl;
                 drop_client(iter);
                 _clients.erase(iter);
-                // if (this->_clients.size() == 0)
-                //     return ;
                 continue ;
             }
             (*iter)->set_received_data(this->_request_size);
@@ -102,11 +98,11 @@ void    Server::serve_clients()
                             (*iter)->post.call_post_func(*this, (*iter));
                         }
                         else if (req.method == "DELETE")
-                        {
+                        { 
                             if(_request_size != 0)
                                 (*iter)->Fill_response_data(400, "Bad Request", "./default_error_pages/400.html");
                             else
-                                (*iter)->del.erase((*iter), *this);
+                                (*iter)->del.erase((*iter));
                         }
                         else if(req.method == "GET")
                         {
@@ -118,8 +114,8 @@ void    Server::serve_clients()
                         }
                     }
                 }
-                // else
-                //     std::cout << "Your header is large" << std::endl;
+                else
+                    (*iter)->Fill_response_data(400, "Bad Request", "./default_error_pages/400.html");
             }
             else // this else is for just post becouse post containe the body.
                 (*iter)->post.call_post_func(*this, *iter);
@@ -133,7 +129,7 @@ void    Server::serve_clients()
                     int pid = waitpid((*iter)->pid, NULL, WNOHANG);
                     if (pid == 0)
                     {
-                        iter++;
+                        iter = this->_clients.begin();
                         continue ;
                     }
                     else
@@ -147,7 +143,12 @@ void    Server::serve_clients()
                     if ((*iter)->header == 0)
                     {
                         this->respons_cgi(iter);
-                        write ((*iter)->get_sockfd(), (*iter)->resp.c_str(), (*iter)->resp.size());
+                        if(write((*iter)->get_sockfd(), (*iter)->resp.c_str(), (*iter)->resp.size()) < 1)
+                        {
+                            this->drop_client(iter);
+                            iter = this->_clients.erase(iter);
+                            continue;
+                        }
                         (*iter)->header = 1;
                     }
                     else
@@ -162,7 +163,12 @@ void    Server::serve_clients()
                 if ((*iter)->header == 0)
                 {
                     this->respons(iter);
-                    write ((*iter)->get_sockfd(), (*iter)->resp.c_str(), (*iter)->resp.size());
+                   if(write((*iter)->get_sockfd(), (*iter)->resp.c_str(), (*iter)->resp.size()) < 1)
+                    {
+                        this->drop_client(iter);
+                        iter = this->_clients.erase(iter);
+                        continue;
+                    }
                     (*iter)->header = 1;
                 }
                 else
@@ -178,6 +184,8 @@ void    Server::serve_clients()
 void    Server::drop_client(std::list<Client *>::iterator client)
 {
     CLOSESOCKET((*client)->get_sockfd());
+    FD_CLR((*client)->get_sockfd(), &this->_reads);
+    FD_CLR((*client)->get_sockfd(), &this->_writes);
     delete *client;
 }
 
@@ -208,13 +216,16 @@ bool Server::serveBody(std::list<Client *>::iterator   iter)
     int szReaded = (*iter)->filein.gcount();
     if (szReaded <= 0)
     {
-        std::cout<<"finish reading ..."<<std::endl;
         (*iter)->filein.close();
         drop_client(iter);
         return (FINISHED);
     }
-    write ((*iter)->get_sockfd(), buffer, szReaded);
-     return (!FINISHED);
+    if(write ((*iter)->get_sockfd(), buffer, szReaded) < 1)
+    {
+        drop_client(iter);
+        return (FINISHED);
+    }
+    return (!FINISHED);
 }
 
 void    Server::respons(std::list<Client *>::iterator iter)
@@ -278,7 +289,7 @@ void    Server::respons_cgi(std::list<Client *>::iterator iter)
     int pos = buff.find("\r\n\r\n");
     int body_size = file_size - (pos + 4);
     std::string lenth = "\r\nContent-Length: " + std::to_string(body_size);
-    if (buff.find("Location:") != -1)
+    if (buff.find("Location:") != std::string::npos)
         (*iter)->status_code = 301;
     (*iter)->resp.append((*iter)->http);
     (*iter)->resp.append(" ");
@@ -297,7 +308,6 @@ std::string Server::ft_get_extention(std::string str, std::list<Client *>::itera
         return (it->second);
     }
     else
-    {}
         return str;
 }
 
